@@ -24,6 +24,10 @@ library
                      , Tutorial2.Cube
                      , Tutorial2.Display
                      , Tutorial2.Points
+                     , Utils.ReadOFF
+                     , Mushroom
+                     , Mushroom.Data
+                     , Utils.Colour
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -32,6 +36,9 @@ library
                      , containers
                      , hip
                      , directory
+                     , colour
+                     , palette
+                     , ilist
   default-language:    Haskell2010
   ghc-options:        -Wall
 
@@ -63,6 +70,14 @@ executable tutorial2
   hs-source-dirs:      src-exe
   main-is:             ExeTutorial2.hs
   ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTutorial2
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable mushroom
+  hs-source-dirs:      src-exe
+  main-is:             ExeMushroom.hs
+  ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeMushroom
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010

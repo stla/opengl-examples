@@ -74,7 +74,7 @@ keyboard rot1 rot2 rot3 capture c _ =
 
 idle :: IORef GLfloat -> IdleCallback
 idle angle = do
-  angle $~! (+ 1)
+  angle $~! (+ 3)
   postRedisplay Nothing
 
 main :: IO ()

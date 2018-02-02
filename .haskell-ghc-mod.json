@@ -1,0 +1,7 @@
+{
+  "disable": false,
+  "suppressErrors": true,
+  "ghcOptions": [],
+  "ghcModOptions": ["--with-ghc"
+                   ,"C:/Users/sdl96354/AppData/Local/Programs/HaskellPlatform/8.0.2/bin/ghc-8.0.2.exe"]
+}

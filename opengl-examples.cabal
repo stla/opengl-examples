@@ -1,0 +1,72 @@
+name:                opengl-examples
+version:             0.1.0.0
+homepage:            https://github.com/stla/opengl-examples#readme
+license:             GPL-3
+author:              Stéphane Laurent
+maintainer:          laurent_step@yahoo.fr
+copyright:           2018 Stéphane Laurent
+category:            Graphics
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     TruncatedCuboctahedron
+                     , TruncatedCuboctahedron.Data
+                     , Teapot.Data
+                     , Teapot
+                     , TeapotAnimation
+                     , Utils.ConvertPPM
+                     , Utils.OpenGL
+                     , Tutorial2
+                     , Tutorial2.Bindings
+                     , Tutorial2.Cube
+                     , Tutorial2.Display
+                     , Tutorial2.Points
+  build-depends:       base >= 4.7 && < 5
+                     , OpenGL
+                     , GLUT
+                     , gl-capture
+                     , bytestring
+                     , containers
+                     , hip
+                     , directory
+  default-language:    Haskell2010
+  ghc-options:        -Wall
+
+executable truncatedCuboctahedron
+  hs-source-dirs:      src-exe
+  main-is:             ExeTruncatedCuboctahedron.hs
+  ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTruncatedCuboctahedron
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable teapot
+  hs-source-dirs:      src-exe
+  main-is:             ExeTeapot.hs
+  ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTeapot
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable teapotanim
+  hs-source-dirs:      src-exe
+  main-is:             ExeTeapotAnimation.hs
+  ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTeapotAnimation
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable tutorial2
+  hs-source-dirs:      src-exe
+  main-is:             ExeTutorial2.hs
+  ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTutorial2
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/stla/opengl-examples

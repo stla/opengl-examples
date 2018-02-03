@@ -33,6 +33,8 @@ library
                      , Tesseract
                      , Tesseract.Data
                      , Tesseract.Transformations4D
+                     , Utils.Prism
+                     , Prism
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -101,6 +103,14 @@ executable tesseract
   hs-source-dirs:      src-exe
   main-is:             ExeTesseract.hs
   ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTesseract
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable prism
+  hs-source-dirs:      src-exe
+  main-is:             ExePrism.hs
+  ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExePrism
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010

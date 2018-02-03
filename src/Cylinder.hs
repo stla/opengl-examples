@@ -8,7 +8,7 @@ import           Graphics.UI.GLUT
 import           Text.Printf
 import           Utils.ConvertPPM
 import           Utils.Cylinder
-import           Utils.OpenGL                      (triangleNormal, vertex3f)
+import           Utils.OpenGL                      (vertex3f)
 
 white,black,blue :: Color4 GLfloat
 white = Color4 1   1   1   1

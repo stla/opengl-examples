@@ -10,6 +10,10 @@ build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
 
+flag exe
+  description: build the executables
+  default: True
+
 library
   hs-source-dirs:      src
   exposed-modules:     TruncatedCuboctahedron
@@ -35,6 +39,8 @@ library
                      , Tesseract.Transformations4D
                      , Utils.Prism
                      , Prism
+                     , Utils.Torus
+                     , Torus
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -52,6 +58,10 @@ library
   ghc-options:        -Wall
 
 executable truncatedCuboctahedron
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
   hs-source-dirs:      src-exe
   main-is:             ExeTruncatedCuboctahedron.hs
   ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTruncatedCuboctahedron
@@ -60,6 +70,10 @@ executable truncatedCuboctahedron
   default-language:    Haskell2010
 
 executable teapot
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
   hs-source-dirs:      src-exe
   main-is:             ExeTeapot.hs
   ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTeapot
@@ -68,6 +82,10 @@ executable teapot
   default-language:    Haskell2010
 
 executable teapotanim
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
   hs-source-dirs:      src-exe
   main-is:             ExeTeapotAnimation.hs
   ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTeapotAnimation
@@ -76,6 +94,10 @@ executable teapotanim
   default-language:    Haskell2010
 
 executable tutorial2
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
   hs-source-dirs:      src-exe
   main-is:             ExeTutorial2.hs
   ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTutorial2
@@ -84,6 +106,10 @@ executable tutorial2
   default-language:    Haskell2010
 
 executable mushroom
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
   hs-source-dirs:      src-exe
   main-is:             ExeMushroom.hs
   ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeMushroom
@@ -92,6 +118,10 @@ executable mushroom
   default-language:    Haskell2010
 
 executable cylinder
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
   hs-source-dirs:      src-exe
   main-is:             ExeCylinder.hs
   ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeCylinder
@@ -100,6 +130,10 @@ executable cylinder
   default-language:    Haskell2010
 
 executable tesseract
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
   hs-source-dirs:      src-exe
   main-is:             ExeTesseract.hs
   ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTesseract
@@ -108,9 +142,25 @@ executable tesseract
   default-language:    Haskell2010
 
 executable prism
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
   hs-source-dirs:      src-exe
   main-is:             ExePrism.hs
   ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExePrism
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable torus
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
+  hs-source-dirs:      src-exe
+  main-is:             ExeTorus.hs
+  ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTorus
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010

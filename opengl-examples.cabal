@@ -30,6 +30,9 @@ library
                      , Utils.Colour
                      , Utils.Cylinder
                      , Cylinder
+                     , Tesseract
+                     , Tesseract.Data
+                     , Tesseract.Transformations4D
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -42,6 +45,7 @@ library
                      , palette
                      , ilist
                      , linear
+                     , extra
   default-language:    Haskell2010
   ghc-options:        -Wall
 
@@ -81,6 +85,22 @@ executable mushroom
   hs-source-dirs:      src-exe
   main-is:             ExeMushroom.hs
   ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeMushroom
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable cylinder
+  hs-source-dirs:      src-exe
+  main-is:             ExeCylinder.hs
+  ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeCylinder
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable tesseract
+  hs-source-dirs:      src-exe
+  main-is:             ExeTesseract.hs
+  ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTesseract
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010

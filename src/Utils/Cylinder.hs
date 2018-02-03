@@ -10,9 +10,9 @@ tstripCylinder v1 v2 radius =
   map v3toVertex3 (concatMap (\p -> [p, p L.^+^ axis]) points)
   where
     axis = vector v1 v2
-    points = map (\a -> rotation axis a firstpoint)
-                 [i * pi / 180 | i <- [0 .. 360]]
-    firstpoint = n v1 v2 radius L.^+^ vertex3toV3 v1
+    points = map (\a -> rotation axis a firstpoint L.^+^ vertex3toV3 v1)
+                 [fromIntegral i * 2 * pi / 180 | i <- [0 .. 180]]
+    firstpoint = n v1 v2 radius
     rotation :: (Floating a, RealFloat a, Epsilon a, Conjugate a)
              => V3 a -> a -> V3 a -> V3 a
     rotation ax angle = L.rotate (L.axisAngle ax angle)

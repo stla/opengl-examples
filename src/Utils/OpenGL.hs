@@ -1,11 +1,11 @@
-module Utils.OpenGL where
-import           Graphics.Rendering.OpenGL.GL
+module Utils.OpenGL
+  where
+import Graphics.Rendering.OpenGL.GL
 
 vertex3f :: Vertex3 GLfloat -> IO ()
 vertex3f = vertex
 
-triangleNormal :: (Vertex3 GLfloat, Vertex3 GLfloat, Vertex3 GLfloat)
-               -> Normal3 GLfloat
+triangleNormal :: Floating a => (Vertex3 a, Vertex3 a, Vertex3 a) -> Normal3 a
 triangleNormal (Vertex3 x1 x2 x3, Vertex3 y1 y2 y3, Vertex3 z1 z2 z3) =
   Normal3 a' b' c'
   where

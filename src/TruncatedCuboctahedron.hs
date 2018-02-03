@@ -43,7 +43,7 @@ display rot1 rot2 zoom = do
 
 drawEdge :: (Vertex3 GLfloat, Vertex3 GLfloat) -> IO ()
 drawEdge (v1, v2) = do
-  color (Color3 0 1 0 :: Color3 GLfloat)
+  color (Color3 0 0 0 :: Color3 GLfloat)
   vertex3f v1
   vertex3f v2
 

@@ -4,14 +4,17 @@ import           Data.IORef
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Utils.Prism
-import           Utils.OpenGL                      (vertex3f)
 
-white,black,blue :: Color4 GLfloat
+white,black,blue,red,green :: Color4 GLfloat
 white = Color4 1   1   1   1
 black = Color4 0   0   0   1
 blue  = Color4 0   0   1   1
+red   = Color4 1   0   0   1
+green = Color4 0   1   0   1
 
-v1',v2',w1',w2' :: Vertex3 GLfloat
+u1',u2',v1',v2',w1',w2' :: Vertex3 GLfloat
+u1' = Vertex3 2 0 (-3)
+u2' = Vertex3 0 1 (-3)
 v1' = Vertex3 (-2) (-2) (-2)
 v2' = Vertex3 2 2 2
 w1' = Vertex3 4 0 0
@@ -23,27 +26,26 @@ display rot1 rot2 zoom = do
   r1 <- get rot1
   r2 <- get rot2
   z <- get zoom
-  let prism6 = prism v1' v2' 6 1
+  let prism3   = prism u1' u2' 3 2
+      prism6   = prism v1' v2' 6 1
       prism100 = prism w1' w2' 100 1
   loadIdentity
   (_, size) <- get viewport
   resize z size
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
-  mapM_ (renderPrimitive Quads . drawPrismFacet) prism6
-  mapM_ (renderPrimitive Quads . drawPrismFacet) prism100
+  mapM_ (renderPrimitive Quads . drawPrismFacet green) prism3
+  mapM_ (renderPrimitive Quads . drawPrismFacet blue) prism6
+  mapM_ (renderPrimitive Quads . drawPrismFacet red) prism100
   swapBuffers
   where
-    drawPrismFacet ((v1,v2,v3,v4),n) = do
-      materialDiffuse FrontAndBack $= blue
+    drawPrismFacet col ((v1,v2,v3,v4),n) = do
+      materialDiffuse FrontAndBack $= col
       normal n
       vertex v1
       vertex v2
       vertex v3
       vertex v4
-      -- where
-      --   negaten (Normal3 a b c) =
-      --     let h = sqrt (a*a + b*b + c*c) in Normal3 (a/h) (b/h) (c/h)
 
 resize :: Double -> Size -> IO ()
 resize zoom s@(Size w h) = do
@@ -79,16 +81,16 @@ main = do
   _ <- createWindow "Prism"
   windowSize $= Size 600 600
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
-  clearColor $= black
-  materialAmbient Front $= black
-  materialShininess Front $= 30
+  clearColor $= white
+  materialAmbient FrontAndBack $= Color4 0.5 0.5 0.5 1
+  materialShininess FrontAndBack $= 30
   lighting $= Enabled
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 0 0 (-100) 1
   lightModelTwoSide $= Enabled
-  ambient (Light 0) $= white
+  ambient (Light 0) $= black
   diffuse (Light 0) $= white
-  specular (Light 0) $= white
+  specular (Light 0) $= black
   depthFunc $= Just Lequal
   depthMask $= Enabled
   shadeModel $= Smooth

@@ -15,3 +15,6 @@ triangleNormal (Vertex3 x1 x2 x3, Vertex3 y1 y2 y3, Vertex3 z1 z2 z3) =
     a' = a / norm
     b' = b / norm
     c' = c / norm
+
+negateNormal :: Floating a => Normal3 a -> Normal3 a
+negateNormal (Normal3 x y z) = Normal3 (-x) (-y) (-z)

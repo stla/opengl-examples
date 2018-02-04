@@ -1,4 +1,4 @@
-module Torus
+module Torus2
   where
 import           Data.IORef
 import           Graphics.Rendering.OpenGL.GL
@@ -21,27 +21,31 @@ display rot1 rot2 zoom tradius = do
   z <- get zoom
   tr <- get tradius
   let tr' = max 0 (min tr 2)
-  let torus1 = torus (2-tr') tr' 180 90
+  let tor = torus' (2-tr') tr' 180 90
   loadIdentity
   rotate (-40::GLfloat) $ Vector3 1 0 0
   (_, size) <- get viewport
   resize z size
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
-  drawTorus torus1
+  drawTorus tor
   swapBuffers
   where
-    drawTorus =
-      renderPrimitive Quads . mapM_ drawTorusFacet
-      -- mapM_ (renderPrimitive Quads . drawTorusFacet)
+    drawTorus = renderPrimitive QuadStrip . mapM_ f
       where
-        drawTorusFacet ((v1,v2,v3,v4),n) = do
+        f (((v1,v2,v3,v4),n), l) = do
           materialDiffuse Front $= blue
           normal n
           vertex v1
           vertex v2
           vertex v3
           vertex v4
+          mapM_ g l
+          where
+            g ((w1,w2),nn) = do
+              normal nn
+              vertex w1
+              vertex w2
 
 resize :: Double -> Size -> IO ()
 resize zoom s@(Size w h) = do
@@ -49,7 +53,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-13 + zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-11 + zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w

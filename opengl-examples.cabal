@@ -91,7 +91,7 @@ executable teapotanim
     buildable: False
   hs-source-dirs:      src-exe
   main-is:             ExeTeapotAnimation.hs
-  ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTeapotAnimation
+  ghc-options:         -fllvm -main-is ExeTeapotAnimation
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010
@@ -139,7 +139,7 @@ executable tesseract
     buildable: False
   hs-source-dirs:      src-exe
   main-is:             ExeTesseract.hs
-  ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTesseract
+  ghc-options:         -fllvm -main-is ExeTesseract
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010
@@ -163,7 +163,7 @@ executable torus
     buildable: False
   hs-source-dirs:      src-exe
   main-is:             ExeTorus.hs
-  ghc-options:         -O2 -threaded -with-rtsopts=-N -main-is ExeTorus
+  ghc-options:         -fllvm -main-is ExeTorus
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010

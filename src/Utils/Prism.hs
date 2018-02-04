@@ -32,7 +32,7 @@ prism v1 v2 nsides radius =
     pts' = map (L.^+^ axis) pts
     f i = (v3toVx3 $ pts!!i, v3toVx3 $ pts'!!i,
            v3toVx3 $ pts'!!(i+1), v3toVx3 $ pts!!(i+1))
-    g i = v3toN $ L.signorm $ L.cross (pts'!!i L.^-^ pts!!i)
-                                      (pts!!(i+1) L.^-^ pts!!i)
+    g i = v3toN $ L.signorm $ L.cross (pts!!(i+1) L.^-^ pts!!i)
+                                      (pts'!!i L.^-^ pts!!i)
     v3toN :: V3 a -> Normal3 a
     v3toN (V3 x y z) = Normal3 x y z

@@ -7,7 +7,7 @@ import           Graphics.UI.GLUT
 import           Tesseract.Data
 import           Tesseract.Transformations4D
 -- import           Utils.Cylinder
-import           Utils.OpenGL                      (triangleNormal)
+import           Utils.OpenGL                      (triangleNormal, negateNormal)
 import           Utils.Prism
 
 white,black,grey,whitesmoke :: Color4 GLfloat
@@ -56,7 +56,7 @@ drawCylinder radius (v1,v2) = do
   mapM_ (renderPrimitive Quads . f) cylinder
   where
     f ((w1,w2,w3,w4),n) = do
-      materialDiffuse FrontAndBack $= whitesmoke
+      materialDiffuse Front $= whitesmoke
       normal n
       vertex w1
       vertex w2

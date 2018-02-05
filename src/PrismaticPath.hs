@@ -4,7 +4,6 @@ import           Data.IORef
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Utils.PrismaticPath
-import Utils.OpenGL
 
 white,black,blue,red,green :: Color4 GLfloat
 white = Color4 1   1   1   1
@@ -13,16 +12,14 @@ blue  = Color4 0   0   1   1
 red   = Color4 1   0   0   1
 green = Color4 0   1   0   1
 
-u1',u2',v1',v2',w1',w2' :: Vertex3 GLfloat
-u1' = Vertex3 2 0 (-3)
-u2' = Vertex3 0 1 (-3)
-v1' = Vertex3 (-2) (-2) (-2)
-v2' = Vertex3 2 2 2
-w1' = Vertex3 4 0 0
-w2' = Vertex3 5 4 1
+vertices :: [Vertex3 GLfloat]
+vertices =
+  map (\x -> Vertex3 (sin (pi*x) * cos (2*pi*x))
+                     (sin (pi*x) * sin (2*pi*x))
+                     (cos (pi*x)))
+      [i/50 | i <- [0 .. 50]]
 
--- path :: [((Vertex3 GLfloat, Vertex3 GLfloat, Vertex3 GLfloat, Vertex3 GLfloat), Normal3 GLfloat)]
-path = prismaticPath [u1', u2', Vertex3 (-2) 1 (-3), Vertex3 (-4) 2 (-3)] 16 1
+path = prismaticPath vertices 6 0.1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLdouble -> DisplayCallback
 display rot1 rot2 zoom = do
@@ -38,17 +35,17 @@ display rot1 rot2 zoom = do
   mapM_ (renderPrimitive TriangleStrip . drawPrismFacet green) path
   swapBuffers
   where
-    drawPrismFacet col (((v1,v2,v3,v4),n),l) = do
-      materialDiffuse FrontAndBack $= col
+    drawPrismFacet col (((v1,v2,v3,v4),n),list) = do
+      materialDiffuse Front $= col
       normal n
       vertex v1
       vertex v2
       vertex v3
       vertex v4
-      mapM_ f l
+      mapM_ f list
       where
-        f ((w1,w2),nn) = do
-          normal nn
+        f ((w1,w2),n') = do
+          normal n'
           vertex w1
           vertex w2
 
@@ -58,7 +55,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-16 + zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-3 + zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -92,7 +89,7 @@ main = do
   lighting $= Enabled
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 0 0 (-100) 1
-  lightModelTwoSide $= Enabled
+--  lightModelTwoSide $= Enabled
   ambient (Light 0) $= black
   diffuse (Light 0) $= white
   specular (Light 0) $= black

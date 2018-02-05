@@ -8,27 +8,31 @@ import           Linear                       (Conjugate, Epsilon, V3 (..),
 
 prismaticPath :: (Floating a, RealFloat a, Epsilon a, Conjugate a, Enum a)
       => [Vertex3 a] -> Int -> a
-      -> [(((Vertex3 a, Vertex3 a, Vertex3 a, Vertex3 a), Normal3 a), [((Vertex3 a, Vertex3 a), Normal3 a)])]
+      -> [(((Vertex3 a, Vertex3 a, Vertex3 a, Vertex3 a), Normal3 a),
+          [((Vertex3 a, Vertex3 a), Normal3 a)])]
 prismaticPath vs nsides radius =
   map ((f &&& g) &&& fg) [0 .. nsides-1]
   where
-    nvertices = length vs
     axes = zipWith vector (init vs) (tail vs)
-    pts0 = map (\a -> rotation (axes!!0) a firstpoint ^+^ vx3toV3 (vs!!0))
-               [realToFrac i * 2 * pi / nsides' | i <- [0 .. nsides]]
+    -- pts0 = map (\a -> rotation (axes!!0) a firstpoint ^+^ vx3toV3 (vs!!0))
+    --            [realToFrac i * 2 * pi / nsides' | i <- [0 .. nsides]]
+    pts = map (\j ->
+               map (\a -> rotation (axes!!j) a (n (vs!!j) (vs!!(j+1)) radius)
+                          ^+^ vx3toV3 (vs!!j))
+                    [realToFrac i * 2 * pi / nsides' | i <- [0 .. nsides]])
+              [0 .. length vs - 2]
     nsides' = realToFrac nsides
-    firstpoint = n (vs!!0) (vs!!1) radius
-    pts = foldr (\ax ps -> ps ++ [map (^+^ ax) (last ps)]) [pts0] axes
+    -- firstpoint = n (vs!!0) (vs!!1) radius
+    -- pts = foldr (\ax ps -> ps ++ [map (^+^ ax) (last ps)]) [pts0] axes
+    pts0 = pts!!0
     pts1 = pts!!1
     f i = (v3toVx3 $ pts0!!i, v3toVx3 $ pts0!!(i+1), v3toVx3 $ pts1!!i,
            v3toVx3 $ pts1!!(i+1))
     g i = v3toN $ signorm $ cross (pts0!!(i+1) ^-^ pts0!!i)
                                   (pts1!!i ^-^ pts0!!i)
-    pts2 = pts!!2
-    -- f' i = (v3toVx3 $ pts2!!i, v3toVx3 $ pts2!!(i+1))
-    -- g' i = v3toN $ signorm $ cross (pts1!!(i+1) ^-^ pts1!!i) (pts2!!i ^-^ pts1!!i)
     f' i = map (\p -> (v3toVx3 $ p!!i, v3toVx3 $ p!!(i+1))) (drop 2 pts)
-    g' i = zipWith (\p1 p2 -> v3toN $ signorm $ cross (p1!!(i+1) ^-^ p1!!i) (p2!!i ^-^ p1!!i))
+    g' i = zipWith (\p1 p2 -> v3toN $ signorm $
+                              cross (p1!!(i+1) ^-^ p1!!i) (p2!!i ^-^ p1!!i))
                    (init $ tail pts) (tail $ tail pts)
     fg i = zip (f' i) (g' i)
     rotation :: (Floating a, RealFloat a, Epsilon a, Conjugate a)

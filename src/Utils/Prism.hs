@@ -13,7 +13,7 @@ prism v1 v2 nsides radius =
   where
     axis = vector v1 v2
     pts = map (\a -> rotation axis a firstpoint L.^+^ vx3toV3 v1)
-                 [realToFrac i * 2 * pi / nsides' | i <- [0 .. nsides]]
+              [realToFrac i * 2 * pi / nsides' | i <- [0 .. nsides]]
     nsides' = realToFrac nsides
     firstpoint = n v1 v2 radius
     rotation :: (Floating a, RealFloat a, Epsilon a, Conjugate a)
@@ -32,7 +32,7 @@ prism v1 v2 nsides radius =
     pts' = map (L.^+^ axis) pts
     f i = (v3toVx3 $ pts!!i, v3toVx3 $ pts'!!i,
            v3toVx3 $ pts'!!(i+1), v3toVx3 $ pts!!(i+1))
-    g i = v3toN $ L.signorm $ L.cross (pts!!(i+1) L.^-^ pts!!i)
-                                      (pts'!!i L.^-^ pts!!i)
+    g i = v3toN $ L.signorm $ L.cross (pts'!!i L.^-^ pts!!i)
+                                      (pts!!(i+1) L.^-^ pts!!i)
     v3toN :: V3 a -> Normal3 a
     v3toN (V3 x y z) = Normal3 x y z

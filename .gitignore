@@ -21,3 +21,4 @@ cabal.project.local
 *.png
 *.gif
 *.ppm
+src/BrokenPrism.hs

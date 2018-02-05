@@ -11,7 +11,10 @@ black = Color4 0   0   0   1
 blue  = Color4 0   0   1   1
 
 strip :: [((Vertex3 GLdouble, Vertex3 GLdouble, Vertex3 GLdouble, Vertex3 GLdouble), Normal3 Double)]
-strip = mobius (1/2) 1
+strip = mobiusStrip (1/2) 1
+
+curve :: [Vertex3 GLdouble]
+curve = mobiusCurve (1/2) 1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> DisplayCallback
@@ -28,20 +31,32 @@ display rot1 rot2 rot3 zoom = do
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
+  pointSize $= 10
+  -- lighting $= Disabled
+  -- drawCurve curve
+  -- lighting $= Enabled
   drawStrip strip
+  mapM_ (\v -> preservingMatrix $ do
+               translate $ toVector3 v
+               materialDiffuse Front $= Color4 1 0 0 1
+               renderObject Solid $ Sphere' 0.05 50 50)
+        curve
   swapBuffers
   where
-    drawStrip =
-      mapM_ (renderPrimitive Quads . drawStripFacet)
+    toVector3 (Vertex3 x y z) = Vector3 x y z
+    drawStrip = mapM_ (renderPrimitive Quads . drawStripFacet)
       where
         drawStripFacet ((v1,v2,v3,v4),n) = do
           materialDiffuse FrontAndBack $= blue
---          materialDiffuse Back $= Color4 1 0 0 1
           normal n
           vertex v1
           vertex v2
           vertex v3
           vertex v4
+    -- drawCurve x = renderPrimitive Points $ do
+    --   color (Color3 1 0 0 :: Color3 GLfloat)
+    --   mapM_ vertex x
+
 
 resize :: Double -> Size -> IO ()
 resize zoom s@(Size w h) = do

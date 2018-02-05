@@ -17,16 +17,12 @@ prismaticPath vs nsides radius close =
   map ((f &&& g) &&& fg) [0 .. nsides-1]
   where
     axes = zipWith vector (init vs) (tail vs)
-    -- pts0 = map (\a -> rotation (axes!!0) a firstpoint ^+^ vx3toV3 (vs!!0))
-    --            [realToFrac i * 2 * pi / nsides' | i <- [0 .. nsides]]
     pts' = map (\j ->
                 map (\a -> rotation (axes!!j) a (n (vs!!j) (vs!!(j+1)) radius)
                            ^+^ vx3toV3 (vs!!j))
                     [intToF i * 2 * pi / intToF nsides | i <- [0 .. nsides]])
               [0 .. length vs - 2]
     pts = if close then pts' ++ [head pts'] else pts'
-    -- firstpoint = n (vs!!0) (vs!!1) radius
-    -- pts = foldr (\ax ps -> ps ++ [map (^+^ ax) (last ps)]) [pts0] axes
     pts0 = pts!!0
     pts1 = pts!!1
     f i = (v3toVx3 $ pts0!!i, v3toVx3 $ pts0!!(i+1), v3toVx3 $ pts1!!i,

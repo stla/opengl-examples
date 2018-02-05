@@ -1,4 +1,4 @@
-module TruncatedCuboctahedron
+module TruncatedCuboctahedron2
   where
 import qualified Data.ByteString                   as B
 import           Data.IORef
@@ -6,19 +6,16 @@ import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Text.Printf
-import           TruncatedCuboctahedron.Data       (edges, polygons)
+import           TruncatedCuboctahedron.Data       (edges, normals, polygons,
+                                                    vertices)
 import           Utils.ConvertPPM
-import           Utils.OpenGL                      (triangleNormal, vertex3f)
+import           Utils.OpenGL                      (vertex3f, negateNormal)
+import           Utils.Prism
 
--- axes directions:
--- x: left
--- y: up
--- z: back
-
-grey1,grey9,red,white,black :: Color4 GLfloat
+grey1,grey9,blue,white,black :: Color4 GLfloat
 grey1 = Color4 0.1 0.1 0.1 1
 grey9 = Color4 0.9 0.9 0.9 1
-red   = Color4 1   0   0   1
+blue  = Color4 0   0   1   1
 white = Color4 1   1   1   1
 black = Color4 0   0   0   1
 
@@ -34,23 +31,39 @@ display rot1 rot2 zoom = do
   resize z size
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
-  lighting $= Disabled
-  mapM_ (renderPrimitive Lines . drawEdge) edges
-  lighting $= Enabled
-  mapM_ (renderPrimitive Polygon . drawPolygon) polygons
+  mapM_ drawEdge edges
+  mapM_ (renderPrimitive Polygon . drawPolygon) (zip polygons normals)
+  mapM_ drawVertex vertices
   swapBuffers
 
 drawEdge :: (Vertex3 GLfloat, Vertex3 GLfloat) -> IO ()
-drawEdge (v1, v2) = do
-  color (Color3 0 0 0 :: Color3 GLfloat)
-  vertex3f v1
-  vertex3f v2
+drawEdge (v1,v2) = do
+  let cylinder = prism v1 v2 50 0.1
+  renderPrimitive Quads $ do
+    materialDiffuse Front $= grey9
+    mapM_ drawQuad cylinder
+  where
+    drawQuad ((w1,w2,w3,w4),n) = do
+      normal $ negateNormal n
+      vertex w1
+      vertex w2
+      vertex w3
+      vertex w4
 
-drawPolygon :: [Vertex3 GLfloat] -> IO ()
-drawPolygon xs = do
-  materialDiffuse FrontAndBack $= red
-  normal (triangleNormal (xs!!0, xs!!1, xs!!2))
-  mapM_ vertex3f xs
+drawPolygon :: ([Vertex3 GLfloat], Normal3 GLfloat) -> IO ()
+drawPolygon (vs, n) = do
+  materialDiffuse Front $= blue
+  normal n
+  mapM_ vertex3f vs
+
+drawVertex :: Vertex3 GLfloat -> IO ()
+drawVertex v =
+  preservingMatrix $ do
+    translate $ toVector v
+    materialDiffuse Front $= white
+    renderObject Solid $ Sphere' 0.2 50 50
+  where
+    toVector (Vertex3 x y z) = Vector3 x y z
 
 resize :: Double -> Size -> IO ()
 resize zoom s@(Size w h) = do
@@ -98,20 +111,17 @@ main = do
   _ <- createWindow "Truncated Cuboctahedron"
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= black
-  materialAmbient FrontAndBack $= black
-  materialShininess FrontAndBack $= 10
+  materialAmbient Front $= black
+  materialShininess Front $= 80
   lighting $= Enabled
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 0 0 (-100) 1
-  lightModelTwoSide $= Enabled
   ambient (Light 0) $= white
   diffuse (Light 0) $= white
   specular (Light 0) $= white
   depthFunc $= Just Lequal
   depthMask $= Enabled
   shadeModel $= Smooth
-  blend $= Enabled                         -- allow transparency (not used here)
-  blendFunc $= (SrcAlpha, OneMinusSrcAlpha)
   rot1 <- newIORef 0.0
   rot2 <- newIORef 0.0
   zoom <- newIORef 0.0

@@ -67,8 +67,8 @@ keyboardAndMouse rot1 rot2 rot3 radius zoom key keyState _ _ =
     (Char 'f', _)                   -> rot2 $~! (+1)
     (Char 'c', _)                   -> rot3 $~! subtract 1
     (Char 'v', _)                   -> rot3 $~! (+1)
-    (Char 'o', _)                   -> radius $~! subtract 0.05
-    (Char 'p', _)                   -> radius $~! (+0.05)
+    (Char 'o', _)                   -> radius $~! subtract 0.025
+    (Char 'p', _)                   -> radius $~! (+0.025)
     (Char 'q', _)                   -> leaveMainLoop
     (MouseButton LeftButton, Down)  -> zoom $~! (+0.1)
     (MouseButton RightButton, Down) -> zoom $~! subtract 0.1
@@ -80,7 +80,7 @@ idle = postRedisplay Nothing
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Helix"
+  _ <- createWindow "Trefoil knot"
   windowSize $= Size 600 600
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= black

@@ -7,7 +7,7 @@ import           Graphics.UI.GLUT
 import           Tesseract.Data
 import           Tesseract.Transformations4D
 -- import           Utils.Cylinder
-import           Utils.OpenGL                      (triangleNormal, negateNormal)
+import           Utils.OpenGL                      (triangleNormal)
 import           Utils.Prism
 
 white,black,grey,whitesmoke :: Color4 GLfloat
@@ -53,10 +53,11 @@ drawRidge vs = do
 drawCylinder :: GLdouble -> (Vertex3 GLdouble, Vertex3 GLdouble) -> IO ()
 drawCylinder radius (v1,v2) = do
   let cylinder = prism v1 v2 50 radius
-  mapM_ (renderPrimitive Quads . f) cylinder
+  renderPrimitive Quads $ do
+    materialDiffuse Back $= whitesmoke
+    mapM_ f cylinder
   where
     f ((w1,w2,w3,w4),n) = do
-      materialDiffuse Front $= whitesmoke
       normal n
       vertex w1
       vertex w2

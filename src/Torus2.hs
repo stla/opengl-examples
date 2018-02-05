@@ -21,7 +21,7 @@ display rot1 rot2 zoom tradius = do
   z <- get zoom
   tr <- get tradius
   let tr' = max 0 (min tr 2)
-  let tor = torus' (2-tr') tr' 180 90
+  let tor = torus' (2-tr') tr' 120 60
   loadIdentity
   rotate (-40::GLfloat) $ Vector3 1 0 0
   (_, size) <- get viewport
@@ -88,13 +88,13 @@ main = do
   materialShininess Front $= 30
   lighting $= Enabled
   light (Light 0) $= Enabled
-  position (Light 0) $= Vertex4 100 0 (-100) 1
+  position (Light 0) $= Vertex4 20 0 (-20) 1
   ambient (Light 0) $= black
   diffuse (Light 0) $= white
   specular (Light 0) $= black
-  depthFunc $= Just Lequal
+  depthFunc $= Just Less
   depthMask $= Enabled
-  shadeModel $= Smooth
+  shadeModel $= Flat
   rot1 <- newIORef 0.0
   rot2 <- newIORef 0.0
   zoom <- newIORef 0.0

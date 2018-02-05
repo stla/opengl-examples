@@ -1,9 +1,9 @@
-module PrismaticPath
+module Helix
   where
 import           Data.IORef
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
-import           Utils.PrismaticPath          (prismaticPath)
+import           Utils.PrismaticPath          (prismaticPath')
 
 white,black,green :: Color4 GLfloat
 white = Color4 1   1   1   1
@@ -12,13 +12,14 @@ green = Color4 0   1   0   1
 
 vertices :: [Vertex3 GLfloat]
 vertices =
-  map (\x -> Vertex3 (sin (pi*x) * cos (2*pi*x))
-                     (sin (pi*x) * sin (2*pi*x))
-                     (cos (pi*x)))
-      [i/50 | i <- [0 .. 50]]
+  map (\x -> Vertex3 (cos (4*pi*x))
+                     (4*x)
+                     (sin (4*pi*x)))
+      [i/200 | i <- [0 .. 200]]
 
-path = prismaticPath vertices 6 0.1 False
--- prismaticPath' is better - see Helix
+helix :: [((Vertex3 GLfloat, Vertex3 GLfloat, Vertex3 GLfloat, Vertex3 GLfloat),
+            Normal3 GLfloat)]
+helix = prismaticPath' vertices 30 0.1 False
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLdouble -> DisplayCallback
 display rot1 rot2 zoom = do
@@ -29,24 +30,19 @@ display rot1 rot2 zoom = do
   loadIdentity
   (_, size) <- get viewport
   resize z size
-  rotate r1 $ Vector3 1 0 0
+  rotate r1 $ Vector3 1 1 1
   rotate r2 $ Vector3 0 1 0
-  mapM_ (renderPrimitive TriangleStrip . drawPath green) path
+  renderPrimitive Quads $ do
+    materialDiffuse Front $= green
+    mapM_ drawQuad helix
   swapBuffers
   where
-    drawPath col (((v1,v2,v3,v4),n),list) = do
-      materialDiffuse Front $= col
+    drawQuad ((v1,v2,v3,v4),n) = do
       normal n
       vertex v1
       vertex v2
       vertex v3
       vertex v4
-      mapM_ f list
-      where
-        f ((w1,w2),n') = do
-          normal n'
-          vertex w1
-          vertex w2
 
 resize :: Double -> Size -> IO ()
 resize zoom s@(Size w h) = do
@@ -54,7 +50,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-3 + zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-6 + zoom)) (Vertex3 0 2 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -79,7 +75,7 @@ idle = postRedisplay Nothing
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Prismatic path"
+  _ <- createWindow "Helix"
   windowSize $= Size 600 600
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= white

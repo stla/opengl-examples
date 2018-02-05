@@ -37,11 +37,10 @@ mobiusStrip hw r = map f (mobiusStrip' hw r)
     v3toN :: V3 a -> Normal3 a
     v3toN (V3 x y z) = Normal3 x y z
 
-mobiusCurve :: Double -> Double -> [Vx3d]
-mobiusCurve hwidth radius =
+mobiusCurve :: Double -> Double -> Int -> [Vx3d]
+mobiusCurve hwidth radius n =
   c1
   where
-    n = 200
     u_ = [intToDbl i / intToDbl n * 4 * pi | i <- [0 .. n]]
     c1 = map (\u -> Vertex3 (cos u * (radius - hwidth * cos(u/2)))
                             (sin u * (radius - hwidth * cos(u/2)))

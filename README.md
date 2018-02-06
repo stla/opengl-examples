@@ -43,3 +43,7 @@ Horse saddle:
 Great icosahedron:
 
 ![Imgur](https://i.imgur.com/pwbOR0H.png)
+
+Compound of five tetrahedra:
+
+![Imgur](https://i.imgur.com/1CBr78n.png)

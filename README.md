@@ -47,3 +47,5 @@ Great icosahedron:
 Compound of five tetrahedra:
 
 ![Imgur](https://i.imgur.com/1CBr78n.png)
+
+![Imgur](https://i.imgur.com/UA8C5Tx.gifv)

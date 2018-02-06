@@ -39,3 +39,7 @@ Mushroom:
 Horse saddle:
 
 ![Imgur](https://i.imgur.com/NubOxwK.png)
+
+Great icosahedron:
+
+![Imgur](https://i.imgur.com/pwbOR0H.png)

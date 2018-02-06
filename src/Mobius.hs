@@ -94,7 +94,7 @@ idle = postRedisplay Nothing
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Mobius strip"
+  _ <- createWindow "Möbius strip"
   windowSize $= Size 600 600
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   -- cullFace $= Just Back

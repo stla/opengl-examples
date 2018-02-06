@@ -18,6 +18,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     TruncatedCuboctahedron
                      , TruncatedCuboctahedron.Data
+                     , TruncatedCuboctahedron2
                      , Teapot.Data
                      , Teapot
                      , TeapotAnimation

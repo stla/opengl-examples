@@ -53,6 +53,8 @@ library
                      , TorusKnot
                      , Utils.SphereMesh
                      , SphereMesh
+                     , Utils.HorseSaddle
+                     , HorseSaddle
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -269,6 +271,18 @@ executable spheremesh
   hs-source-dirs:      src-exe
   main-is:             ExeSphereMesh.hs
   ghc-options:         -fllvm -main-is ExeSphereMesh
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable horsesaddle
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
+  hs-source-dirs:      src-exe
+  main-is:             ExeHorseSaddle.hs
+  ghc-options:         -fllvm -main-is ExeHorseSaddle
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010

@@ -19,7 +19,7 @@ green  = Color4 0   1   0   1
 yellow = Color4 1   1   0   1
 white  = Color4 1   1   1   1
 black  = Color4 0   0   0   1
-orange = Color4 1 0.5 0.2   1
+orange = Color4 1 0.5   0   1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> DisplayCallback

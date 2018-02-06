@@ -10,23 +10,26 @@ white = Color4 1   1   1   1
 black = Color4 0   0   0   1
 green = Color4 0   1   0   1
 
-vertices :: [Vertex3 GLfloat]
-vertices =
-  map (\x -> Vertex3 (cos (4*pi*x))
+vertices :: Int -> [Vertex3 GLfloat]
+vertices n =
+  map (\x -> Vertex3 (cos (n'*pi*x*2/100))
                      (4*x)
-                     (sin (4*pi*x)))
-      [i/200 | i <- [0 .. 200]]
+                     (sin (n'*pi*x*2/100)))
+      [intToF i / n' | i <- [0 .. n]]
+  where
+    intToF :: Int -> GLfloat
+    intToF = realToFrac
+    n' = intToF n
 
-helix :: [((Vertex3 GLfloat, Vertex3 GLfloat, Vertex3 GLfloat, Vertex3 GLfloat),
-            Normal3 GLfloat)]
-helix = prismaticPath' vertices 30 0.1 False
-
-display :: IORef GLfloat -> IORef GLfloat -> IORef GLdouble -> DisplayCallback
-display rot1 rot2 zoom = do
+display :: IORef GLfloat -> IORef GLfloat -> IORef GLdouble -> IORef Int
+        -> DisplayCallback
+display rot1 rot2 zoom m = do
   clear [ColorBuffer, DepthBuffer]
   r1 <- get rot1
   r2 <- get rot2
   z <- get zoom
+  n <- get m
+  let helix = prismaticPath' (vertices (max 0 n)) 30 0.1 False
   loadIdentity
   (_, size) <- get viewport
   resize z size
@@ -57,13 +60,15 @@ resize zoom s@(Size w h) = do
     h' = realToFrac h
 
 keyboardAndMouse :: IORef GLfloat -> IORef GLfloat -> IORef GLdouble
-                 -> KeyboardMouseCallback
-keyboardAndMouse rot1 rot2 zoom key keyState _ _ =
+                 -> IORef Int -> KeyboardMouseCallback
+keyboardAndMouse rot1 rot2 zoom m key keyState _ _ =
   case (key, keyState) of
     (Char 'j', _)                   -> rot1 $~! subtract 1
     (Char 'k', _)                   -> rot1 $~! (+1)
     (Char 'h', _)                   -> rot2 $~! subtract 1
     (Char 'l', _)                   -> rot2 $~! (+1)
+    (Char 'o', _)                   -> m $~! subtract 1
+    (Char 'p', _)                   -> m $~! (+1)
     (Char 'q', _)                   -> leaveMainLoop
     (MouseButton LeftButton, Down)  -> zoom $~! (+0.1)
     (MouseButton RightButton, Down) -> zoom $~! subtract 0.1
@@ -93,8 +98,9 @@ main = do
   rot1 <- newIORef 0.0
   rot2 <- newIORef 0.0
   zoom <- newIORef 0.0
-  displayCallback $= display rot1 rot2 zoom
+  n <- newIORef 200
+  displayCallback $= display rot1 rot2 zoom n
   reshapeCallback $= Just (resize 0)
-  keyboardMouseCallback $= Just (keyboardAndMouse rot1 rot2 zoom)
+  keyboardMouseCallback $= Just (keyboardAndMouse rot1 rot2 zoom n)
   idleCallback $= Just idle
   mainLoop

@@ -8,7 +8,7 @@ import           Utils.SphereMesh
 white,black,green :: Color4 GLfloat
 white = Color4 1   1   1   1
 black = Color4 0   0   0   1
-green = Color4 0   1   0   1
+green = Color4 0 (100/255) 0 1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLdouble -> IORef Int
         -> DisplayCallback
@@ -24,9 +24,11 @@ display rot1 rot2 zoom iter = do
   resize z size
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
-  renderPrimitive Triangles $ do
-    materialDiffuse Front $= green
-    mapM_ drawTriangle mesh
+  preservingMatrix $ do
+    scale 1 0.5 (0.5 :: GLdouble)
+    renderPrimitive Triangles $ do
+      materialDiffuse Front $= green
+      mapM_ drawTriangle mesh
   swapBuffers
   where
     drawTriangle ((v1,v2,v3),n) = do
@@ -74,6 +76,7 @@ main = do
   clearColor $= white
   materialAmbient Front $= Color4 0.5 0.5 0.5 1
   materialShininess Front $= 3
+--  colorMaterial $= Just (Front, Specular)
   lighting $= Enabled
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 (-50) 0 (-100) 1
@@ -82,7 +85,7 @@ main = do
   specular (Light 0) $= black
   depthFunc $= Just Lequal
   depthMask $= Enabled
-  shadeModel $= Smooth
+  shadeModel $= Flat
   rot1 <- newIORef 0.0
   rot2 <- newIORef 0.0
   zoom <- newIORef 0.0

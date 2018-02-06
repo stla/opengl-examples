@@ -1,10 +1,10 @@
 module Utils.SphereMesh
   (sphereMesh)
   where
-import           Data.Tuple.Extra             ((&&&), fst3)
+import           Data.Tuple.Extra             ((&&&))
 import           Graphics.Rendering.OpenGL.GL (Normal3 (..), Vertex3 (..))
 import           Linear                       (V3 (..), cross, signorm, (^+^),
-                                               (^-^), (^/), dot)
+                                               (^-^), (^/))
 
 type TriangleV3 = (V3 Double, V3 Double, V3 Double)
 type TriangleVx3 = (Vertex3 Double, Vertex3 Double, Vertex3 Double)

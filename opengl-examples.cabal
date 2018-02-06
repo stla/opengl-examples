@@ -55,11 +55,16 @@ library
                      , SphereMesh
                      , Utils.HorseSaddle
                      , HorseSaddle
+                     , HorseSaddle2
                      , GreatIcosahedron.Data
                      , GreatIcosahedron
                      , CompoundFiveTetrahedra.Data
                      , CompoundFiveTetrahedra
                      , CompoundFiveTetrahedra2
+                     , Head.Data
+                     , Head
+                     , SpaceShuttle.Data
+                     , SpaceShuttle
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -288,6 +293,18 @@ executable horsesaddle
   hs-source-dirs:      src-exe
   main-is:             ExeHorseSaddle.hs
   ghc-options:         -fllvm -main-is ExeHorseSaddle
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable horsesaddle2
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
+  hs-source-dirs:      src-exe
+  main-is:             ExeHorseSaddle2.hs
+  ghc-options:         -fllvm -main-is ExeHorseSaddle2
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010

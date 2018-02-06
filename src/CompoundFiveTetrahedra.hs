@@ -12,14 +12,14 @@ import           Utils.OpenGL                      (negateNormal,
                                                     triangleNormal)
 import           Utils.Prism
 
-blue,red,green,yellow,orange,white,black :: Color4 GLfloat
+blue,red,green,yellow,purple,white,black :: Color4 GLfloat
 blue   = Color4 0   0   1   1
 red    = Color4 1   0   0   1
 green  = Color4 0   1   0   1
 yellow = Color4 1   1   0   1
 white  = Color4 1   1   1   1
 black  = Color4 0   0   0   1
-orange = Color4 1 0.5   0   1
+purple = Color4 0.5 0   0.5 1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> DisplayCallback
@@ -39,17 +39,17 @@ display rot1 rot2 rot3 zoom = do
   drawTetrahedron red    tetra2
   drawTetrahedron green  tetra3
   drawTetrahedron yellow tetra4
-  drawTetrahedron orange tetra5
+  drawTetrahedron purple tetra5
   mapM_ (drawEdge blue)   (edges!!0)
   mapM_ (drawEdge red)    (edges!!1)
   mapM_ (drawEdge green)  (edges!!2)
   mapM_ (drawEdge yellow) (edges!!3)
-  mapM_ (drawEdge orange) (edges!!4)
+  mapM_ (drawEdge purple) (edges!!4)
   mapM_ (drawVertex blue)   vertices1
   mapM_ (drawVertex red)    vertices2
   mapM_ (drawVertex green)  vertices3
   mapM_ (drawVertex yellow) vertices4
-  mapM_ (drawVertex orange) vertices5
+  mapM_ (drawVertex purple) vertices5
   swapBuffers
 
 drawTetrahedron :: Color4 GLfloat -> [[Vertex3 GLfloat]] -> IO ()
@@ -131,7 +131,7 @@ idle = postRedisplay Nothing
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Great icosahedron"
+  _ <- createWindow "Five tetrahedra"
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= black
   materialAmbient Front $= black

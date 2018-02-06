@@ -1,4 +1,5 @@
 module Utils.PrismaticPath
+  (prismaticPath, prismaticPath')
   where
 import           Data.Tuple.Extra             ((&&&))
 import           Graphics.Rendering.OpenGL.GL (Normal3 (..), Vertex3 (..))
@@ -53,9 +54,13 @@ prismaticPath vs nsides radius close =
 prismaticPath' :: (Floating a, RealFloat a, Epsilon a, Conjugate a, Enum a)
       => [Vertex3 a] -> Int -> a -> Bool
       -> [((Vertex3 a, Vertex3 a, Vertex3 a, Vertex3 a), Normal3 a)]
-prismaticPath' vs nsides radius close =
+prismaticPath' vs' nsides radius close =
   concatMap fg [0 .. nsides-1]
   where
+    v0 = vx3toV3 $ last (init vs')
+    v1 = vx3toV3 $ last vs'
+    vend = v3toVx3 $ v1 ^+^ (v1 ^-^ v0)
+    vs = vs' ++ [vend]
     axes = zipWith vector (init vs) (tail vs)
     pts' = map (\j ->
                 map (\a -> rotation (axes!!j) a (n (vs!!j) (vs!!(j+1)) radius)

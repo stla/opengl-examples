@@ -9,8 +9,7 @@ import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Text.Printf
 import           Utils.ConvertPPM
-import           Utils.OpenGL                      (negateNormal,
-                                                    triangleNormal)
+import           Utils.OpenGL                      (negateNormal)
 import           Utils.Prism
 
 blue,red,green,yellow,purple,white,black :: Color4 GLfloat
@@ -121,7 +120,7 @@ idle angle = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Great icosahedron"
+  _ <- createWindow "Five tetrahedra"
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= black
   materialAmbient Front $= black

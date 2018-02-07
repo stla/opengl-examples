@@ -77,6 +77,8 @@ library
                      , Hosohedron
                      , CompoundFiveOctahedra
                      , CompoundFiveOctahedra.Data
+                     , Strange.Data
+                     , Strange
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

@@ -37,6 +37,7 @@ library
                      , Cylinder
                      , Tesseract
                      , Tesseract.Data
+                     , TesseractRotated
                      , Tesseract.Transformations4D
                      , Utils.Prism
                      , Prism
@@ -73,6 +74,8 @@ library
                      , Utils.SphereWedge
                      , SphereWedge
                      , Hosohedron
+                     , CompoundFiveOctahedra
+                     , CompoundFiveOctahedra.Data
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -182,6 +185,18 @@ executable tesseract
   hs-source-dirs:      src-exe
   main-is:             ExeTesseract.hs
   ghc-options:         -fllvm -main-is ExeTesseract
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable tesseractrotated
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
+  hs-source-dirs:      src-exe
+  main-is:             ExeTesseractRotated.hs
+  ghc-options:         -fllvm -main-is ExeTesseractRotated
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010
@@ -386,6 +401,18 @@ executable compoundtentetrahedra2
   hs-source-dirs:      src-exe
   main-is:             ExeCompoundTenTetrahedra2.hs
   ghc-options:         -fllvm -main-is ExeCompoundTenTetrahedra2
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable compoundfiveoctahedra
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
+  hs-source-dirs:      src-exe
+  main-is:             ExeCompoundFiveOctahedra.hs
+  ghc-options:         -fllvm -main-is ExeCompoundFiveOctahedra
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010

@@ -28,6 +28,8 @@ Projected tesseract:
 
 ![Imgur](https://i.imgur.com/l6QsZpA.png)
 
+![Imgur](https://i.imgur.com/V1TVgk6.gifv)
+
 Möbius strip:
 
 ![Imgur](https://i.imgur.com/l5ZOFkL.png)

@@ -4,6 +4,7 @@ import           Data.IORef
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Utils.PrismaticPath          (prismaticPath')
+import Utils.OpenGL
 
 white,black,green,red :: Color4 GLfloat
 white = Color4 1   1   1   1
@@ -13,8 +14,9 @@ red   = Color4 1   0   0   1
 
 
 vs :: [Vertex3 GLdouble]
-vs = [Vertex3 1 0 0, Vertex3 0.7 0.7 0, Vertex3 0 1 0, Vertex3 (-0.7) 0.7 0, Vertex3 (-1) 0 0]
-test = prismaticPath' vs 40 0.1 False
+--vs = [Vertex3 1 0 0, Vertex3 0.7 0.7 0] -- , Vertex3 0 1 0, Vertex3 (-0.7) 0.7 0, Vertex3 (-1) 0 0]
+vs = map (\a -> Vertex3 (cos a) (sin a) 0) [realToFrac i * 2 * pi/30 | i <- [0 .. 29]]
+test = prismaticPath' vs 3 0.1 True
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> DisplayCallback
@@ -38,7 +40,7 @@ display rot1 rot2 rot3 zoom = do
   where
     toVec (Vertex3 x y z) = Vector3 x y z
     drawQuad ((v1,v2,v3,v4),n) = do
-      normal n
+      normal $ negateNormal n
       vertex v1
       vertex v2
       vertex v3

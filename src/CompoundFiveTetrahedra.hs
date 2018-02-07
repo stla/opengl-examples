@@ -145,8 +145,6 @@ main = do
   depthFunc $= Just Lequal
   depthMask $= Enabled
   shadeModel $= Smooth
-  blend $= Enabled
-  blendFunc $= (SrcAlpha, OneMinusSrcAlpha)
   rot1 <- newIORef 0.0
   rot2 <- newIORef 0.0
   rot3 <- newIORef 0.0

@@ -1,25 +1,22 @@
-module CompoundFiveTetrahedra2
+module CompoundTenTetrahedra2
   where
-import           CompoundFiveTetrahedra.Data
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
+import           Data.List.Index                   (imapM_)
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
+import           CompoundTenTetrahedra.Data
 import           Text.Printf
+import           Utils.Colour
 import           Utils.ConvertPPM
 import           Utils.OpenGL                      (negateNormal)
 import           Utils.Prism
 
-blue,red,green,yellow,purple,white,black :: Color4 GLfloat
-blue   = Color4 0   0   1   1
-red    = Color4 1   0   0   1
-green  = Color4 0   1   0   1
-yellow = Color4 1   1   0   1
+white,black :: Color4 GLfloat
 white  = Color4 1   1   1   1
 black  = Color4 0   0   0   1
-purple = Color4 0.5 0   0.5 1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> IORef GLint -> IORef GLfloat -> DisplayCallback
@@ -38,16 +35,8 @@ display rot1 rot2 rot3 zoom capture angle = do
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  mapM_ (drawEdge blue)   (edges!!0)
-  mapM_ (drawEdge red)    (edges!!1)
-  mapM_ (drawEdge green)  (edges!!2)
-  mapM_ (drawEdge yellow) (edges!!3)
-  mapM_ (drawEdge purple) (edges!!4)
-  mapM_ (drawVertex blue)   vertices1
-  mapM_ (drawVertex red)    vertices2
-  mapM_ (drawVertex green)  vertices3
-  mapM_ (drawVertex yellow) vertices4
-  mapM_ (drawVertex purple) vertices5
+  imapM_ (\j x -> mapM_ (drawEdge j) x) edges
+  imapM_ (\j x -> mapM_ (drawVertex j) x) vertices'
   when (i > 0) $ do
     let ppm = printf "tetrahedra%04d.ppm" i
         png = printf "tetrahedra%04d.png" i
@@ -56,20 +45,20 @@ display rot1 rot2 rot3 zoom capture angle = do
     capture $~! (+1)
   swapBuffers
 
-drawVertex :: Color4 GLfloat -> Vertex3 GLfloat -> IO ()
-drawVertex col v =
+drawVertex :: Int -> Vertex3 GLfloat -> IO ()
+drawVertex i v =
   preservingMatrix $ do
     translate $ toVector v
-    materialDiffuse Front $= col
-    renderObject Solid $ Sphere' 0.03 30 30
+    materialDiffuse Front $= pickColor' i 0.5
+    renderObject Solid $ Sphere' 0.05 30 30
   where
     toVector (Vertex3 x y z) = Vector3 x y z
 
-drawEdge :: Color4 GLfloat -> (Vertex3 GLfloat, Vertex3 GLfloat) -> IO ()
-drawEdge col (v1,v2) = do
-  let cylinder = prism v1 v2 30 0.03
+drawEdge :: Int -> (Vertex3 GLfloat, Vertex3 GLfloat) -> IO ()
+drawEdge i (v1,v2) = do
+  let cylinder = prism v1 v2 30 0.05
   renderPrimitive Quads $ do
-    materialDiffuse Front $= col
+    materialDiffuse Front $= pickColor' i 1
     mapM_ drawQuad cylinder
   where
     drawQuad ((w1,w2,w3,w4),n) = do
@@ -120,7 +109,8 @@ idle angle = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Five tetrahedra"
+  _ <- createWindow "Ten tetrahedra"
+  windowSize $= Size 600 600
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= black
   materialAmbient Front $= black
@@ -134,6 +124,8 @@ main = do
   depthFunc $= Just Lequal
   depthMask $= Enabled
   shadeModel $= Smooth
+  blend $= Enabled
+  blendFunc $= (SrcAlpha, OneMinusSrcAlpha)
   rot1 <- newIORef 0.0
   rot2 <- newIORef 0.0
   rot3 <- newIORef 0.0

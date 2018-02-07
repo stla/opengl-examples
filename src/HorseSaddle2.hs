@@ -15,10 +15,6 @@ red   = Color4 1   0   0   1
 saddle = horseSaddle 30 30
 paths = concatMap (\vs -> prismaticPath' vs 3 0.005 False) (snd saddle)
 
--- vs :: [Vertex3 GLdouble]
--- vs = [Vertex3 1 0 0, Vertex3 0 1 0, Vertex3 (-1) 0 0, Vertex3 (-2) (-1) 0]
--- test = prismaticPath' vs 4 0.1 False
-
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> DisplayCallback
 display rot1 rot2 rot3 zoom = do
@@ -43,7 +39,6 @@ display rot1 rot2 rot3 zoom = do
     mapM_ drawQuad (fst saddle)
   swapBuffers
   where
-    toVec (Vertex3 x y z) = Vector3 x y z
     drawQuad ((v1,v2,v3,v4),n) = do
       normal n
       vertex v1

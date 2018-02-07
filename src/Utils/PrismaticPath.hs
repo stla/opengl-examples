@@ -60,7 +60,7 @@ prismaticPath' vs' nsides radius close =
     v0 = vx3toV3 $ last (init vs')
     v1 = vx3toV3 $ last vs'
     vend = v3toVx3 $ v1 ^+^ (v1 ^-^ v0)
-    vs = vs' ++ [vend]
+    vs = if close then vs' else vs' ++ [vend]
     axes = zipWith vector (init vs) (tail vs)
     pts' = map (\j ->
                 map (\a -> rotation (axes!!j) a (n (vs!!j) (vs!!(j+1)) radius)

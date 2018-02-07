@@ -44,8 +44,16 @@ Great icosahedron:
 
 ![Imgur](https://i.imgur.com/pwbOR0H.png)
 
+Great stellated dodecahedron:
+
+![Imgur](https://i.imgur.com/UkXXZaq.png)
+
 Compound of five tetrahedra:
 
 ![Imgur](https://i.imgur.com/1CBr78n.png)
 
 ![Imgur](https://i.imgur.com/UA8C5Tx.gifv)
+
+Hosohedron:
+
+![Imgur](https://i.imgur.com/LCObg9d.png)

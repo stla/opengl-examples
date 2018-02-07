@@ -68,6 +68,8 @@ library
                      , CompoundTenTetrahedra.Data
                      , CompoundTenTetrahedra
                      , CompoundTenTetrahedra2
+                     , GreatStellatedDodecahedron
+                     , GreatStellatedDodecahedron.Data
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -325,6 +327,18 @@ executable greaticosahedron
                      , opengl-examples
   default-language:    Haskell2010
 
+executable greatstellateddodecahedron
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
+  hs-source-dirs:      src-exe
+  main-is:             ExeGreatStellatedDodecahedron.hs
+  ghc-options:         -fllvm -main-is ExeGreatStellatedDodecahedron
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
 executable compoundfivetetrahedra
   if flag(exe)
     buildable: True
@@ -345,6 +359,18 @@ executable compoundfivetetrahedra2
   hs-source-dirs:      src-exe
   main-is:             ExeCompoundFiveTetrahedra2.hs
   ghc-options:         -fllvm -main-is ExeCompoundFiveTetrahedra2
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable compoundtentetrahedra
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
+  hs-source-dirs:      src-exe
+  main-is:             ExeCompoundTenTetrahedra.hs
+  ghc-options:         -fllvm -main-is ExeCompoundTenTetrahedra
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010

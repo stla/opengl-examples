@@ -30,6 +30,10 @@ Projected tesseract:
 
 ![Imgur](https://i.imgur.com/V1TVgk6.gifv)
 
+Truncated tesseract:
+
+![Imgur](https://i.imgur.com/gYXAvT9.gifv)
+
 Möbius strip:
 
 ![Imgur](https://i.imgur.com/l5ZOFkL.png)

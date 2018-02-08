@@ -57,7 +57,8 @@ rotateSN :: Double -> (Segment, Normal) -> (Segment, Normal)
 rotateSN a ((v1,v2),n) =
   ((rotatey a v1, rotatey a v2), rotatey a n)
 
-_torus' :: Double -> Double -> Int -> Int -> [((Rectangle, Normal), [(Segment, Normal)])]
+_torus' :: Double -> Double -> Int -> Int
+        -> [((Rectangle, Normal), [(Segment, Normal)])]
 _torus' holeRadius tubeRadius nradial ntubular =
   zip rns snss
   where
@@ -80,7 +81,8 @@ _torus' holeRadius tubeRadius nradial ntubular =
                   [intToDbl i * theta | i <- [1 .. nradial-1]]
 
 torus' :: Double -> Double -> Int -> Int
-       -> [(((Vx3d, Vx3d, Vx3d, Vx3d), Normal3 Double), [((Vx3d, Vx3d), Normal3 Double)])]
+       -> [(((Vx3d, Vx3d, Vx3d, Vx3d), Normal3 Double),
+            [((Vx3d, Vx3d), Normal3 Double)])]
 torus' hr tr n1 n2 = map f (_torus' hr tr n1 n2)
   where
     f (((v1, v2, v3, v4), n), l) =

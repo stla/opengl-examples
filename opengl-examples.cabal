@@ -81,6 +81,8 @@ library
                      , Strange
                      , TruncatedTesseract.Data
                      , TruncatedTesseract
+                     , RectifiedTesseract.Data
+                     , RectifiedTesseract
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -214,6 +216,18 @@ executable truncatedtesseract
   hs-source-dirs:      src-exe
   main-is:             ExeTruncatedTesseract.hs
   ghc-options:         -fllvm -main-is ExeTruncatedTesseract
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable rectifiedtesseract
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
+  hs-source-dirs:      src-exe
+  main-is:             ExeRectifiedTesseract.hs
+  ghc-options:         -fllvm -main-is ExeRectifiedTesseract
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010

@@ -1,10 +1,10 @@
-module TruncatedTesseract
+module CantellatedTesseract
   where
 import           Data.IORef
 import           Data.Tuple.Extra                  (both)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
-import           TruncatedTesseract.Data
+import           CantellatedTesseract.Data
 import           Tesseract.Transformations4D
 import           Utils.OpenGL                      (triangleNormal)
 import           Utils.Prism
@@ -12,41 +12,41 @@ import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Text.Printf
 import           Utils.ConvertPPM
 import qualified Data.ByteString                   as B
+import           Utils.Colour
+import           Data.List.Index                   (imapM_)
 
 white,black,grey,whitesmoke,red :: Color4 GLfloat
 white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
 grey       = Color4  0.8  0.8  0.8  0.5
 whitesmoke = Color4 0.96 0.96 0.96    1
-red        = Color4    1    0    0  0.5
+red        = Color4    1    0    0    1
 
 display :: IORef GLdouble -> DisplayCallback
 display angle = do
   clear [ColorBuffer, DepthBuffer]
   alpha <- get angle
-  let points  = map (rotate4D 0.0 0.0 (alpha * pi / 180)) ttesseractVertices
+  let points  = map (rotate4D (pi/2) 0.0 (- alpha * pi / 180)) ctesseractVertices
       ppoints = map project4D points
       vectors = map toVector3 ppoints
-      edges   = map (both (toVertex3 . (!!) ppoints)) ttesseractEdges
-      ridges  = map (map (toVertex3 . (!!) ppoints)) ttesseractFacet
-      tetrahedra = map (map (toVertex3 . (!!) ppoints)) tetrahedralFacets
+      edges   = map (both (toVertex3 . (!!) ppoints)) ctesseractEdges
+      ridges  = map (map (toVertex3 . (!!) ppoints)) ctesseractRidges
   loadIdentity
   mapM_ (\vec -> preservingMatrix $ do
                   translate vec
                   materialDiffuse Front $= whitesmoke
-                  renderObject Solid $ Sphere' 0.1 30 30)
+                  renderObject Solid $ Sphere' 0.2 30 30)
         vectors
-  mapM_ (drawCylinder 0.05) edges
---  mapM_ (renderPrimitive Polygon . drawRidge) ridges
-  mapM_ (renderPrimitive Triangles . drawTetrahedron) tetrahedra
+  mapM_ (drawCylinder 0.1) edges
+  imapM_ (\i r -> renderPrimitive Polygon $ drawRidge i r) ridges
   swapBuffers
   where
     toVector3 x = Vector3 (x!!0) (x!!1) (x!!2)
     toVertex3 x = Vertex3 (x!!0) (x!!1) (x!!2)
 
-drawRidge :: [Vertex3 GLdouble] -> IO ()
-drawRidge vs = do
-  materialDiffuse FrontAndBack $= grey
+drawRidge :: Int -> [Vertex3 GLdouble] -> IO ()
+drawRidge i vs = do
+  materialDiffuse FrontAndBack $= pickColor i
   normal (triangleNormal (vs!!0, vs!!1, vs!!2))
   mapM_ vertex vs
 
@@ -64,25 +64,13 @@ drawCylinder radius (v1,v2) = do
       vertex w3
       vertex w4
 
-drawTetrahedron :: [Vertex3 GLdouble] -> IO ()
-drawTetrahedron vs = do
-  materialDiffuse FrontAndBack $= red
-  normal (triangleNormal (vs!!0, vs!!1, vs!!2))
-  mapM_ vertex [vs!!i | i <- [0,1,2]]
-  normal (triangleNormal (vs!!0, vs!!1, vs!!3))
-  mapM_ vertex [vs!!i | i <- [0,1,3]]
-  normal (triangleNormal (vs!!0, vs!!2, vs!!3))
-  mapM_ vertex [vs!!i | i <- [0,2,3]]
-  normal (triangleNormal (vs!!1, vs!!2, vs!!3))
-  mapM_ vertex [vs!!i | i <- [1,2,3]]
-
 resize :: Size -> IO ()
 resize s@(Size w h) = do
   viewport $= (Position 0 0, s)
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 (-8) 6 (-12)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-27)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -110,17 +98,17 @@ idle = postRedisplay Nothing
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Truncated tesseract"
+  _ <- createWindow "Rectified tesseract"
   windowSize $= Size 600 600
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
-  clearColor $= black
+  clearColor $= white
   materialAmbient FrontAndBack $= black
   materialShininess FrontAndBack $= 50
   lighting $= Enabled
   light (Light 0) $= Enabled
-  position (Light 0) $= Vertex4 (-6) 6 (-12) 1
+  position (Light 0) $= Vertex4 (-4) 4 (-10) 1
   lightModelTwoSide $= Enabled
-  ambient (Light 0) $= white
+  ambient (Light 0) $= black
   diffuse (Light 0) $= white
   specular (Light 0) $= white
   depthFunc $= Just Lequal

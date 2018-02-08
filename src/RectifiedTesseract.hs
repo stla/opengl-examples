@@ -112,7 +112,7 @@ idle = postRedisplay Nothing
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Tesseract"
+  _ <- createWindow "Rectified tesseract"
   windowSize $= Size 600 600
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= white

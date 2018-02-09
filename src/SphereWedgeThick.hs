@@ -5,7 +5,7 @@ import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Utils.SphereWedgeThick
 
-white,black,green :: Color4 GLfloat
+white,black,green,red,blue :: Color4 GLfloat
 white = Color4 1   1   1   1
 black = Color4 0   0   0   1
 green = Color4 0 (100/255) 0 1

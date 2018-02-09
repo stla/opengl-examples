@@ -32,7 +32,7 @@ Projected tesseract:
 
 Truncated tesseract:
 
-![imgbox](http://imgbox.com/gVcREzCm)
+![cubeupload](http://i.cubeupload.com/BIESi1.gif)
 
 Möbius strip:
 

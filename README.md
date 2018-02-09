@@ -31,10 +31,9 @@ Projected tesseract:
 ![giphy](https://media.giphy.com/media/xUOwGeoczBkcHsVOvu/giphy.gif)
 
 Truncated tesseract:
-
-![cubeupload](http://i.cubeupload.com/BIESi1.gif)
-
+<!-- ![cubeupload](http://i.cubeupload.com/BIESi1.gif) -->
 <!-- ![makeagif](https://i.makeagif.com/media/2-09-2018/iDOwcX.gif) -->
+[![RO9ru.gif](https://pli.io/RO9ru.gif)](https://photoland.io/i/RO9ru)
 
 Möbius strip:
 

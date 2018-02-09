@@ -40,7 +40,7 @@ Möbius strip:
 
 Möbius strip with more twists and colors:
 
-[Imgur](https://i.imgur.com/ccln1Ln.png)
+![Imgur](https://i.imgur.com/ccln1Ln.png)
 
 Mushroom:
 

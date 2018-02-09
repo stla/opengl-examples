@@ -1,4 +1,4 @@
-module ExeSphereMesh where
-import qualified SphereMesh as S
+module ExeSphereWedgeThick where
+import qualified SphereWedgeThick as S
 
 main = S.main

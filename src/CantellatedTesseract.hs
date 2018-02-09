@@ -70,7 +70,7 @@ resize s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-27)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 10 0 (-27)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -98,7 +98,7 @@ idle = postRedisplay Nothing
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Rectified tesseract"
+  _ <- createWindow "Cantellated tesseract"
   windowSize $= Size 600 600
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= white
@@ -106,7 +106,7 @@ main = do
   materialShininess FrontAndBack $= 50
   lighting $= Enabled
   light (Light 0) $= Enabled
-  position (Light 0) $= Vertex4 (-4) 4 (-10) 1
+  position (Light 0) $= Vertex4 20 0 (-40) 1
   lightModelTwoSide $= Enabled
   ambient (Light 0) $= black
   diffuse (Light 0) $= white

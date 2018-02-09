@@ -63,3 +63,7 @@ Compound of five tetrahedra:
 Hosohedron:
 
 ![Imgur](https://i.imgur.com/LCObg9d.png)
+
+Thick sphere wedge:
+
+![Imgur](https://i.imgur.com/FYM0Dfj.png)

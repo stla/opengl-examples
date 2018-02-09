@@ -64,11 +64,11 @@ keyboardAndMouse rot1 rot2 rot3 p q zoom key keyState _ _ =
     (Char 'f', _)                   -> rot2 $~! (+1)
     (Char 'c', _)                   -> rot3 $~! subtract 1
     (Char 'v', _)                   -> rot3 $~! (+1)
-    (Char 'o', _)                   -> p $~! subtract 1
-    (Char 'p', _)                   -> p $~! (+1)
-    (Char 'l', _)                   -> q $~! subtract 1
-    (Char 'm', _)                   -> q $~! (+1)
-    (Char 'q', _)                   -> leaveMainLoop
+    (Char 'o', Down)                -> p $~! subtract 1
+    (Char 'p', Down)                -> p $~! (+1)
+    (Char 'l', Down)                -> q $~! subtract 1
+    (Char 'm', Down)                -> q $~! (+1)
+    (Char 'q', Down)                -> leaveMainLoop
     (MouseButton LeftButton, Down)  -> zoom $~! (+0.1)
     (MouseButton RightButton, Down) -> zoom $~! subtract 0.1
     _                               -> return ()

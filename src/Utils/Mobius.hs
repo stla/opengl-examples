@@ -77,16 +77,16 @@ mobiusStrip' n c w k = map f (mobiusStrip_' n c w k)
     v3toN :: V3 a -> Normal3 a
     v3toN (V3 x y z) = Normal3 x y z
 
-mobiusCurve' :: Int -> Double -> Double -> Double -> [Vx3d]
+mobiusCurve' :: Int -> Double -> Double -> Double -> ([Vx3d], [Vx3d])
 mobiusCurve' n c w k =
-  c1 -- ++ c2
+  (c1, c2)
   where
-    t_ = [intToDbl i / intToDbl n | i <- [-2*n .. 2*n]]
+    t_ = [intToDbl i / intToDbl n | i <- [0 .. 2*n]]
     r1_ = map (\t -> (1-w) - w*sin(k*pi*t/2)) t_
-    -- r2_ = map (\t -> (1-w) + w*sin(k*pi*t/2)) t_
+    r2_ = map (\t -> (1-w) + w*sin(k*pi*t/2)) t_
     c1 = zipWith (\r t -> Vertex3 (r * sin(c*pi*t) / c)
                                   (r * (1-(1-cos(c*pi*t)) / c))
                                   (-w * cos(k*pi*t/2))) r1_ t_
-    -- c2 = zipWith (\r t -> Vertex3 (r * sin(c*pi*t) / c)
-    --                               (r * (1-(1-cos(c*pi*t)) / c))
-    --                               (w * cos(k*pi*t/2))) r2_ t_
+    c2 = zipWith (\r t -> Vertex3 (r * sin(c*pi*t) / c)
+                                  (r * (1-(1-cos(c*pi*t)) / c))
+                                  (w * cos(k*pi*t/2))) r2_ t_

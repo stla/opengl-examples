@@ -28,11 +28,11 @@ Projected tesseract:
 
 ![Imgur](https://i.imgur.com/l6QsZpA.png)
 
-![Imgur](https://i.imgur.com/V1TVgk6.gifv)
+![giphy](https://media.giphy.com/media/xUOwGeoczBkcHsVOvu/giphy.gif)
 
 Truncated tesseract:
 
-![Imgur](https://i.imgur.com/gYXAvT9.gifv)
+![giphy](https://media.giphy.com/media/l4pTiK1Nbj1IDdh60/giphy.gif)
 
 Möbius strip:
 

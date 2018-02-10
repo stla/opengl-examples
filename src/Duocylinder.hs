@@ -26,11 +26,11 @@ display :: IORef GLdouble -> DisplayCallback
 display angle = do
   clear [ColorBuffer, DepthBuffer]
   alpha <- get angle
-  let points  = map (rotate4D (pi/2) 0 (alpha * pi / 180)) dcVertices
+  let points  = map (rotate4D 0 0 (alpha * pi / 180)) dcVertices
       ppoints = map project4D points
       vectors = map toVector3 ppoints
       edges   = map (both (toVertex3 . (!!) ppoints)) dcEdges
-      facets  = map (map (map (toVertex3 . (!!) ppoints))) dcFacets
+      facets  = take 1 $ map (map (map (toVertex3 . (!!) ppoints))) dcFacets
   loadIdentity
   mapM_ (\vec -> preservingMatrix $ do
                   translate vec
@@ -46,9 +46,7 @@ display angle = do
 
 drawRidge :: Int -> [Vertex3 GLdouble] -> IO ()
 drawRidge i vs = do
-  if length vs == 30
-    then materialDiffuse FrontAndBack $= grey
-    else materialDiffuse FrontAndBack $= Color4 0 0 0 0
+  materialDiffuse FrontAndBack $= grey
   normal (triangleNormal (vs!!0, vs!!1, vs!!2))
   mapM_ vertex vs
 
@@ -73,7 +71,7 @@ resize s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 (-6) 6 (-12)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 (-31) 31 (-62)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w

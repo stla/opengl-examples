@@ -1,8 +1,9 @@
 module Utils.Mobius
-  (mobiusStrip, mobiusCurve, mobiusStrip', mobiusCurve')
+  (mobiusStrip, mobiusCurve, mobiusStrip', mobiusCurve', mobiusStrip'')
   where
+import           Data.Tuple.Extra             ((&&&))
 import           Graphics.Rendering.OpenGL.GL (Normal3 (..), Vertex3 (..))
-import           Linear                       (V3 (..), signorm, cross, (^-^))
+import           Linear                       (V3 (..), cross, signorm, (^-^))
 
 type Rectangle = (V3 Double, V3 Double, V3 Double, V3 Double)
 type Normal = V3 Double
@@ -67,7 +68,8 @@ mobiusStrip_' n c w k =
     normals = map (\i -> normal (c1!!i) (c2!!i) (c2!!(i+1))) [0 .. 4*n-1]
     normal v1 v2 v3 = signorm $ cross (v2^-^v1) (v3^-^v1)
 
-mobiusStrip' :: Int -> Double -> Double -> Double -> [((Vx3d, Vx3d, Vx3d, Vx3d), Normal3 Double)]
+mobiusStrip' :: Int -> Double -> Double -> Double
+             -> [((Vx3d, Vx3d, Vx3d, Vx3d), Normal3 Double)]
 mobiusStrip' n c w k = map f (mobiusStrip_' n c w k)
   where
     f ((v1, v2, v3, v4), nrml) =
@@ -90,3 +92,35 @@ mobiusCurve' n c w k =
     c2 = zipWith (\r t -> Vertex3 (r * sin(c*pi*t) / c)
                                   (r * (1-(1-cos(c*pi*t)) / c))
                                   (w * cos(k*pi*t/2))) r2_ t_
+
+mobiusStrip_'' :: Int -> Int -> Double -> Double -> Double
+               -> [(Rectangle, Normal)]
+mobiusStrip_'' m n c w k = concat nrectgles
+  where
+  s_ = [intToDbl i / intToDbl m | i <- [-m .. m]]
+  t_ = [intToDbl i / intToDbl n | i <- [-2*n .. 2*n]]
+  curves = map (\s -> map (f s) t_) s_
+    where
+    f s t = let r = (1-w) + s*w*sin(k*pi*t/2) in
+            V3 (r * sin(c*pi*t) / c)
+               (r * (1-(1-cos(c*pi*t)) / c))
+               (s * w * cos(k*pi*t/2))
+  nrectgles = zipWith rn (init curves) (tail curves)
+    where
+    rn c1 c2 = map (rctgle &&& nrml) [0 .. 4*n-1]
+      where
+      rctgle i = (c1!!i, c2!!i, c2!!(i+1), c1!!(i+1))
+      nrml i = normal (c1!!i) (c2!!i) (c2!!(i+1))
+        where
+        normal v1 v2 v3 = signorm $ cross (v2^-^v1) (v3^-^v1)
+
+mobiusStrip'' :: Int -> Int -> Double -> Double -> Double
+              -> [((Vx3d, Vx3d, Vx3d, Vx3d), Normal3 Double)]
+mobiusStrip'' m n c w k = map f (mobiusStrip_'' m n c w k)
+  where
+    f ((v1, v2, v3, v4), nrml) =
+      ((v3toVx3 v1, v3toVx3 v2, v3toVx3 v3, v3toVx3 v4), v3toN nrml)
+    v3toVx3 :: V3 a -> Vertex3 a
+    v3toVx3 (V3 x y z) = Vertex3 x y z
+    v3toN :: V3 a -> Normal3 a
+    v3toN (V3 x y z) = Normal3 x y z

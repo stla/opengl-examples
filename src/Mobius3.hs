@@ -7,13 +7,13 @@ import           Utils.Mobius                 (mobiusStrip'', mobiusCurve')
 import           Utils.PrismaticPath          (prismaticPath')
 import           Utils.Colour                 (interpolateColor)
 
-white,black,pink :: Color4 GLfloat
+white,black,gold :: Color4 GLfloat
 white  = Color4 1    1    1    1
 black  = Color4 0    0    0    1
-pink   = Color4 1    0.41 0.71 1
+gold   = Color4 1    0.84 0    1
 
 vertexColor :: Vertex3 Double -> Color4 GLfloat
-vertexColor v = interpolateColor (0,0,1) (1,1,0) (1,0,0) (zcoord v)
+vertexColor v = interpolateColor (0,1,0) (0,0,1) (1,0,0) (zcoord v)
   where
     zcoord (Vertex3 _ _ z) = realToFrac ((z+0.25)/0.5)
 
@@ -38,7 +38,7 @@ display rot1 rot2 rot3 zoom twists = do
   rotate r3 $ Vector3 0 0 1
   renderPrimitive Quads $ mapM_ drawQuad strip
   renderPrimitive Quads $ do
-    materialDiffuse Front $= pink
+    materialDiffuse Front $= gold
     mapM_ drawQuad' border1
     mapM_ drawQuad' border2
   swapBuffers

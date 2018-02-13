@@ -1,6 +1,6 @@
-module CGAL02
+module CGAL03
   where
-import           CGAL.CGAL02
+import           CGAL.CGAL03
 import qualified Data.ByteString                   as B
 import           Data.IORef
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
@@ -36,8 +36,7 @@ display rot1 rot2 rot3 zoom = do
                   materialDiffuse Front $= sienna
                   renderObject Solid $ Sphere' 0.1 50 50)
         vertices
-  mapM_ (renderPrimitive Polygon . drawPolygon) (take 6 polygons)
-  mapM_ (renderPrimitive Polygon . drawPolygon') (drop 6 polygons)
+  mapM_ (renderPrimitive Polygon . drawPolygon) polygons
   swapBuffers
   where
     toVec (Vertex3 x y z) = Vector3 x y z
@@ -45,12 +44,6 @@ display rot1 rot2 rot3 zoom = do
 drawPolygon :: [Vertex3 GLfloat] -> IO ()
 drawPolygon xs = do
   materialDiffuse FrontAndBack $= red
-  normal (triangleNormal (xs!!0, xs!!1, xs!!2))
-  mapM_ vertex xs
-
-drawPolygon' :: [Vertex3 GLfloat] -> IO ()
-drawPolygon' xs = do
-  materialDiffuse FrontAndBack $= green
   normal (triangleNormal (xs!!0, xs!!1, xs!!2))
   mapM_ vertex xs
 

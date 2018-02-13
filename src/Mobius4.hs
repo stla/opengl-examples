@@ -1,10 +1,10 @@
-module Mobius3
+module Mobius4
   where
 import           Data.IORef
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Utils.Colour                 (interpolateColor)
-import           Utils.Mobius                 (mobiusCurve', mobiusStrip'')
+import           Utils.Mobius                 (mobiusCurve', mobiusStrip''')
 import           Utils.PrismaticPath          (prismaticPath')
 
 white,black,gold :: Color4 GLfloat
@@ -26,7 +26,7 @@ display rot1 rot2 rot3 zoom twists = do
   r3 <- get rot3
   z <- get zoom
   k <- get twists
-  let strip = mobiusStrip'' 20 180 1 0.25 k
+  let strip = mobiusStrip''' 180 1 0.25 k
       (curve1, curve2) = mobiusCurve' 200 1 0.25 k
       border1 = prismaticPath' curve1 30 0.025 False
       border2 = prismaticPath' curve2 30 0.025 False
@@ -36,23 +36,21 @@ display rot1 rot2 rot3 zoom twists = do
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  renderPrimitive Quads $ mapM_ drawQuad strip
+  renderPrimitive Triangles $ mapM_ drawTriangle strip
   renderPrimitive Quads $ do
     materialDiffuse Front $= gold
     mapM_ drawQuad' border1
     mapM_ drawQuad' border2
   swapBuffers
   where
-    drawQuad ((v1,v2,v3,v4),n) = do
+    drawTriangle ((v1,v2,v3),n) = do
       normal n
-      materialDiffuse FrontAndBack $= vertexColor v1
+      materialDiffuse Front $= vertexColor v1
       vertex v1
-      materialDiffuse FrontAndBack $= vertexColor v2
+      materialDiffuse Front $= vertexColor v2
       vertex v2
-      materialDiffuse FrontAndBack $= vertexColor v3
+      materialDiffuse Front $= vertexColor v3
       vertex v3
-      materialDiffuse FrontAndBack $= vertexColor v4
-      vertex v4
     drawQuad' ((v1,v2,v3,v4),n) = do
       normal n
       vertex v4
@@ -100,8 +98,6 @@ main = do
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= Color4 1 1 1 0
   lighting $= Enabled
-  lightModelLocalViewer $= Disabled
-  lightModelAmbient $= Color4 0.4 0.4 0.4 1
   lightModelTwoSide $= Enabled
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 0 (-60) (-60) 0

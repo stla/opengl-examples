@@ -1,5 +1,6 @@
 module Utils.Mobius
-  (mobiusStrip, mobiusCurve, mobiusStrip', mobiusCurve', mobiusStrip'')
+  (mobiusStrip, mobiusCurve, mobiusStrip', mobiusCurve', mobiusStrip'',
+   mobiusStrip''')
   where
 import           Data.Tuple.Extra             ((&&&))
 import           Graphics.Rendering.OpenGL.GL (Normal3 (..), Vertex3 (..))
@@ -52,8 +53,7 @@ mobiusCurve hwidth radius n =
 
 -- | https://blogs.mathworks.com/cleve/2016/04/25/further-twists-of-the-moebius-strip/
 mobiusStrip_' :: Int -> Double -> Double -> Double -> [(Rectangle, Normal)]
-mobiusStrip_' n c w k =
-  zip rectangles normals
+mobiusStrip_' n c w k = zip rectangles normals
   where
     t_ = [intToDbl i / intToDbl n | i <- [-2*n .. 2*n]]
     r1_ = map (\t -> (1-w) - w*sin(k*pi*t/2)) t_
@@ -80,8 +80,7 @@ mobiusStrip' n c w k = map f (mobiusStrip_' n c w k)
     v3toN (V3 x y z) = Normal3 x y z
 
 mobiusCurve' :: Int -> Double -> Double -> Double -> ([Vx3d], [Vx3d])
-mobiusCurve' n c w k =
-  (c1, c2)
+mobiusCurve' n c w k = (c1, c2)
   where
     t_ = [intToDbl i / intToDbl n | i <- [0 .. 2*n]]
     r1_ = map (\t -> (1-w) - w*sin(k*pi*t/2)) t_
@@ -120,6 +119,36 @@ mobiusStrip'' m n c w k = map f (mobiusStrip_'' m n c w k)
   where
     f ((v1, v2, v3, v4), nrml) =
       ((v3toVx3 v1, v3toVx3 v2, v3toVx3 v3, v3toVx3 v4), v3toN nrml)
+    v3toVx3 :: V3 a -> Vertex3 a
+    v3toVx3 (V3 x y z) = Vertex3 x y z
+    v3toN :: V3 a -> Normal3 a
+    v3toN (V3 x y z) = Normal3 x y z
+
+mobiusStrip_''' :: Int -> Double -> Double -> Double
+                -> [((V3 Double,V3 Double,V3 Double), Normal)]
+mobiusStrip_''' n c w k = zip triangles normals
+  where
+  t_ = [intToDbl i / intToDbl n | i <- [-2*n .. 2*n]]
+  r1_ = map (\t -> (1-w) - w*sin(k*pi*t/2)) t_
+  r2_ = map (\t -> (1-w) + w*sin(k*pi*t/2)) t_
+  c1 = zipWith (\r t -> V3 (r * sin(c*pi*t) / c)
+                           (r * (1-(1-cos(c*pi*t)) / c))
+                           (-w * cos(k*pi*t/2))) r1_ t_
+  c2 = zipWith (\r t -> V3 (r * sin(c*pi*t) / c)
+                           (r * (1-(1-cos(c*pi*t)) / c))
+                           (w * cos(k*pi*t/2))) r2_ t_
+  triangles = concatMap duotr [0 .. 4*n-1]
+    where
+    duotr i = [(c1!!i, c2!!i, c2!!(i+1)), (c1!!i, c2!!(i+1), c1!!(i+1))]
+  normals = map normal triangles
+    where
+    normal (v1,v2,v3) = signorm $ cross (v2^-^v1) (v3^-^v1)
+
+mobiusStrip''' :: Int -> Double -> Double -> Double
+               -> [((Vx3d, Vx3d, Vx3d), Normal3 Double)]
+mobiusStrip''' n c w k = map f (mobiusStrip_''' n c w k)
+  where
+    f ((v1, v2, v3), nrml) = ((v3toVx3 v1, v3toVx3 v2, v3toVx3 v3), v3toN nrml)
     v3toVx3 :: V3 a -> Vertex3 a
     v3toVx3 (V3 x y z) = Vertex3 x y z
     v3toN :: V3 a -> Normal3 a

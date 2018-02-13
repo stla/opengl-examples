@@ -57,8 +57,8 @@ keyboardAndMouse rot1 rot2 zoom iter key keyState _ _ =
     (Char 'k', _)                   -> rot1 $~! (+1)
     (Char 'h', _)                   -> rot2 $~! subtract 1
     (Char 'l', _)                   -> rot2 $~! (+1)
-    (Char 'o', _)                   -> iter $~! subtract 1
-    (Char 'p', _)                   -> iter $~! (+1)
+    (Char 'o', Down)                -> iter $~! subtract 1
+    (Char 'p', Down)                -> iter $~! (+1)
     (Char 'q', _)                   -> leaveMainLoop
     (MouseButton LeftButton, Down)  -> zoom $~! (+0.1)
     (MouseButton RightButton, Down) -> zoom $~! subtract 0.1

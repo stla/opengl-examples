@@ -26,11 +26,11 @@ display :: IORef GLdouble -> DisplayCallback
 display angle = do
   clear [ColorBuffer, DepthBuffer]
   alpha <- get angle
-  let points  = map (rotate4D 0 0 (alpha * pi / 180)) dcVertices
+  let points  = map (simpleRotation (alpha * pi / 180)) dcVertices
       ppoints = map project4D points
       vectors = map toVector3 ppoints
       edges   = map (both (toVertex3 . (!!) ppoints)) dcEdges
-      facets  = take 1 $ map (map (map (toVertex3 . (!!) ppoints))) dcFacets
+      facets  = take 5 $ map (map (map (toVertex3 . (!!) ppoints))) dcFacets
   loadIdentity
   mapM_ (\vec -> preservingMatrix $ do
                   translate vec
@@ -71,7 +71,7 @@ resize s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 (-31) 31 (-62)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 (-11) 11 (-22)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w

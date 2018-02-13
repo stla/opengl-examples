@@ -73,3 +73,7 @@ Hosohedron:
 Thick sphere wedge:
 
 ![Imgur](https://i.imgur.com/FYM0Dfj.png)
+
+Spherical triangles:
+
+![Imgur](https://i.imgur.com/m4Vjpdo.png)

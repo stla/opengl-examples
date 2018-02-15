@@ -1,7 +1,9 @@
-module NonconvexPolyhedron.Data
+module NonconvexPolyhedron.Data2
   where
 import           Graphics.Rendering.OpenGL.GL (GLdouble, Vertex3 (..))
 import           Utils.TetrahedronFaces
+import           Linear (V3 (..), cross, (^-^), norm)
+import           Data.List
 
 vertices :: [[Double]]
 vertices =  [ [ -x , -x , -x ] -- 0
@@ -40,3 +42,20 @@ tetrahedraFaces :: [[[Vertex3 GLdouble]]]
 tetrahedraFaces = map (map (\idxs -> [toVertex3 (vertices!!i) | i <- idxs])) tetrahedraFacesIdxs
   where
     toVertex3 x = Vertex3 (x!!0) (x!!1) (x!!2)
+
+tetrahedraFaces' :: [[[V3 Double]]]
+tetrahedraFaces' = map (map (map vx3ToV3)) tetrahedraFaces
+  where
+    vx3ToV3 (Vertex3 x y z) = V3 x y z
+
+triangleArea :: [V3 Double] -> Double
+triangleArea vs = norm $ cross (vs!!1 ^-^ vs!!0) (vs!!2 ^-^ vs!!0)
+
+tetrahedraFaces'' :: [[[Vertex3 Double]]]
+tetrahedraFaces'' = map tail tetrahedraFaces
+
+tetrahedraFacesIdxs' :: [[[Int]]]
+tetrahedraFacesIdxs' = map tail tetrahedraFacesIdxs
+
+allFaces :: [[Int]]
+allFaces = concat tetrahedraFacesIdxs'

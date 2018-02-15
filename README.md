@@ -76,4 +76,4 @@ Thick sphere wedge:
 
 Spherical triangles:
 
-![Imgur](https://i.imgur.com/m4Vjpdo.png)
+![Imgur](https://i.imgur.com/rI7ZMgg.png)

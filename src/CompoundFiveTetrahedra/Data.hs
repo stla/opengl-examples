@@ -4,6 +4,7 @@ import           Data.List
 import           Data.Tuple.Extra             (both)
 import           Graphics.Rendering.OpenGL.GL (GLfloat, Vertex3 (..))
 
+
 vertices :: [Vertex3 GLfloat]
 vertices =
   map toVertex3 [ [0.5773500, 0.5773500, 0.5773500], -- 1/sqrt(3)

@@ -2,17 +2,15 @@ module NonconvexPolyhedron
   where
 import qualified Data.ByteString                   as B
 import           Data.IORef
+import           Data.List.Index                   (imapM_)
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
-import           NonconvexPolyhedron.Data
+import           NonconvexPolyhedron.Data2
 import           Text.Printf
+import           Utils.Colour
 import           Utils.ConvertPPM
-import           Utils.OpenGL                      (negateNormal,
-                                                    triangleNormal)
-import           Utils.Prism
-import Utils.Colour
-import Data.List.Index (imapM_)
+import           Utils.OpenGL                      (triangleNormal)
 
 grey1,grey9,purple,white,black,gold :: Color4 GLfloat
 grey1  = Color4 0.1 0.1 0.1 1
@@ -36,7 +34,7 @@ display rot1 rot2 rot3 zoom = do
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  imapM_ drawTetrahedron tetrahedraFaces
+  imapM_ drawTetrahedron tetrahedraFaces''
   -- mapM_ drawEdge edges
   -- renderPrimitive Triangles $ do
   --   materialDiffuse Front $= purple
@@ -51,10 +49,10 @@ drawTetrahedron i face =
     mapM_ drawTriangle face
     where
       drawTriangle vs = do
-      normal $ triangleNormal (vs!!0, vs!!1, vs!!2)
-      vertex (vs!!0)
-      vertex (vs!!1)
-      vertex (vs!!2)
+        normal $ triangleNormal (vs!!0, vs!!1, vs!!2)
+        vertex (vs!!0)
+        vertex (vs!!1)
+        vertex (vs!!2)
 
 -- drawEdge :: (Vertex3 GLfloat, Vertex3 GLfloat) -> IO ()
 -- drawEdge (v1,v2) = do
@@ -92,7 +90,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-8 + zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-10 + zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w

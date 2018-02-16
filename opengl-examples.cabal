@@ -117,6 +117,8 @@ library
                      , InterCubeIsocahedron
                      , Octaplex.Data
                      , Octaplex
+                     , Utils.Cone
+                     , Cone
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

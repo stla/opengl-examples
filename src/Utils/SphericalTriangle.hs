@@ -24,11 +24,6 @@ splitTriangleV3 (a, b, c) = [tr1, tr2, tr3, tr4]
 s2c :: (Double, Double) -> V3 Double
 s2c (theta, phi) = V3 (cos theta * sin phi) (sin theta * sin phi) (cos phi)
 
--- aa,bb,cc :: V3 Double -- vertices of the spherical triangle
--- aa = s2c (0, 0)
--- bb = s2c (2*pi/3, pi/2)
--- cc = s2c (pi/4, pi/4)
-
 stMesh' :: Int -> (Double,Double) -> (Double,Double) -> (Double,Double)
         -> [TriangleV3]
 stMesh' n a b c = iterate (concatMap splitTriangleV3) [striangle] !! n

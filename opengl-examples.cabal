@@ -113,6 +113,8 @@ library
                      , CompoundFiveTetrahedra.Intersection
                      , TriangulatedSphere.Data
                      , TriangulatedSphere
+                     , Intersections.CubeIsocahedron
+                     , InterCubeIsocahedron
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

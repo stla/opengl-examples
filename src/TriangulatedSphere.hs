@@ -6,7 +6,6 @@ import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           TriangulatedSphere.Data
 import           Utils.Colour
-import           Utils.OpenGL                 (negateNormal)
 import           Utils.SphericalTriangle
 
 white,black :: Color4 GLfloat

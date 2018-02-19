@@ -97,14 +97,19 @@ library
                      , Duocylinder
                      , Duocylinder.Data
                      , CompoundFiveCubes.Data
+                     , CompoundFiveCubes
                      , Utils.SphericalTriangle
                      , SphericalTriangle
                      , Bunny.Data
                      , Bunny
                      , CGAL.CGAL02
                      , CGAL.CGAL03
+                     , CGAL.CGALunion
+                     , CGALunion
                      , CGAL02
                      , CGAL03
+                     , CGAL.CGALinterTwoSpheres
+                     , CGALinterTwoSpheres
                      , NonconvexPolyhedron.Data
                      , NonconvexPolyhedron.Data2
                      , NonconvexPolyhedron
@@ -119,6 +124,12 @@ library
                      , Octaplex
                      , Utils.Cone
                      , Cone
+                     , Intersections.SphereSphere
+                     , InterSphereSphere
+                     , Unions.SphereSphere
+                     , UnionSphereSphere
+                     , CGAL.CGALunionTwoCubes
+                     , CGALunionTwoCubes
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

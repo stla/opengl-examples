@@ -13,7 +13,7 @@ white  = Color4 1   1   1   1
 black  = Color4 0   0   0   1
 
 striangles :: [[((Vertex3 Double, Vertex3 Double, Vertex3 Double), Normal3 Double)]]
-striangles = map (\t -> stMesh 6 (t!!2) (t!!1) (t!!0)) triangles
+striangles = map (\t -> stMesh 6 1 (t!!2) (t!!1) (t!!0)) triangles
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> DisplayCallback

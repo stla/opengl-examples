@@ -3,7 +3,36 @@ module CompoundFiveTetrahedra.Data
 import           Data.List
 import           Data.Tuple.Extra             (both)
 import           Graphics.Rendering.OpenGL.GL (GLfloat, Vertex3 (..))
+-- import Utils.CartesianPolar
 
+-- vertices' :: [[GLfloat]]
+-- vertices' =
+--   map cartesianToPolar
+--   [ [ a,  a,  a],
+--     [ a,  a, -a],
+--     [ a, -a,  a],
+--     [-a, -a,  a],
+--     [-a,  a, -a],
+--     [-a,  a,  a],
+--     [ 0,  b, -c],
+--     [ 0, -b, -c],
+--     [ 0, -b,  c],
+--     [ c,  0, -b],
+--     [-c,  0, -b],
+--     [-c,  0,  b],
+--     [ b,  c,  0],
+--     [ b, -c,  0],
+--     [-b, -c,  0],
+--     [-b,  c,  0],
+--     [ 0,  b,  c],
+--     [ a, -a, -a],
+--     [ c,  0,  b],
+--     [-a, -a, -a] ]
+--   where
+--     phi = (1 + sqrt 5) / 2
+--     a = 1 / sqrt 3
+--     b = a / phi
+--     c = a * phi
 
 vertices :: [Vertex3 GLfloat]
 vertices =
@@ -33,27 +62,6 @@ vertices =
     a = 1 / sqrt 3
     b = a / phi
     c = a * phi
-  -- map toVertex3 [ [0.5773500, 0.5773500, 0.5773500], -- 1/sqrt(3)
-  --                 [0.5773500, 0.5773500, -0.577350],
-  --                 [0.5773500, -0.577350, 0.5773500],
-  --                 [-0.577350, -0.577350, 0.5773500],
-  --                 [-0.577350, 0.5773500, -0.577350],
-  --                 [-0.577350, 0.5773500, 0.5773500],
-  --                 [0.0000000, 0.3568220, -0.934173], -- 1/2/sqrt(3)/cos(Pi/5), cos(pi/5)/sin(pi/3)
-  --                 [0.0000000, -0.356822, -0.934173], -- or 1/sqrt(3)/phi, phi/sqrt(3)
-  --                 [0.0000000, -0.356822, 0.9341730],
-  --                 [0.9341730, 0.0000000, -0.356822],
-  --                 [-0.934173, 0.0000000, -0.356822],
-  --                 [-0.934173, 0.0000000, 0.3568220],
-  --                 [0.3568220, 0.9341730, 0.0000000],
-  --                 [0.3568220, -0.934173, 0.0000000],
-  --                 [-0.356822, -0.934173, 0.0000000],
-  --                 [-0.356822, 0.9341730, 0.0000000],
-  --                 [0.0000000, 0.3568220, 0.9341730],
-  --                 [0.5773500, -0.577350, -0.577350],
-  --                 [0.9341730, 0.0000000, 0.3568220],
-  --                 [-0.577350, -0.577350, -0.577350]
-  --               ]
 
 tetra1Idxs :: [[Int]]
 tetra1Idxs = [[16,13, 1],
@@ -113,3 +121,10 @@ vertices2 = nub $ concatMap (\idxs -> [vertices !! i | i <- idxs]) tetra2Idxs
 vertices3 = nub $ concatMap (\idxs -> [vertices !! i | i <- idxs]) tetra3Idxs
 vertices4 = nub $ concatMap (\idxs -> [vertices !! i | i <- idxs]) tetra4Idxs
 vertices5 = nub $ concatMap (\idxs -> [vertices !! i | i <- idxs]) tetra5Idxs
+
+-- tetra1',tetra2',tetra3',tetra4',tetra5' :: [[Vertex3 GLfloat]]
+-- tetra1' = map (\idxs -> [vertices' !! i | i <- idxs]) tetra1Idxs
+-- tetra2' = map (\idxs -> [vertices' !! i | i <- idxs]) tetra2Idxs
+-- tetra3' = map (\idxs -> [vertices' !! i | i <- idxs]) tetra3Idxs
+-- tetra4' = map (\idxs -> [vertices' !! i | i <- idxs]) tetra4Idxs
+-- tetra5' = map (\idxs -> [vertices' !! i | i <- idxs]) tetra5Idxs

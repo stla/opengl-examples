@@ -1,22 +1,23 @@
-module SphericalTriangle
+module SphericalTetrahedron
   where
+import           CompoundFiveTetrahedra.DataPolar (tetra1')
 import           Data.IORef
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
-import           Utils.SphericalTriangle
+import           Utils.SphericalTetrahedron
 
-white,black,red,blue,green :: Color4 GLfloat
+white,black,red,blue :: Color4 GLfloat
 white  = Color4 1   1   1   1
 black  = Color4 0   0   0   1
 red    = Color4 1   0   0   1
 blue   = Color4 0   0   1   1
-green  = Color4 0   1   0   1
 
-striangle1 :: [((Vertex3 Double, Vertex3 Double, Vertex3 Double), Normal3 Double)]
-striangle1 = stMesh 6 1 (0,0) (pi/6,pi/4) (0,pi/4)
-
-striangle1' :: [((Vertex3 Double, Vertex3 Double, Vertex3 Double), Normal3 Double)]
-striangle1' = stMesh 6 1.5 (0,0) (pi/6,pi/4) (0,pi/4)
+striangle1,striangle2,striangle3,striangle4
+    :: [((Vertex3 Double, Vertex3 Double, Vertex3 Double), Normal3 Double)]
+striangle1 = stMesh 6 (0,0) (pi/6,pi/4) (0,pi/4)
+striangle2 = stMesh 6 (pi/6,pi/4) (0,pi/4) (pi/3,pi/3)
+striangle3 = stMesh 6 (0,pi/4) (pi/3,pi/3) (pi/2,pi/2)
+striangle4 = stMesh 6 (pi/3,pi/3) (pi/2,pi/2) (0,0)
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> IORef GLdouble -> DisplayCallback
@@ -28,24 +29,26 @@ display rot1 rot2 rot3 zoom angle = do
   z <- get zoom
   a <- get angle
   loadIdentity
-  let striangle2 = stMesh 6 1 (-pi/7,-pi/4) (-0.3,0) (pi/9+a,-pi/4)
   (_, size) <- get viewport
   resize z size
   rotate (180::GLfloat) $ Vector3 0 1 0
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  materialDiffuse Front $= Color4 0.98 0.98 0.98 1
-  renderObject Solid $ Sphere' 0.98 60 60
-  renderPrimitive Triangles $ do
-    materialDiffuse Front $= red
-    mapM_ drawTriangle striangle1
-  renderPrimitive Triangles $ do
-    materialDiffuse Front $= green
-    mapM_ drawTriangle striangle1'
+  -- materialDiffuse Front $= Color4 0.98 0.98 0.98 1
+  -- renderObject Solid $ Sphere' 0.98 60 60
   renderPrimitive Triangles $ do
     materialDiffuse Front $= blue
-    mapM_ drawTriangle striangle2
+    mapM_ drawTriangle tetra1'
+  -- renderPrimitive Triangles $ do
+  --   materialDiffuse Front $= blue
+  --   mapM_ drawTriangle striangle2
+  -- renderPrimitive Triangles $ do
+  --   materialDiffuse Front $= red
+  --   mapM_ drawTriangle striangle3
+  -- renderPrimitive Triangles $ do
+  --   materialDiffuse Front $= blue
+  --   mapM_ drawTriangle striangle4
   swapBuffers
 
 drawTriangle :: ((Vertex3 Double, Vertex3 Double, Vertex3 Double), Normal3 Double) -> IO ()
@@ -61,7 +64,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-5 + zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-3 + zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w

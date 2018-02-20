@@ -1,5 +1,6 @@
 module Octaplex
   where
+import           Control.Monad                      (when)
 import           Data.IORef
 import           Data.Tuple.Extra                  (both)
 import           Graphics.Rendering.OpenGL.GL
@@ -87,24 +88,34 @@ resize s@(Size w h) = do
     w' = realToFrac w
     h' = realToFrac h
 
-keyboard :: IORef GLdouble -> KeyboardCallback
-keyboard angle c _ =
+keyboard :: IORef Bool -> IORef GLdouble -> KeyboardCallback
+keyboard anim angle c _ =
   case c of
     'o' -> angle $~! subtract 1
     'p' -> angle $~! (+ 1)
-    'm' -> do
-      a <- get angle
-      let i = round a :: Int
-      let ppm = printf "pic%04d.ppm" i
+    'a' -> writeIORef anim True
+    'c' -> do
+      r <- get angle
+      let i = round r :: Int
+      let ppm = printf "octaplex%04d.ppm" i
           -- png = printf "pic%04d.png" i
       (>>=) capturePPM (B.writeFile ppm)
       -- convert ppm png True
       angle $~! (+ 1)
     'q' -> leaveMainLoop
-    _   -> return ()
+    _  -> return ()
 
-idle :: IdleCallback
-idle = postRedisplay Nothing
+idle :: IORef Bool -> IORef GLdouble -> IdleCallback
+idle anim angle = do
+  a <- get anim
+  r <- get angle
+  when a $
+    when (r < 360) $ do
+      let ppm = printf "octaplex%04d.ppm" (round r :: Int)
+      (>>=) capturePPM (B.writeFile ppm)
+      angle $~! (+ 1)
+  postRedisplay Nothing
+
 
 main :: IO ()
 main = do
@@ -128,8 +139,9 @@ main = do
   blend $= Enabled    -- allow transparency
   blendFunc $= (SrcAlpha, OneMinusSrcAlpha)
   angle <- newIORef 0.0
+  anim <- newIORef False
   displayCallback $= display angle
   reshapeCallback $= Just resize
-  keyboardCallback $= Just (keyboard angle)
-  idleCallback $= Just idle
+  keyboardCallback $= Just (keyboard anim angle)
+  idleCallback $= Just (idle anim angle)
   mainLoop

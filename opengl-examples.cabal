@@ -124,12 +124,18 @@ library
                      , Octaplex
                      , Utils.Cone
                      , Cone
+                     , Utils.ConeDouble
+                     , ConeDouble
                      , Intersections.SphereSphere
                      , InterSphereSphere
                      , Unions.SphereSphere
                      , UnionSphereSphere
                      , CGAL.CGALunionTwoCubes
                      , CGALunionTwoCubes
+                     , Utils.SphericalTetrahedron
+                     --, SphericalTetrahedron
+                     , Utils.CartesianPolar
+                    --  , CompoundFiveTetrahedra.DataPolar
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

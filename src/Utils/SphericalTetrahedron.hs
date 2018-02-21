@@ -1,7 +1,7 @@
 module Utils.SphericalTetrahedron
   (stMesh, stMesh')
   where
-import Data.Tuple.Extra ((&&&))
+import Data.Tuple.Extra ((&&&), both)
 import           Graphics.Rendering.OpenGL.GL (Normal3 (..), Vertex3 (..))
 import           Linear                       (V3 (..), cross, signorm,
                                                (^+^), (^-^), (^/))

@@ -133,9 +133,11 @@ library
                      , CGAL.CGALunionTwoCubes
                      , CGALunionTwoCubes
                      , Utils.SphericalTetrahedron
-                     --, SphericalTetrahedron
+                   --  , SphericalTetrahedron
                      , Utils.CartesianPolar
-                    --  , CompoundFiveTetrahedra.DataPolar
+                     , CompoundFiveTetrahedra.DataPolar
+                     , Utils.TetrahedronMesh
+                     , SphericalTetrahedron
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -150,6 +152,7 @@ library
                      , linear
                      , extra
                      , split
+                     , permutation
   default-language:    Haskell2010
   ghc-options:        -Wall
 

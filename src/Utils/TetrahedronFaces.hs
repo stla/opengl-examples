@@ -55,6 +55,15 @@ tetraFacesIdxs vertices tetraIdxs =
     tetradotProducts = map (<0) (zipWith dot vecs tetraFacesNormals)
       where vecs = map (\i -> tetra!!i ^-^ head (tetraFaces!!i)) [0 .. 3]
 
+-- vertices :: [[Double]]
+-- vertices =
+--   [ [0.5 / sqrt 3, -0.5, 0.5 / sqrt 6]
+--   , [sqrt 3 / 3, 0, -0.5 / sqrt 6]
+--   , [0.5 / sqrt 3, 0.5, -0.5 / sqrt 6]
+--   , [0, 0, 0.5 * sqrt 3 / sqrt 2] ]
+
+
+
 -- facesIdxs :: [[Int]]
 -- facesIdxs = [ [1, 2, 3] -- 0
 --             , [0, 2, 3] -- 1

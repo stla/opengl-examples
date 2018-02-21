@@ -137,7 +137,9 @@ library
                      , Utils.CartesianPolar
                      , CompoundFiveTetrahedra.DataPolar
                      , Utils.TetrahedronMesh
-                     , SphericalTetrahedron
+                     , RegularSphericalTetrahedron
+                     , RegularSphericalTetrahedron.Data
+                    --  , SphericalTetrahedron
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

@@ -2,13 +2,11 @@ module Utils.TetrahedronMesh where
 import qualified Data.IntMap.Strict           as IM
 import           Data.List                    (union)
 import           Data.Permute                 (elems, rank)
-import           Data.Tuple.Extra             (first, (&&&), (***), fst3, snd3, thd3)
-import           Graphics.Rendering.OpenGL.GL (GLdouble, Normal3 (..),
-                                               Vertex3 (..))
-import           Utils.TetrahedronFaces
+--import           Data.Tuple.Extra             (first, (&&&), (***), fst3, snd3, thd3)
+import           Graphics.Rendering.OpenGL.GL (GLdouble)
+-- import           Utils.TetrahedronFaces
 import           Utils.CartesianPolar
-
-import           Utils.SphericalTriangle
+--import           Utils.SphericalTriangle
 
 allVertices :: [[GLdouble]]
 allVertices =
@@ -55,22 +53,30 @@ fixIndices allVertices faces = (newvertices, newfaces)
   newfaces = map (map ((IM.!) mapper')) faces
   newvertices = [allVertices !! (mapper IM.! i) | i <- [0 .. l-1]]
 
--- niceTetrahedron :: [[Double]] -> [[Int]] -> ([[Double]], [[Int]])
--- niceTetrahedron = fixIndices
 
--- tetra1Mesh :: ([Vertex3 Double], [[Int]])
--- tetra1Mesh = first (map toVx3) (fixIndices allVertices tetra1Idxs)
-tetra1Mesh,tetra2Mesh,tetra3Mesh :: ([[Double]], [[Int]])
-tetra1Mesh = fixIndices allVertices tetra1Idxs
-tetra2Mesh = fixIndices allVertices tetra2Idxs
-tetra3Mesh = fixIndices allVertices tetra3Idxs
+facesIdxs :: [[Int]]
+facesIdxs = [ [1, 2, 3]
+            , [0, 2, 3]
+            , [0, 1, 3]
+            , [0, 1, 2] ]
 
-tetra1MeshPolar,tetra2MeshPolar,tetra3MeshPolar :: [((Double, Double, Double), [Int])]
-tetra1MeshPolar = zip (map cartesianToPolar' $ fst tetra1Mesh) (snd tetra1Mesh)
-tetra2MeshPolar = zip (map cartesianToPolar' $ fst tetra2Mesh) (snd tetra2Mesh)
-tetra3MeshPolar = zip (map cartesianToPolar' $ fst tetra3Mesh) (snd tetra3Mesh)
+-- face1,face2,face3,face4 :: ([[Double]], [[Int]])
+-- face1 :: [[Double]]
+-- face1 = fst $ fixIndices allVertices tetra1Idxs
+-- face2 = fixIndices allVertices [tetra1Idxs]
+-- face3 = fixIndices allVertices [tetra1Idxs]
+-- face4 = fixIndices allVertices [facesIdxs!!3]
 
-angles1,angles2,angles3 :: [(Double,Double)]
-angles1 = map (yz . fst) tetra1MeshPolar where yz (x,y,z) = (y, z)
-angles2 = map (yz . fst) tetra2MeshPolar where yz (x,y,z) = (y, z)
-angles3 = map (yz . fst) tetra3MeshPolar where yz (x,y,z) = (y, z)
+-- angles = face1
+
+-- face1Polar,face2Polar,face3Polar,face4Polar :: [((Double, Double, Double), [Int])]
+-- face1Polar = zip (map cartesianToPolar' $ fst face1) (snd face1)
+-- face2Polar = zip (map cartesianToPolar' $ fst face2) (snd face2)
+-- face3Polar = zip (map cartesianToPolar' $ fst face3) (snd face3)
+-- face4Polar = zip (map cartesianToPolar' $ fst face4) (snd face4)
+--
+-- angles1,angles2,angles3,angles4 :: [(Double,Double)]
+-- angles1 = map (yz . fst) face1Polar where yz (_,y,z) = (y, z)
+-- angles2 = map (yz . fst) face2Polar where yz (_,y,z) = (y, z)
+-- angles3 = map (yz . fst) face3Polar where yz (_,y,z) = (y, z)
+-- angles4 = map (yz . fst) face4Polar where yz (_,y,z) = (y, z)

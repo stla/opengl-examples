@@ -1,19 +1,23 @@
-module SphericalTetrahedron
+module RegularSphericalTetrahedron
   where
 import           Control.Monad                     (when)
-import           Data.Tuple.Extra             (first, (&&&), (***), fst3, snd3, thd3)
---import           CompoundFiveTetrahedra.DataPolar
+import           Data.Tuple.Extra                  (first, fst3, snd3, thd3,
+                                                    (&&&), (***))
+--import           CompoundFiveTetrahedra.DataPolar'
 import           Data.IORef
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 --import           Utils.SphericalTetrahedron
 import qualified Data.ByteString                   as B
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
+import           RegularSphericalTetrahedron.Data
 import           Text.Printf
-import           Utils.SphericalTetrahedron
-import           Utils.TetrahedronMesh
-import Utils.OpenGL
-import Utils.CartesianPolar
+--import           Utils.TetrahedronMesh
+import           Utils.CartesianPolar
+import           Utils.OpenGL
+import           Utils.SphericalTriangle
+
+-- cf RegularSphericalTetrahedron/Data
 
 white,black,red,blue,purple,gold :: Color4 GLfloat
 white  = Color4 1   1   1   1
@@ -23,32 +27,70 @@ blue   = Color4 0   0   1   1
 purple = Color4 0.5 0   0.5 1
 gold   = Color4 1   0.84 0  1
 
+v1 :: (Double, Double)
+v1 = (theta, phi)
+  where
+    (_, theta, phi) = cartesianToPolar' (vertices1 !! 0)
+v2 :: (Double, Double)
+v2 = (theta, phi)
+  where
+    (_, theta, phi) = cartesianToPolar' (vertices1 !! 1)
+v3 :: (Double, Double)
+v3 = (theta, phi)
+  where
+    (_, theta, phi) = cartesianToPolar' (vertices1 !! 2)
 
--- tetra1Idxs :: [[Int]]
--- tetra1Idxs = [[16,13, 1],
---               [16,10,13],
---               [10, 1,13],
---               [10,16, 1]
---              ]
-[face1, face2, face3, face4] = tetra1Idxs
+striangle1 :: [((Vertex3 Double, Vertex3 Double, Vertex3 Double), Normal3 Double)]
+striangle1 = stMesh 6 1 v1 v2 v3
 
-asPair :: [Int] -> (Double,Double)
-asPair x = ((allVertices!!(x!!0))!!0, (allVertices!!(x!!1))!!1)
+v1' :: (Double, Double)
+v1' = (theta, phi)
+  where
+    (_, theta, phi) = cartesianToPolar' (vertices2 !!0)
+v2' :: (Double, Double)
+v2' = (theta, phi)
+  where
+    (_, theta, phi) = cartesianToPolar' (vertices2 !!1)
+v3' :: (Double, Double)
+v3' = (theta, phi)
+  where
+    (_, theta, phi) = cartesianToPolar' (vertices2 !!2)
 
-striangle1,striangle2,striangle3,striangle4 :: [((Vertex3 Double, Vertex3 Double, Vertex3 Double), Normal3 Double)]
--- striangle1 = stMesh 6 (face1!!0!!0, face1!!0!!1, face1!!0!!2)
--- striangle2 = stMesh 6 (face1!!1!!0, face1!!1!!1, face1!!1!!2)
--- striangle3 = stMesh 6 (face1!!2!!0, face1!!2!!1, face1!!2!!2)
--- striangle4 = stMesh 6 (face1!!3!!0, face1!!3!!1, face1!!3!!2)
--- cs (x, y) = (snd3 $ cartesianToPolar (1,x,y), thd3 $ cartesianToPolar (1,x,y))
--- striangle1 = stMesh 6 (cs (face1!!0!!0, face1!!0!!1)) (cs (face1!!0!!1, face1!!0!!2)) (cs (face1!!0!!2, face1!!0!!0))
--- striangle2 = stMesh 6 (cs (face1!!1!!0, face1!!1!!1)) (cs (face1!!1!!1, face1!!1!!2)) (cs (face1!!1!!2, face1!!1!!0))
--- striangle3 = stMesh 6 (cs (face1!!2!!0, face1!!2!!1)) (cs (face1!!2!!1, face1!!2!!2)) (cs (face1!!2!!2, face1!!2!!0))
--- striangle4 = stMesh 6 (cs (face1!!3!!0, face1!!3!!1)) (cs (face1!!3!!1, face1!!3!!2)) (cs (face1!!3!!2, face1!!3!!0))
-striangle1 = stMesh 3 (asPair [0,0]) (asPair [0,0]) (asPair [0,0])
-striangle2 = stMesh 3 (asPair [1,1]) (asPair [1,2]) (asPair [1,4])
-striangle3 = stMesh 3 (asPair [2,2]) (asPair [2,4]) (asPair [2,8])
-striangle4 = stMesh 3 (asPair [3,3]) (asPair [3,6]) (asPair [3,12])
+striangle2 :: [((Vertex3 Double, Vertex3 Double, Vertex3 Double), Normal3 Double)]
+striangle2 = stMesh 6 1 v1' v2' v3'
+
+v1'' :: (Double, Double)
+v1'' = (theta, phi)
+  where
+    (_, theta, phi) = cartesianToPolar' (vertices3 !! 0)
+v2'' :: (Double, Double)
+v2'' = (theta, phi)
+  where
+    (_, theta, phi) = cartesianToPolar' (vertices3 !! 1)
+v3'' :: (Double, Double)
+v3'' = (theta, phi)
+  where
+    (_, theta, phi) = cartesianToPolar' (vertices3 !! 2)
+
+striangle3 :: [((Vertex3 Double, Vertex3 Double, Vertex3 Double), Normal3 Double)]
+striangle3 = stMesh 6 1 v1'' v2'' v3''
+
+v1''' :: (Double, Double)
+v1''' = (theta, phi)
+  where
+    (_, theta, phi) = cartesianToPolar' (vertices4 !! 0)
+v2''' :: (Double, Double)
+v2''' = (theta, phi)
+  where
+    (_, theta, phi) = cartesianToPolar' (vertices4 !! 1)
+v3''' :: (Double, Double)
+v3''' = (theta, phi)
+  where
+    (_, theta, phi) = cartesianToPolar' (vertices4 !! 2)
+
+striangle4 :: [((Vertex3 Double, Vertex3 Double, Vertex3 Double), Normal3 Double)]
+striangle4 = stMesh 6 1 v1''' v2''' v3'''
+
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> IORef GLdouble -> DisplayCallback
@@ -62,7 +104,7 @@ display rot1 rot2 rot3 zoom angle = do
   loadIdentity
   (_, size) <- get viewport
   resize z size
-  rotate (180::GLfloat) $ Vector3 0 1 0
+  rotate a $ Vector3 1 1 (1::GLdouble)
   -- rotate a $ Vector3 1 1 (1::GLdouble)
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
@@ -76,7 +118,7 @@ display rot1 rot2 rot3 zoom angle = do
     materialDiffuse Front $= red
     mapM_ drawTriangle striangle2
   renderPrimitive Triangles $ do
-    materialDiffuse Front $= blue
+    materialDiffuse Front $= purple
     mapM_ drawTriangle striangle3
   renderPrimitive Triangles $ do
     materialDiffuse Front $= gold
@@ -84,11 +126,11 @@ display rot1 rot2 rot3 zoom angle = do
   swapBuffers
 
 drawTriangle :: ((Vertex3 GLdouble, Vertex3 GLdouble, Vertex3 GLdouble), Normal3 GLdouble) -> IO ()
-drawTriangle ((v1, v2, v3), n) = do
-  normal $ triangleNormal (v1, v2, v3)
-  vertex v1
-  vertex v2
-  vertex v3
+drawTriangle ((x1, y2, z3), n) = do
+  normal $ negateNormal n
+  vertex x1
+  vertex y2
+  vertex z3
 
 resize :: GLdouble -> Size -> IO ()
 resize zoom s@(Size w h) = do

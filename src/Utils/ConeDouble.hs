@@ -22,8 +22,8 @@ cone_ n radius height = triangles1 ++ triangles2 ++ triangles3 ++ triangles4
   triangles1 = zipWith (\p1 p2 -> (o,p1,p2)) (init circle) (tail circle)
   h = (0, 0, height)
   triangles2 = zipWith (\p1 p2 -> (p2,p1,h)) (init circle) (tail circle)
-  triangles3 = zipWith (\p1 p2 -> (o, negate' p1, negate' p2)) (init circle) (tail circle)
-  triangles4 = zipWith (\p1 p2 -> (negate' p2, negate' p1, h)) (init circle) (tail circle)
+  triangles3 = zipWith (\p1 p2 -> (negate' p2, negate' p1, negate' o)) (init circle) (tail circle)
+  triangles4 = zipWith (\p1 p2 -> (negate' h, negate' p1, negate' p2)) (init circle) (tail circle)
   negate' (x,y,z) = (-x,-y,-z)
 cone :: Int -> Double -> Double -> [(TriangleVx3d, Normal3 Double)]
 cone n radius height = zip triangles' normals

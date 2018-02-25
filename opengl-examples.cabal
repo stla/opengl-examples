@@ -141,7 +141,10 @@ library
                      , RegularSphericalTetrahedron.Data
                     --  , SphericalTetrahedron
                      , StellationsRhombicTriacontahedron.Data8
-                     , StellationRhombicTriacontahedron8 
+                     , StellationRhombicTriacontahedron8
+                     , Unions.ThreeCubes
+                     , Unions.FiveCubes
+                     , UnionThreeCubes
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

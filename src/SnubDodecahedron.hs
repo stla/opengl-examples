@@ -5,13 +5,15 @@ import           Data.IORef
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import Utils.OpenGL
+import Utils.Colour
 
-white,black,grey,whitesmoke,red :: Color4 GLfloat
+white,black,grey,whitesmoke,red,green :: Color4 GLfloat
 white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
 grey       = Color4  0.8  0.8  0.8  0.7
 whitesmoke = Color4 0.96 0.96 0.96    1
 red = Color4 1 0 0 1
+green = Color4 0 1 0 1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> IORef GLdouble -> DisplayCallback
@@ -29,17 +31,28 @@ display rot1 rot2 rot3 zoom angle = do
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  imapM_ (\i triang -> drawPolygon i triang) facesIdxsR
+  mapM_ drawPolygonR facesIdxsR
+  mapM_ drawPolygonG facesIdxsG
   swapBuffers
 
-drawPolygon :: Int -> [Vertex3 GLfloat] -> IO ()
-drawPolygon i vs = do
+drawPolygonR :: [Vertex3 GLfloat] -> IO ()
+drawPolygonR vs = do
   renderPrimitive Polygon $ do
   materialDiffuse Front $= red
   normal $ triangleNormal (vs!!0, vs!!1, vs!!2)
   vertex (vs!!0)
   vertex (vs!!1)
   vertex (vs!!2)
+
+drawPolygonG :: [Vertex3 GLfloat] -> IO ()
+drawPolygonG vs = do
+  renderPrimitive Polygon $ do
+  materialDiffuse Front $= green
+  normal $ triangleNormal (vs!!0, vs!!1, vs!!2)
+  vertex (vs!!0)
+  vertex (vs!!1)
+  vertex (vs!!2)
+
 
 resize :: Double -> Size -> IO ()
 resize zoom s@(Size w h) = do

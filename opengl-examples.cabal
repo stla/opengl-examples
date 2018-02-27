@@ -145,6 +145,12 @@ library
                      , Unions.ThreeCubes
                      , Unions.FiveCubes
                      , UnionThreeCubes
+                     , UnionFiveCubes
+                     , UnionFiveTetrahedra
+                     , Unions.FiveTetrahedra
+                     , Intersections.FiveCubes
+                     , InterFiveCubes
+                     , SnubDodecahedron.Data
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

@@ -1,4 +1,4 @@
-module Unions.FiveCubes
+module Unions.FiveTetrahedra
   where
 import           Graphics.Rendering.OpenGL.GL (GLdouble, Vertex3 (..))
 

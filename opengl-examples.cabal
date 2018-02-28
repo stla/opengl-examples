@@ -151,6 +151,12 @@ library
                      , Intersections.FiveCubes
                      , InterFiveCubes
                      , SnubDodecahedron.Data
+                     , Hexacosihedron.Data
+                     , Hexacosihedron
+                     , Dodecaplex.Data
+                     , Dodecaplex
+                     , Intersections.CubeGSD
+                     , InterCubeGSD
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

@@ -6,6 +6,8 @@ import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import Utils.OpenGL
 import Utils.Colour
+import           Utils.Prism
+
 
 white,black,grey,whitesmoke,red,green :: Color4 GLfloat
 white      = Color4    1    1    1    1
@@ -33,10 +35,11 @@ display rot1 rot2 rot3 zoom angle = do
   rotate r3 $ Vector3 0 0 1
   mapM_ drawPolygonR facesIdxsR
   mapM_ drawPolygonG facesIdxsG
+  mapM_ drawEdges edges
   swapBuffers
 
 drawPolygonR :: [Vertex3 GLfloat] -> IO ()
-drawPolygonR vs = do
+drawPolygonR vs =
   renderPrimitive Polygon $ do
   materialDiffuse Front $= red
   normal $ triangleNormal (vs!!0, vs!!1, vs!!2)
@@ -45,13 +48,27 @@ drawPolygonR vs = do
   vertex (vs!!2)
 
 drawPolygonG :: [Vertex3 GLfloat] -> IO ()
-drawPolygonG vs = do
+drawPolygonG vs =
   renderPrimitive Polygon $ do
   materialDiffuse Front $= green
   normal $ triangleNormal (vs!!0, vs!!1, vs!!2)
   vertex (vs!!0)
   vertex (vs!!1)
   vertex (vs!!2)
+
+drawEdges :: (Vertex3 GLfloat, Vertex3 GLfloat) -> IO ()
+drawEdges (v1, v2) = do
+  let cylinder = prism v1 v2 30 0.4
+  renderPrimitive Quads $ do
+    materialDiffuse Back $= whitesmoke
+    mapM_ f cylinder
+  where
+    f ((w1,w2,w3,w4),n) = do
+      normal n
+      vertex w1
+      vertex w2
+      vertex w3
+      vertex w4
 
 
 resize :: Double -> Size -> IO ()

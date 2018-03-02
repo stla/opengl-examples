@@ -157,6 +157,7 @@ library
                      , Dodecaplex
                      , Intersections.CubeGSD
                      , InterCubeGSD
+                     , Utils.RegularSphere.RegularSphere
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

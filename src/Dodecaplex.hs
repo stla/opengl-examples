@@ -31,7 +31,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   z <- get zoom
   a <- get angle
   loadIdentity
-  let points  = map (rotate4D (pi/4) (pi/4) (alpha * pi / 180)) vertices
+  let points  = map (rotate4D 0 0 (alpha * pi / 180)) vertices
       ppoints = map project4D points
       vectors = map toVector3 ppoints
   (_, size) <- get viewport
@@ -40,15 +40,15 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-      --edgess   = map (both (toVertex3 . (!!) ppoints)) edges
+  let edgess = map (both (toVertex3 . (!!) ppoints)) edgesIdxs
 --      rridges  = map (map ((!!) ppoints)) ridges
-  -- mapM_ (\vec -> preservingMatrix $ do
-  --                 translate vec
-  --                 materialDiffuse Front $= whitesmoke
-  --                 renderObject Solid $ Sphere' 0.2 50 50)
-  --       vectors
-  mapM_ (drawCylinder 0.1) edges
-  mapM_ (renderPrimitive Quads . drawRidge) ridges
+  mapM_ (\vec -> preservingMatrix $ do
+                  translate vec
+                  materialDiffuse Front $= whitesmoke
+                  renderObject Solid $ Sphere' 0.2 50 50)
+        vectors
+  mapM_ (drawCylinder 0.1) edgess
+  -- mapM_ (renderPrimitive Quads . drawRidge) ridges
   swapBuffers
   where
     toVector3 x = Vector3 (x!!0) (x!!1) (x!!2)
@@ -80,7 +80,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-5+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-25+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w

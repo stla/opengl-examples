@@ -1,17 +1,17 @@
 module Dodecaplex
   where
+import           Control.Monad                     (when)
+import qualified Data.ByteString                   as B
 import           Data.IORef
 import           Data.Tuple.Extra                  (both)
+import           Dodecaplex.Data
+import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
-import           Dodecaplex.Data
 import           Tesseract.Transformations4D
+import           Text.Printf
 import           Utils.OpenGL                      (triangleNormal)
 import           Utils.Prism
-import qualified Data.ByteString                   as B
-import           Graphics.Rendering.OpenGL.Capture (capturePPM)
-import           Control.Monad                     (when)
-import Text.Printf
 
 white,black,grey,whitesmoke :: Color4 GLfloat
 white      = Color4    1    1    1    1

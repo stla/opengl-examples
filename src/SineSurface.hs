@@ -1,5 +1,6 @@
 module SineSurface
   where
+import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
 import           Data.List
@@ -23,16 +24,18 @@ ssurface :: [[Double]]
 ssurface = sinesurface 3
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
-        -> DisplayCallback
-display rot1 rot2 rot3 zoom = do
+        -> IORef GLdouble -> DisplayCallback
+display rot1 rot2 rot3 zoom angle = do
   clear [ColorBuffer, DepthBuffer]
   r1 <- get rot1
   r2 <- get rot2
   r3 <- get rot3
   z <- get zoom
+  a <- get angle
   loadIdentity
   (_, size) <- get viewport
   resize z size
+  rotate a $ Vector3 1 1 (1::GLdouble)
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
@@ -51,15 +54,15 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-8 + zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-16 + zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
     h' = realToFrac h
 
 keyboard :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLint
-         -> KeyboardCallback
-keyboard rot1 rot2 rot3 capture c _ =
+         -> IORef Bool -> KeyboardCallback
+keyboard rot1 rot2 rot3 capture anim c _ =
   case c of
     'r' -> rot1 $~! subtract 1
     't' -> rot1 $~! (+1)
@@ -72,6 +75,7 @@ keyboard rot1 rot2 rot3 capture c _ =
       let ppm = printf "pic%04d.ppm" i
       (>>=) capturePPM (B.writeFile ppm)
       capture $~! (+1)
+    'a' -> writeIORef anim True
     'q' -> leaveMainLoop
     _   -> return ()
 
@@ -82,13 +86,21 @@ mouse zoom button keyState _ =
     (RightButton, Down) -> zoom $~! subtract 0.1
     _                   -> return ()
 
-idle :: IdleCallback
-idle = postRedisplay Nothing
+idle :: IORef Bool -> IORef GLdouble -> IdleCallback
+idle anim angle = do
+  a <- get anim
+  r <- get angle
+  when a $ do
+    when (r < 360) $ do
+      let ppm = printf "sinesurface%04d.ppm" (round r :: Int)
+      (>>=) capturePPM (B.writeFile ppm)
+    angle $~! (+ 1)
+  postRedisplay Nothing
 
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Great stellated dodecahedron"
+  _ <- createWindow "Sine Surface"
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= white
   materialAmbient Front $= black
@@ -108,9 +120,11 @@ main = do
   rot3 <- newIORef 0.0
   zoom <- newIORef 0.0
   capture <- newIORef 1
-  displayCallback $= display rot1 rot2 rot3 zoom
+  anim <- newIORef False
+  angle <- newIORef 0.0
+  displayCallback $= display rot1 rot2 rot3 zoom angle
   reshapeCallback $= Just (resize 0)
-  keyboardCallback $= Just (keyboard rot1 rot2 rot3 capture)
+  keyboardCallback $= Just (keyboard rot1 rot2 rot3 capture anim)
   mouseCallback $= Just (mouse zoom)
-  idleCallback $= Just idle
+  idleCallback $= Just (idle anim angle)
   mainLoop

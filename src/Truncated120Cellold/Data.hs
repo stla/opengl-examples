@@ -48,7 +48,7 @@ vs3 =
 vs4 :: [[Double]]
 vs4 =
   signsAll $
-  zipWith permuteList perms (replicate 12 [0, 1, 4+5*phi, phi5])
+  zipWith permuteList perms (replicate 24 [0, 1, 4+5*phi, phi5])
   where phi5 = phi*phi*phi*phi*phi
         phi = (1 + sqrt 5) / 2
         perms = filter isEvenPermutation (permutations 4)
@@ -56,80 +56,80 @@ vs4 =
 vs5 :: [[Double]]
 vs5 =
   signsAll $
-  zipWith permuteList perms (replicate 12 [0, 1, 4+7*phi, 1+3*phi])
+  zipWith permuteList perms (replicate 24 [0, 1, 4+7*phi, 1+3*phi])
   where phi = (1 + sqrt 5) / 2
         perms = filter isEvenPermutation (permutations 4)
 
 vertices6 :: [Double] -> [[Double]]
 vertices6 coords =
   signsAll $
-  zipWith permuteList perms (replicate 12 coords)
+  zipWith permuteList perms (replicate 24 coords)
   where perms = filter isEvenPermutation (permutations 4)
 
 vertices7 :: [Double] -> [[Double]]
 vertices7 coords =
   signsAll $
-  zipWith permuteList perms (replicate 12 coords)
+  zipWith permuteList perms (replicate 24 coords)
   where perms = filter isEvenPermutation (permutations 4)
 
 vertices8 :: [Double] -> [[Double]]
 vertices8 coords =
   signsAll $
-  zipWith permuteList perms (replicate 12 coords)
+  zipWith permuteList perms (replicate 24 coords)
   where perms = filter isEvenPermutation (permutations 4)
 
 vertices9 :: [Double] -> [[Double]]
 vertices9 coords =
   signsAll $
-  zipWith permuteList perms (replicate 12 coords)
+  zipWith permuteList perms (replicate 24 coords)
   where perms = filter isEvenPermutation (permutations 4)
 
 vertices10 :: [Double] -> [[Double]]
 vertices10 coords =
   signsAll $
-  zipWith permuteList perms (replicate 12 coords)
+  zipWith permuteList perms (replicate 24 coords)
   where perms = filter isEvenPermutation (permutations 4)
 
 vertices11 :: [Double] -> [[Double]]
 vertices11 coords =
   signsAll $
-  zipWith permuteList perms (replicate 12 coords)
+  zipWith permuteList perms (replicate 24 coords)
   where perms = filter isEvenPermutation (permutations 4)
 
 vertices12 :: [Double] -> [[Double]]
 vertices12 coords =
   signsAll $
-  zipWith permuteList perms (replicate 12 coords)
+  zipWith permuteList perms (replicate 24 coords)
   where perms = filter isEvenPermutation (permutations 4)
 
 vertices13 :: [Double] -> [[Double]]
 vertices13 coords =
   signsAll $
-  zipWith permuteList perms (replicate 12 coords)
+  zipWith permuteList perms (replicate 24 coords)
   where perms = filter isEvenPermutation (permutations 4)
 
 vertices14 :: [Double] -> [[Double]]
 vertices14 coords =
   signsAll $
-  zipWith permuteList perms (replicate 12 coords)
+  zipWith permuteList perms (replicate 24 coords)
   where perms = filter isEvenPermutation (permutations 4)
 
 vertices15 :: [Double] -> [[Double]]
 vertices15 coords =
   signsAll $
-  zipWith permuteList perms (replicate 12 coords)
+  zipWith permuteList perms (replicate 24 coords)
   where perms = filter isEvenPermutation (permutations 4)
 
 vertices16 :: [Double] -> [[Double]]
 vertices16 coords =
   signsAll $
-  zipWith permuteList perms (replicate 12 coords)
+  zipWith permuteList perms (replicate 24 coords)
   where perms = filter isEvenPermutation (permutations 4)
 
 vertices17 :: [Double] -> [[Double]]
 vertices17 coords =
   signsAll $
-  zipWith permuteList perms (replicate 12 coords)
+  zipWith permuteList perms (replicate 24 coords)
   where perms = filter isEvenPermutation (permutations 4)
 
 phi :: Double

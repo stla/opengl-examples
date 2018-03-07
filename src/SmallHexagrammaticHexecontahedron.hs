@@ -1,18 +1,15 @@
-module SineSurface
+module SmallHexagrammaticHexecontahedron
   where
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
-import           Data.IORef
-import           Data.List
-import           Data.Tuple.Extra                  (both)
-import           Graphics.Rendering.OpenGL.Capture (capturePPM)
+import SmallHexagrammaticHexecontahedron.Data
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
-import           SineSurface.Data
+import           Data.IORef
+import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Text.Printf
 import           Utils.OpenGL
-import           Utils.Colour                 (interpolateColor)
-import Data.List.Index
+
 
 grey1,grey9,purple,white,black,gold :: Color4 GLfloat
 grey1  = Color4 0.1 0.1 0.1 1
@@ -22,11 +19,6 @@ white  = Color4 1   1   1   1
 black  = Color4 0   0   0   1
 gold   = Color4 1 (215/255) 0 1
 
-ssurface :: [[Double]]
-ssurface = sinesurface 3
-
-zcolor :: Double -> Color4 GLfloat
-zcolor z = interpolateColor (0,0,1) (0.1,0.2,0.8) (0.2,0.1,0.6) (realToFrac (1-z))
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> IORef GLdouble -> DisplayCallback
@@ -44,14 +36,20 @@ display rot1 rot2 rot3 zoom angle = do
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  imapM_ (\i vec -> preservingMatrix $ do
+  mapM_ (\vec -> preservingMatrix $ do
                   translate (toVec vec)
-                  materialDiffuse Front $= zcolor (vec!!2)
-                  renderObject Solid $ Sphere' 0.4 50 50)
-        ssurface
+                  materialDiffuse Front $= gold
+                  renderObject Solid $ Sphere' 0.2 30 30)
+        vertices
+--        where toVec vert = Vector3 (vec!!0) (vec!!1) (vec!!2)
+  mapM_ drawFace faces
   swapBuffers
   where
     toVec x = Vector3 (x!!0) (x!!1) (x!!2)
+    drawFace vs = renderPrimitive Polygon $ do
+      materialDiffuse Front $= purple
+      normal $ triangleNormal (vs!!2, vs !!1, vs !! 0)
+      mapM_ vertex vs
 
 resize :: Double -> Size -> IO ()
 resize zoom s@(Size w h) = do
@@ -97,7 +95,7 @@ idle anim angle = do
   r <- get angle
   when a $ do
     when (r < 360) $ do
-      let ppm = printf "sinesurface%04d.ppm" (round r :: Int)
+      let ppm = printf "smallhexapic%04d.ppm" (round r :: Int)
       (>>=) capturePPM (B.writeFile ppm)
     angle $~! (+ 1)
   postRedisplay Nothing
@@ -105,7 +103,7 @@ idle anim angle = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Sine Surface"
+  _ <- createWindow "SmallHexagrammaticHexecontahedron"
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= white
   materialAmbient Front $= black

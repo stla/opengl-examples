@@ -17,7 +17,7 @@ sinesurface a =
     v = [2*pi* frac i n | i <- [0 .. n]]
     frac :: Int -> Int -> Double
     frac p q = realToFrac p / realToFrac q
-    n = 50
+    n = 100
 
 sinesurface' :: Double -> [Vertex3 Double]
 sinesurface' a = map toVx3 (sinesurface a)

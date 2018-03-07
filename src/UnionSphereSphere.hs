@@ -13,12 +13,12 @@ import           Utils.OpenGL                      (negateNormal,
 import           Utils.Prism
 
 grey1,grey9,purple,white,black,gold :: Color4 GLfloat
-grey1  = Color4 0.1 0.1 0.1 1
-grey9  = Color4 0.9 0.9 0.9 1
-purple = Color4 0.5 0   0.5 1
-white  = Color4 1   1   1   1
-black  = Color4 0   0   0   1
-gold   = Color4 1 (215/255) 0 1
+grey1  = Color4 0.1  0.1  0.1  1
+grey9  = Color4 0.9  0.9  0.9  1
+purple = Color4 0.5  0    0.5  1
+white  = Color4 1    1    1    1
+black  = Color4 0    0    0    1
+gold   = Color4 1  0.843  0    1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> DisplayCallback

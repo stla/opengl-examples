@@ -1,6 +1,6 @@
 module Intersections.FiveCubes
   where
-import           Data.List                    (union)
+--import           Data.List                    (union)
 import           Data.Tuple.Extra             (both)
 import           Graphics.Rendering.OpenGL.GL (GLfloat, Vertex3 (..))
 

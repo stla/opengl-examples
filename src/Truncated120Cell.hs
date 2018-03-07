@@ -4,7 +4,7 @@ import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
 import           Data.Tuple.Extra                  (both)
-import           Truncated120Cell.Data
+import           Truncated120Cell3.Data
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
@@ -12,8 +12,10 @@ import           Tesseract.Transformations4D
 import           Text.Printf
 import           Utils.OpenGL                      (triangleNormal)
 import           Utils.Prism
+import Data.List.Index (imap, imapM_)
+import Data.List
 
-white,black,grey,whitesmoke :: Color4 GLfloat
+white,black,grey,whitesmoke,red :: Color4 GLfloat
 white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
 grey       = Color4  0.8  0.8  0.8  0.7
@@ -31,33 +33,36 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   z <- get zoom
   a <- get angle
   loadIdentity
-  let points  = map (rotate4D 0 0 (alpha * pi / 180)) allVertices
+  let points  = map (rotate4D (pi/4) (pi/4) (alpha * pi / 180)) vs120trunc
       ppoints = map project4D points
       vectors = map toVector3 ppoints
+      otherridges = facetsIdxs \\ tetrahedralFacets
+      ridges  = map (map (toVertex3 . (!!) ppoints)) otherridges
+      tetraridges = map (map (toVertex3 . (!!) ppoints)) tetrahedralFacets
   (_, size) <- get viewport
   resize z size
   rotate a $ Vector3 1 1 (1::GLdouble)
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
---  let edgess = map (both (toVertex3 . (!!) ppoints)) edgesIdxs
---      rridges  = map (map ((!!) ppoints)) ridges
+  let edgess = map (both (toVertex3 . (!!) ppoints)) edgesIdxs
   mapM_ (\vec -> preservingMatrix $ do
-                  translate vec
                   materialDiffuse Front $= whitesmoke
-                  renderObject Solid $ Sphere' 0.1 20 20)
+                  translate vec
+                  renderObject Solid $ Sphere' 0.4 30 30)
         vectors
-  -- mapM_ (drawCylinder 0.1) edgess
-  -- mapM_ (renderPrimitive Quads . drawRidge) ridges
+  mapM_ (drawCylinder 0.05) edgess
+--  mapM_ (renderPrimitive Polygon . drawRidge) ridges
+  mapM_ (renderPrimitive Triangles . drawTetrahedron) tetraridges
   swapBuffers
   where
     toVector3 x = Vector3 (x!!0) (x!!1) (x!!2)
     toVertex3 x = Vertex3 (x!!0) (x!!1) (x!!2)
     drawCylinder :: GLdouble -> (Vertex3 GLdouble, Vertex3 GLdouble) -> IO ()
     drawCylinder radius (v1,v2) = do
-      let cylinder = prism v1 v2 50 radius
+      let cylinder = prism v1 v2 30 radius
       renderPrimitive Quads $ do
-        materialDiffuse FrontAndBack $= red
+        materialDiffuse FrontAndBack $= whitesmoke
         mapM_ f cylinder
       where
         f ((w1,w2,w3,w4),n) = do
@@ -66,13 +71,23 @@ display rot1 rot2 rot3 angle angle2 zoom = do
           vertex w2
           vertex w3
           vertex w4
-
 drawRidge :: [Vertex3 GLdouble] -> IO ()
 drawRidge vs = do
-  materialDiffuse FrontAndBack $= grey
+  materialDiffuse FrontAndBack $= whitesmoke
   normal (triangleNormal (vs!!0, vs!!1, vs!!2))
   mapM_ vertex vs
 
+drawTetrahedron :: [Vertex3 GLdouble] -> IO ()
+drawTetrahedron vs = do
+  materialDiffuse FrontAndBack $= red
+  normal (triangleNormal (vs!!0, vs!!1, vs!!2))
+  mapM_ vertex [vs!!i | i <- [0,1,2]]
+  normal (triangleNormal (vs!!0, vs!!1, vs!!3))
+  mapM_ vertex [vs!!i | i <- [0,1,3]]
+  normal (triangleNormal (vs!!0, vs!!2, vs!!3))
+  mapM_ vertex [vs!!i | i <- [0,2,3]]
+  normal (triangleNormal (vs!!1, vs!!2, vs!!3))
+  mapM_ vertex [vs!!i | i <- [1,2,3]]
 
 resize :: Double -> Size -> IO ()
 resize zoom s@(Size w h) = do
@@ -80,7 +95,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-25+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-50+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -110,7 +125,7 @@ idle anim angle2 = do
   r <- get angle2
   when a $ do
     when (r < 360) $ do
-      let ppm = printf "Dodecaplex%04d.ppm" (round r :: Int)
+      let ppm = printf "truncated120cell%04d.ppm" (round r :: Int)
       (>>=) capturePPM (B.writeFile ppm)
     angle2 $~! (+ 1)
   postRedisplay Nothing
@@ -118,7 +133,7 @@ idle anim angle2 = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Dodecaplex"
+  _ <- createWindow "Truncated 120 cell"
   windowSize $= Size 500 500
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= Color4 0 0 0 0
@@ -126,7 +141,7 @@ main = do
   materialShininess FrontAndBack $= 50
   lighting $= Enabled
   light (Light 0) $= Enabled
-  position (Light 0) $= Vertex4 (-6) 6 (-12) 1
+  position (Light 0) $= Vertex4 0 0 (-100) 1
   lightModelTwoSide $= Enabled
   ambient (Light 0) $= white
   diffuse (Light 0) $= white

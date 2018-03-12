@@ -79,3 +79,7 @@ Thick sphere wedge:
 Spherical triangles:
 
 ![Imgur](https://i.imgur.com/rI7ZMgg.png)
+
+Steiner surface:
+
+![Imgur](https://i.imgur.com/nC7vJ93.png)

@@ -166,6 +166,7 @@ library
                      , Hopf.Hopf
                      , CantiTrunc600Cell.Data
                      , AllCubes.TheCubes
+                     , SteinerSurface
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

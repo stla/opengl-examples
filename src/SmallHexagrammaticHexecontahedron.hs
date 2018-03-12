@@ -41,7 +41,6 @@ display rot1 rot2 rot3 zoom angle = do
                   materialDiffuse Front $= gold
                   renderObject Solid $ Sphere' 0.2 30 30)
         vertices
---        where toVec vert = Vector3 (vec!!0) (vec!!1) (vec!!2)
   mapM_ drawFace faces
   swapBuffers
   where

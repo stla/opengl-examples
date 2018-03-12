@@ -7,3 +7,4 @@ extra-deps:
 - gl-capture-0.1.0.0
 - permutation-0.5.0.5
 - combinat-0.2.8.2
+- HaskellForMaths-0.4.8

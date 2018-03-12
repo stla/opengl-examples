@@ -1,4 +1,4 @@
-module Truncated120Cell
+module Hopf
   where
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
@@ -9,11 +9,12 @@ import           Data.Tuple.Extra                  (both)
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
+import           Hopf.Hopf
 import           Tesseract.Transformations4D
 import           Text.Printf
-import           Truncated120Cell3.Data
 import           Utils.OpenGL                      (triangleNormal)
 import           Utils.Prism
+import Utils.Colour
 
 white,black,grey,whitesmoke,red :: Color4 GLfloat
 white      = Color4    1    1    1    1
@@ -22,8 +23,35 @@ grey       = Color4  0.8  0.8  0.8  0.7
 whitesmoke = Color4 0.96 0.96 0.96    1
 red = Color4 1 0 0 1
 
+tseq :: [Double]
+tseq = [frac i n * 4 | i <- [0 .. n-1]]
+  where
+    n = 500
+    frac i n = realToFrac i / realToFrac n
+
+curve1 :: [[Double]]
+curve1 = map (hopfinverse [1 / sqrt 3, 1 / sqrt 3, 1 / sqrt 3]) (map (+0.01) tseq)
+
+proj3D1 :: [[Double]]
+proj3D1 = map project4D curve1
+
+curve2 :: [[Double]]
+curve2 = map (hopfinverse [1 / sqrt 3, 1 / sqrt 3, 1 / sqrt 3]) tseq
+
+
+-- xi <- seq(1, 2*pi, len=length(t))
+-- colors <- randomcoloR::distinctColorPalette(length(t))
+-- for(i in 1:length(xi)){
+--   rcurve <- rotate4D(t(curve), pi/4,pi/4,xi[i])
+--   proj3D2 <- apply(rcurve, 1, stereographic)
+--   for(j in 1:(length(t)-1)){
+--    segments3d(rbind(proj3D2[,j],proj3D2[,j+1]), col=colors[i], lwd=3)
+--   }
+--   rgl.snapshot(sprintf("hopf%04d.png", i))
+-- }
+
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
-        -> IORef GLdouble -> IORef GLdouble -> DisplayCallback
+        -> IORef Int -> IORef GLdouble -> DisplayCallback
 display rot1 rot2 rot3 angle angle2 zoom = do
   clear [ColorBuffer, DepthBuffer]
   alpha <- get angle2
@@ -31,63 +59,45 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   r2 <- get rot2
   r3 <- get rot3
   z <- get zoom
+  lineWidth $= 3
   a <- get angle
+  let points  = map (\alpha -> map (rotate4D (pi/4) (pi/4) alpha) curve2)
+                [tseq !! i | i <- [0 .. alpha]]
+  let ppoints = map (map project4D) points
   loadIdentity
-  let points  = map (rotate4D (pi/4) (pi/4) (alpha * pi / 180)) vs120trunc
-      ppoints = map project4D points
-      vectors = map toVector3 ppoints
-      otherridges = facetsIdxs \\ tetrahedralFacets
-      ridges  = map (map (toVertex3 . (!!) ppoints)) otherridges
-      tetraridges = map (map (toVertex3 . (!!) ppoints)) tetrahedralFacets
   (_, size) <- get viewport
   resize z size
   rotate a $ Vector3 1 1 (1::GLdouble)
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  let edgess = map (both (toVertex3 . (!!) ppoints)) edgesIdxs
-  mapM_ (\vec -> preservingMatrix $ do
-                  materialDiffuse Front $= whitesmoke
-                  translate vec
-                  renderObject Solid $ Sphere' 0.4 30 30)
-        vectors
-  mapM_ (drawCylinder 0.05) edgess
---  mapM_ (renderPrimitive Polygon . drawRidge) ridges
-  mapM_ (renderPrimitive Triangles . drawTetrahedron) tetraridges
+  lighting $= Disabled
+  (renderPrimitive Points . drawLine) proj3D1
+  lighting $= Enabled
+  -- let points  = map (rotate4D (pi/4) (pi/4) (alpha * pi / 180)) curve2
+  --     ppoints = map project4D points
+  lighting $= Disabled
+  imapM_ (\i l -> renderPrimitive LineStrip $ drawLine' i l) ppoints
+  lighting $= Enabled
   swapBuffers
   where
-    toVector3 x = Vector3 (x!!0) (x!!1) (x!!2)
-    toVertex3 x = Vertex3 (x!!0) (x!!1) (x!!2)
-    drawCylinder :: GLdouble -> (Vertex3 GLdouble, Vertex3 GLdouble) -> IO ()
-    drawCylinder radius (v1,v2) = do
-      let cylinder = prism v1 v2 30 radius
-      renderPrimitive Quads $ do
-        materialDiffuse FrontAndBack $= whitesmoke
-        mapM_ f cylinder
-      where
-        f ((w1,w2,w3,w4),n) = do
-          normal n
-          vertex w1
-          vertex w2
-          vertex w3
-          vertex w4
-drawRidge :: [Vertex3 GLdouble] -> IO ()
-drawRidge vs = do
-  materialDiffuse FrontAndBack $= whitesmoke
-  normal (triangleNormal (vs!!0, vs!!1, vs!!2))
-  mapM_ vertex vs
-
-drawTetrahedron :: [Vertex3 GLdouble] -> IO ()
-drawTetrahedron vs = do
-  materialDiffuse FrontAndBack $= red
-  normal (triangleNormal (vs!!0, vs!!1, vs!!2))
-  mapM_ vertex [vs!!i | i <- [0,1,2]]
-  normal (triangleNormal (vs!!0, vs!!1, vs!!3))
-  mapM_ vertex [vs!!i | i <- [0,1,3]]
-  normal (triangleNormal (vs!!0, vs!!2, vs!!3))
-  mapM_ vertex [vs!!i | i <- [0,2,3]]
-  normal (triangleNormal (vs!!1, vs!!2, vs!!3))
-  mapM_ vertex [vs!!i | i <- [1,2,3]]
+    drawLine :: [[Double]] -> IO ()
+    drawLine vs = do
+      color (Color3 1 1 0 :: Color3 GLfloat)
+      -- normal $ triangleNormal (vsvx30, vsvx31, vsvx32)
+      -- materialDiffuse FrontAndBack $= red
+      mapM_ (vertex . toVertex3) vs
+        where
+        vsvx30 = toVertex3 (vs!!0)
+        vsvx31 = toVertex3 (vs!!1)
+        vsvx32 = toVertex3 (vs!!2)
+        toVertex3 x = Vertex3 (x!!0) (x!!1) (x!!2)
+    drawLine' :: Int -> [[Double]] -> IO ()
+    drawLine' i vs = do
+      color (if i `div` 10 == 9 then pickColor3 i else pickColor3 1)
+      mapM_ (vertex . toVertex3) vs
+        where
+        toVertex3 x = Vertex3 (x!!0) (x!!1) (x!!2)
 
 resize :: Double -> Size -> IO ()
 resize zoom s@(Size w h) = do
@@ -95,13 +105,13 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-50+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-21+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
     h' = realToFrac h
 
-keyboard :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
+keyboard :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef Int
          -> IORef GLdouble -> IORef Bool -> KeyboardCallback
 keyboard rot1 rot2 rot3 angle2 zoom anim c _ =
   case c of
@@ -119,13 +129,13 @@ keyboard rot1 rot2 rot3 angle2 zoom anim c _ =
     'q' -> leaveMainLoop
     _   -> return ()
 
-idle :: IORef Bool -> IORef GLdouble -> IdleCallback
+idle :: IORef Bool -> IORef Int -> IdleCallback
 idle anim angle2 = do
   a <- get anim
   r <- get angle2
   when a $ do
     when (r < 360) $ do
-      let ppm = printf "truncated120cell%04d.ppm" (round r :: Int)
+      let ppm = printf "hopffibration%04d.ppm" r
       (>>=) capturePPM (B.writeFile ppm)
     angle2 $~! (+ 1)
   postRedisplay Nothing
@@ -133,26 +143,26 @@ idle anim angle2 = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Truncated 120 cell"
+  _ <- createWindow "Hopf fibration"
   windowSize $= Size 500 500
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
-  clearColor $= Color4 0 0 0 0
+  clearColor $= white
   materialAmbient FrontAndBack $= Color4 0 0 0 0
   materialShininess FrontAndBack $= 50
   lighting $= Enabled
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 0 0 (-100) 1
   lightModelTwoSide $= Enabled
-  ambient (Light 0) $= white
+  ambient (Light 0) $= black
   diffuse (Light 0) $= white
-  specular (Light 0) $= white
+  specular (Light 0) $= black
   depthFunc $= Just Lequal
   depthMask $= Enabled
   shadeModel $= Smooth
   blend $= Enabled    -- allow transparency
   blendFunc $= (SrcAlpha, OneMinusSrcAlpha)
   angle <- newIORef 0.0
-  angle2 <- newIORef 0.0
+  angle2 <- newIORef 0
   rot1 <- newIORef 0.0
   rot2 <- newIORef 0.0
   rot3 <- newIORef 0.0

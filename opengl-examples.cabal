@@ -162,6 +162,10 @@ library
                      , SineSurface
                      , Truncated120Cell3.Data
                      , SmallHexagrammaticHexecontahedron.Data
+                     , SmallHexagrammaticHexecontahedron
+                     , Hopf.Hopf
+                     , CantiTrunc600Cell.Data
+                     , AllCubes.TheCubes
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -178,6 +182,7 @@ library
                      , split
                      , permutation
                      , combinat
+                     , HaskellForMaths
   default-language:    Haskell2010
   ghc-options:        -Wall
 

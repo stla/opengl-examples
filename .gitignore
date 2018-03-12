@@ -23,3 +23,7 @@ cabal.project.local
 *.ppm
 src/BrokenPrism.hs
 gallery/
+*.exe
+src/AllCubes/AllCubes.hs
+src/AllCubes/Cubes.hs
+ztmp.txt

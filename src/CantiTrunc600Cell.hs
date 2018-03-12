@@ -1,5 +1,5 @@
-module Truncated120Cell
-  where
+module CantiTrunc600Cell where
+import           CantiTrunc600Cell.Data
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
@@ -9,10 +9,9 @@ import           Data.Tuple.Extra                  (both)
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
-import           Tesseract.Transformations4D
 import           Text.Printf
-import           Truncated120Cell3.Data
-import           Utils.OpenGL                      (triangleNormal)
+import           Utils.OpenGL                      (negateNormal,
+                                                    triangleNormal)
 import           Utils.Prism
 
 white,black,grey,whitesmoke,red :: Color4 GLfloat
@@ -20,7 +19,7 @@ white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
 grey       = Color4  0.8  0.8  0.8  0.7
 whitesmoke = Color4 0.96 0.96 0.96    1
-red = Color4 1 0 0 1
+red        = Color4 1 0 0 1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> IORef GLdouble -> IORef GLdouble -> DisplayCallback
@@ -33,34 +32,26 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   z <- get zoom
   a <- get angle
   loadIdentity
-  let points  = map (rotate4D (pi/4) (pi/4) (alpha * pi / 180)) vs120trunc
-      ppoints = map project4D points
-      vectors = map toVector3 ppoints
-      otherridges = facetsIdxs \\ tetrahedralFacets
-      ridges  = map (map (toVertex3 . (!!) ppoints)) otherridges
-      tetraridges = map (map (toVertex3 . (!!) ppoints)) tetrahedralFacets
   (_, size) <- get viewport
   resize z size
-  rotate a $ Vector3 1 1 (1::GLdouble)
+  rotate alpha $ Vector3 1 1 (1::GLdouble)
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  let edgess = map (both (toVertex3 . (!!) ppoints)) edgesIdxs
   mapM_ (\vec -> preservingMatrix $ do
-                  materialDiffuse Front $= whitesmoke
-                  translate vec
-                  renderObject Solid $ Sphere' 0.4 30 30)
-        vectors
-  mapM_ (drawCylinder 0.05) edgess
---  mapM_ (renderPrimitive Polygon . drawRidge) ridges
-  mapM_ (renderPrimitive Triangles . drawTetrahedron) tetraridges
+                  materialDiffuse Front $= grey
+                  translate (toVector3 vec)
+                  renderObject Solid $ Sphere' 0.05 30 30)
+        allVertices
+  mapM_ (drawCylinder 0.05) edges
+  mapM_ (renderPrimitive Polygon . drawFace) faces
   swapBuffers
   where
     toVector3 x = Vector3 (x!!0) (x!!1) (x!!2)
     toVertex3 x = Vertex3 (x!!0) (x!!1) (x!!2)
     drawCylinder :: GLdouble -> (Vertex3 GLdouble, Vertex3 GLdouble) -> IO ()
     drawCylinder radius (v1,v2) = do
-      let cylinder = prism v1 v2 30 radius
+      let cylinder = prism v1 v2 15 radius
       renderPrimitive Quads $ do
         materialDiffuse FrontAndBack $= whitesmoke
         mapM_ f cylinder
@@ -71,23 +62,12 @@ display rot1 rot2 rot3 angle angle2 zoom = do
           vertex w2
           vertex w3
           vertex w4
-drawRidge :: [Vertex3 GLdouble] -> IO ()
-drawRidge vs = do
-  materialDiffuse FrontAndBack $= whitesmoke
-  normal (triangleNormal (vs!!0, vs!!1, vs!!2))
+drawFace :: [Vertex3 GLdouble] -> IO ()
+drawFace vs = do
+  materialDiffuse FrontAndBack $= black
+  normal $ negateNormal(triangleNormal (vs!!0, vs!!1, vs!!2))
   mapM_ vertex vs
 
-drawTetrahedron :: [Vertex3 GLdouble] -> IO ()
-drawTetrahedron vs = do
-  materialDiffuse FrontAndBack $= red
-  normal (triangleNormal (vs!!0, vs!!1, vs!!2))
-  mapM_ vertex [vs!!i | i <- [0,1,2]]
-  normal (triangleNormal (vs!!0, vs!!1, vs!!3))
-  mapM_ vertex [vs!!i | i <- [0,1,3]]
-  normal (triangleNormal (vs!!0, vs!!2, vs!!3))
-  mapM_ vertex [vs!!i | i <- [0,2,3]]
-  normal (triangleNormal (vs!!1, vs!!2, vs!!3))
-  mapM_ vertex [vs!!i | i <- [1,2,3]]
 
 resize :: Double -> Size -> IO ()
 resize zoom s@(Size w h) = do
@@ -95,7 +75,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-50+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-25+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -133,20 +113,20 @@ idle anim angle2 = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Truncated 120 cell"
-  windowSize $= Size 500 500
+  _ <- createWindow "Cantillated Truncated 600 cell"
+  windowSize $= Size 400 400
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
-  clearColor $= Color4 0 0 0 0
-  materialAmbient FrontAndBack $= Color4 0 0 0 0
+  clearColor $= white
+  materialAmbient FrontAndBack $= black
   materialShininess FrontAndBack $= 50
   lighting $= Enabled
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 0 0 (-100) 1
   lightModelTwoSide $= Enabled
-  ambient (Light 0) $= white
+  ambient (Light 0) $= black
   diffuse (Light 0) $= white
-  specular (Light 0) $= white
-  depthFunc $= Just Lequal
+  specular (Light 0) $= black
+  depthFunc $= Just Less
   depthMask $= Enabled
   shadeModel $= Smooth
   blend $= Enabled    -- allow transparency

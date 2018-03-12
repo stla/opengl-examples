@@ -13,12 +13,12 @@ import           Text.Printf
 import           Utils.OpenGL                      (triangleNormal)
 import           Utils.Prism
 
-white,black,grey,whitesmoke :: Color4 GLfloat
+white,black,grey,whitesmoke,red :: Color4 GLfloat
 white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
 grey       = Color4  0.8  0.8  0.8  0.7
 whitesmoke = Color4 0.96 0.96 0.96    1
-red = Color4 1 0 0 1
+red        = Color4    1    0    0    1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> IORef GLdouble -> IORef GLdouble -> DisplayCallback

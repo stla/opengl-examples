@@ -4,6 +4,21 @@ module Tesseract.Transformations4D
 project4D :: [Double] -> [Double]
 project4D x = map (/(1-x!!3)) [2 * x!!0, 2 * x!!1, 2 * x!!2]
 
+hopfproject :: [Double] -> [Double]
+hopfproject p =
+   [p!!0^2+p!!1^2-(p!!2^2-p!!3^2), 2*p!!1*p!!2+2*p!!0*p!!3, 2*p!!1*p!!3-2*p!!0*p!!2]
+
+stereoprojectn :: [Double] -> Double -> [Double]
+stereoprojectn x r = map (/(r - last x)) (map (*(2*r)) (init x))
+
+stereoprojectn' :: [Double] -> [Double]
+stereoprojectn' x = map (/(r - last x)) (map (*(2*r)) (init x))
+  where
+  r = sum (zipWith (*) x x)
+
+stereoprojectnIterated :: Int -> [Double] -> [Double]
+stereoprojectnIterated n x = last $ take n $ iterate stereoprojectn' x
+
 rotate4D :: Double -> Double -> Double -> [Double] -> [Double]
 rotate4D theta phi alpha x =
   [ a*p - b*q - c*r - d*s
@@ -69,3 +84,15 @@ simpleRotation theta x =
     x1 = x!!1
     x2 = x!!2
     x3 = x!!3
+
+
+type Quaternion = (Double, Double, Double, Double)
+
+interpolateQuaternion :: Quaternion -> Quaternion -> Int -> [Quaternion]
+interpolateQuaternion from to length =
+  map (\h -> plus (scalar (1-h) from) (scalar h to)) subds
+  where
+  subds = [frac i length | i <- [0 .. length]]
+  frac i n = realToFrac i / realToFrac n
+  plus (a,b,c,d) (a',b',c',d') = (a+a',b+b',c+c',d+d')
+  scalar k (a,b,c,d) = (k*a, k*b, k*c, k*d)

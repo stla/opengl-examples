@@ -167,6 +167,7 @@ library
                      , CantiTrunc600Cell.Data
                      , AllCubes.TheCubes
                      , SteinerSurface
+                     , Chamfered4dodecahedron.Data
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

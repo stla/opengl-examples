@@ -168,6 +168,9 @@ library
                      , AllCubes.TheCubes
                      , SteinerSurface
                      , Chamfered4dodecahedron.Data
+                     , Chamfered4dodecahedron.Chamfered4dodecahedron
+                     , Pentaract.Data
+                     , Pentaract.Pentaract
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

@@ -83,3 +83,7 @@ Spherical triangles:
 Steiner surface:
 
 ![Imgur](https://i.imgur.com/nC7vJ93.png)
+
+Bianchi-Pinkall torus:
+
+![Imgur](https://i.imgur.com/pJrOPJc.png)

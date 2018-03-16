@@ -1,10 +1,10 @@
-module CantiTrunc600Cell.Data
-  where
+module CantiTrunc600Cell.Data where
 import Math.Combinat.Permutations as P
 import Data.List
-import           Graphics.Rendering.OpenGL.GL (GLdouble, Vertex3 (..))
+import Graphics.Rendering.OpenGL.GL (GLdouble, Vertex3 (..))
 import Data.Tuple.Extra (both)
 -- http://eusebeia.dyndns.org/4d/cantitrunc600cell
+
 
 signs :: (Eq a, Num a) => [a] -> [[a]]
 signs = mapM (\x -> nub [x,-x])

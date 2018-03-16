@@ -1,4 +1,4 @@
-module BianchiPinkall.BianchiPinkall where
+module BianchiPinkall.BianchiPinkallAnim where
 import           BianchiPinkall.Helpers
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
@@ -21,8 +21,6 @@ grey       = Color4  0.8  0.8  0.8  0.7
 whitesmoke = Color4 0.96 0.96 0.96    1
 red        = Color4    1    0    0    1
 
-torus = allQuads 3
-
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> IORef GLdouble -> IORef GLdouble -> DisplayCallback
 display rot1 rot2 rot3 angle angle2 zoom = do
@@ -33,6 +31,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   r3 <- get rot3
   z <- get zoom
   a <- get angle
+  let torus = allQuads (alpha/100)
   loadIdentity
   (_, size) <- get viewport
   resize z size
@@ -102,7 +101,7 @@ main = do
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= black
   materialAmbient FrontAndBack $= black
-  materialShininess FrontAndBack $= 70
+  materialShininess FrontAndBack $= 90
   materialSpecular Front $= white
   lighting $= Enabled
   light (Light 0) $= Enabled

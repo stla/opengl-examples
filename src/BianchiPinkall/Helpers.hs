@@ -42,4 +42,5 @@ quad n u_ v_ i j = ((a, b, c, d), norm)
   norm = triangleNormal (a, b, c)
 
 allQuads :: Double -> [((Vertex3 Double, Vertex3 Double, Vertex3 Double, Vertex3 Double), Normal3 Double)]
-allQuads n = map (uncurry (quad n sequ seqv)) [(i,j) | i <- [0 .. length sequ - 2], j <- [0 .. length seqv - 2]]
+allQuads n = map (uncurry (quad n sequ seqv))
+             [(i,j) | i <- [0 .. length sequ - 2], j <- [0 .. length seqv - 2]]

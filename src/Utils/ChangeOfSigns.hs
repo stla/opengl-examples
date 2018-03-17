@@ -3,6 +3,7 @@ import           Data.List                  hiding (permutations)
 import           Math.Combinat.Permutations
 
 
+
 signsAll :: (Eq a, Num a) => [[a]] -> [[a]]
 signsAll = concatMap signs
   where

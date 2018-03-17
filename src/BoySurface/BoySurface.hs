@@ -1,5 +1,5 @@
-module BianchiPinkall.BianchiPinkallAnim where
-import           BianchiPinkall.Helpers
+module BoySurface.BoySurface where
+import           BoySurface.Data
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
@@ -21,6 +21,8 @@ grey       = Color4  0.8  0.8  0.8  0.7
 whitesmoke = Color4 0.96 0.96 0.96    1
 red        = Color4    1    0    0    1
 
+boysurface = allQuads 300
+
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> IORef GLdouble -> IORef GLdouble -> DisplayCallback
 display rot1 rot2 rot3 angle angle2 zoom = do
@@ -31,7 +33,6 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   r3 <- get rot3
   z <- get zoom
   a <- get angle
-  let torus = allQuads (5 * cos (alpha/100))
   loadIdentity
   (_, size) <- get viewport
   resize z size
@@ -41,7 +42,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   rotate r3 $ Vector3 0 0 1
   renderPrimitive Quads $ do
     materialDiffuse FrontAndBack $= red
-    mapM_ drawQuad torus
+    mapM_ drawQuad boysurface
   swapBuffers
   where
     drawQuad ((v1,v2,v3,v4),n) = do
@@ -58,7 +59,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-4+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-10+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -101,7 +102,7 @@ main = do
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= black
   materialAmbient FrontAndBack $= black
-  materialShininess FrontAndBack $= 90
+  materialShininess FrontAndBack $= 70
   materialSpecular Front $= white
   lighting $= Enabled
   light (Light 0) $= Enabled

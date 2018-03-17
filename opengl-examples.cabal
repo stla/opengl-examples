@@ -176,6 +176,8 @@ library
                      , BianchiPinkall.BianchiPinkallAnim
                      , BiTruncatedTesseract.Data
                      , BiTruncatedTesseract.BiTruncatedTesseract
+                     , BoySurface.Data
+                     , BoySurface.BoySurface
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

@@ -178,6 +178,7 @@ library
                      , BiTruncatedTesseract.BiTruncatedTesseract
                      , BoySurface.Data
                      , BoySurface.BoySurface
+                     , Utils.Quads.Color
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

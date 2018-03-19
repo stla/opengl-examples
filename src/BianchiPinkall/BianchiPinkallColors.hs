@@ -1,5 +1,5 @@
-module BoySurface.BoySurface where
-import           BoySurface.Data
+module BianchiPinkall.BianchiPinkall where
+import           BianchiPinkall.Helpers
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
@@ -22,7 +22,7 @@ grey       = Color4  0.8  0.8  0.8  0.7
 whitesmoke = Color4 0.96 0.96 0.96    1
 red        = Color4    1    0    0    1
 
-boysurface = allQuads 300
+torus = allQuads 3
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> IORef GLdouble -> IORef GLdouble -> DisplayCallback
@@ -43,7 +43,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   rotate r3 $ Vector3 0 0 1
   renderPrimitive Quads $ do
 --    materialDiffuse FrontAndBack $= red
-    mapM_ drawQuad boysurface
+    mapM_ drawQuad torus
   swapBuffers
   where
     drawQuad ((v1,v2,v3,v4),n) = do
@@ -61,7 +61,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-10+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-4+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -91,7 +91,7 @@ idle anim angle2 = do
   r <- get angle2
   when a $ do
     when (r < 360) $ do
-      let ppm = printf "boysurface%04d.ppm" (round r :: Int)
+      let ppm = printf "bianchipinakll%04d.ppm" (round r :: Int)
       (>>=) capturePPM (B.writeFile ppm)
     angle2 $~! (+ 1)
   postRedisplay Nothing
@@ -99,7 +99,7 @@ idle anim angle2 = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Boy Surface"
+  _ <- createWindow "Bianchi-Pinkall Torus"
   windowSize $= Size 400 400
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= black

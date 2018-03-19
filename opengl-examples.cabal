@@ -182,6 +182,7 @@ library
                      , BoyRoman.Data
                      , BoyRoman.BoyRoman
                      , SnubDodecahedron.Data2
+                     , SnubDodecahedron2
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

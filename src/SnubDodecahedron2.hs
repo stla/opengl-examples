@@ -50,9 +50,7 @@ drawPolygonR vs =
   renderPrimitive Polygon $ do
   materialDiffuse Front $= red
   normal $ triangleNormal (vs!!0, vs!!1, vs!!2)
-  vertex (vs!!0)
-  vertex (vs!!1)
-  vertex (vs!!2)
+  mapM_ vertex vs
 
 drawEdges :: (Vertex3 GLfloat, Vertex3 GLfloat) -> IO ()
 drawEdges (v1, v2) = do

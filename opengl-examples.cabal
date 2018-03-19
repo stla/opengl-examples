@@ -179,6 +179,8 @@ library
                      , BoySurface.Data
                      , BoySurface.BoySurface
                      , Utils.Quads.Color
+                     , BoyRoman.Data
+                     , BoyRoman.BoyRoman
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

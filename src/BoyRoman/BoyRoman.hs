@@ -11,8 +11,6 @@ import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Text.Printf
 import           Utils.Colour
-import           Utils.OpenGL                      (negateNormal,
-                                                    triangleNormal)
 import           Utils.Quads.Color
 
 white,black,grey,whitesmoke,red :: Color4 GLfloat
@@ -31,7 +29,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   r2 <- get rot2
   r3 <- get rot3
   z <- get zoom
-  a <- get angle
+--  a <- get angle
   let boysurface = allQuads 300 (alpha/1440)
   loadIdentity
   (_, size) <- get viewport
@@ -46,7 +44,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   swapBuffers
   where
     drawQuad ((v1,v2,v3,v4),n) = do
-      materialDiffuse FrontAndBack $= quadColor (v1,v2,v3,v4)
+      materialDiffuse FrontAndBack $= quadColor (v1,v2,v3,v4) Nothing
       normal n
       vertex v1
       vertex v2

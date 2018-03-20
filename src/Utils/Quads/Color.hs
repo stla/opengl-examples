@@ -1,4 +1,5 @@
 module Utils.Quads.Color where
+import           Data.Maybe
 import           Graphics.Rendering.OpenGL.GL (Color4 (..), GLfloat,
                                                Vertex3 (..))
 
@@ -17,7 +18,8 @@ colMeans quad = (x/m , y/m, z/m)
     z = abs (a3 + b3 + c3 + d3)
     m = x + y + z
 
-quadColor :: Quad -> Color4 GLfloat
-quadColor quad = Color4 (realToFrac x) (realToFrac y) (realToFrac z) 1
+quadColor :: Quad -> Maybe GLfloat -> Color4 GLfloat
+quadColor quad alpha =
+  Color4 (realToFrac x) (realToFrac y) (realToFrac z) (fromMaybe 1 alpha)
   where
     (x,y,z) = colMeans quad

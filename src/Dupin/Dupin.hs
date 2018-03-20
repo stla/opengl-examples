@@ -49,7 +49,7 @@ display rot1 rot2 rot3 angle angle2 zoom a q w = do
   swapBuffers
   where
     drawQuad ((v1,v2,v3,v4),n) = do
-      materialDiffuse FrontAndBack $= quadColor (v1,v2,v3,v4)
+      materialDiffuse FrontAndBack $= quadColor (v1,v2,v3,v4) Nothing
       normal n
       vertex v1
       vertex v2

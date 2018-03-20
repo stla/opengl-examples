@@ -91,3 +91,7 @@ Bianchi-Pinkall torus:
 Dupin cyclide:
 
 ![Imgur](https://i.imgur.com/zQCztkc.png)
+
+Klein bottle:
+
+![Imgur](https://i.imgur.com/9ACMHPC.png)

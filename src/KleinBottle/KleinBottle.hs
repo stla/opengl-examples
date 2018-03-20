@@ -46,7 +46,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   swapBuffers
   where
     drawQuad ((v1,v2,v3,v4),n) = do
-      materialDiffuse FrontAndBack $= quadColor (v1,v2,v3,v4)
+      materialDiffuse FrontAndBack $= quadColor (v1,v2,v3,v4) (Just 0.5)
       normal n
       vertex v1
       vertex v2
@@ -60,7 +60,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-10+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-5+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w

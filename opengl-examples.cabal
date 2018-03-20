@@ -185,6 +185,7 @@ library
                      , SnubDodecahedron2
                      , Dupin.Data
                      , Dupin.Dupin
+                     , KleinBottle.Data
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

@@ -1,10 +1,10 @@
 module SnubDodecahedron2 where
 import           Data.IORef
-import           Data.List.Index              (imapM_)
+-- import           Data.List.Index              (imapM_)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           SnubDodecahedron.Data2
-import           Utils.Colour
+-- import           Utils.Colour
 import           Utils.OpenGL
 import           Utils.Prism
 
@@ -14,8 +14,8 @@ white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
 grey       = Color4  0.8  0.8  0.8  0.7
 whitesmoke = Color4 0.96 0.96 0.96    1
-red = Color4 1 0 0 1
-green = Color4 0 1 0 1
+red =        Color4    1    0    0    1
+green =      Color4    0    1    0    1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> IORef GLdouble -> DisplayCallback
@@ -38,7 +38,7 @@ display rot1 rot2 rot3 zoom angle = do
   mapM_ (\vec -> preservingMatrix $ do
             translate $ toVector3 vec
             materialDiffuse Front $= whitesmoke
-            renderObject Solid $ Sphere' 0.2 30 30)
+            renderObject Solid $ Sphere' 0.3 30 30)
         snubDodecahedron
   swapBuffers
     where
@@ -54,9 +54,9 @@ drawPolygonR vs =
 
 drawEdges :: (Vertex3 GLfloat, Vertex3 GLfloat) -> IO ()
 drawEdges (v1, v2) = do
-  let cylinder = prism v1 v2 30 0.4
+  let cylinder = prism v1 v2 60 0.2
   renderPrimitive Quads $ do
-    materialDiffuse Back $= whitesmoke
+    materialDiffuse FrontAndBack $= whitesmoke
     mapM_ f cylinder
   where
     f ((w1,w2,w3,w4),n) = do
@@ -97,8 +97,8 @@ keyboard rot1 rot2 rot3 angle c _ =
 mouse :: IORef GLdouble -> MouseCallback
 mouse zoom button keyState _ =
   case (button, keyState) of
-    (LeftButton, Down)  -> zoom $~! (+0.1)
-    (RightButton, Down) -> zoom $~! subtract 0.1
+    (LeftButton, Down)  -> zoom $~! (+1)
+    (RightButton, Down) -> zoom $~! subtract 1
     _                   -> return ()
 
 idle :: IdleCallback
@@ -114,6 +114,7 @@ main = do
   materialAmbient Front $= black
   -- materialShininess Front $= 80
   lighting $= Enabled
+  lightModelTwoSide $= Enabled
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 0 0 (-100) 1
   ambient (Light 0) $= white

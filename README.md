@@ -87,3 +87,7 @@ Steiner surface:
 Bianchi-Pinkall torus:
 
 ![Imgur](https://i.imgur.com/pJrOPJc.png)
+
+Dupin cyclide:
+
+![Imgur](https://i.imgur.com/zQCztkc.png)

@@ -1,11 +1,11 @@
-module BoyRoman.BoyRoman where
-import           BoyRoman.Data
+module Dupin.Dupin where
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
 import           Data.List
 import           Data.List.Index                   (imap, imapM_)
 import           Data.Tuple.Extra                  (both)
+import           Dupin.Data
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
@@ -23,16 +23,19 @@ whitesmoke = Color4 0.96 0.96 0.96    1
 red        = Color4    1    0    0    1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
-        -> IORef GLdouble -> IORef GLdouble -> DisplayCallback
-display rot1 rot2 rot3 angle angle2 zoom = do
+        -> IORef GLdouble -> IORef GLdouble
+        -> IORef GLdouble -> IORef GLdouble -> IORef GLdouble -> DisplayCallback
+display rot1 rot2 rot3 angle angle2 zoom a q w = do
   clear [ColorBuffer, DepthBuffer]
   alpha <- get angle2
   r1 <- get rot1
   r2 <- get rot2
   r3 <- get rot3
   z <- get zoom
-  a <- get angle
-  let boysurface = allQuads 300 (alpha/1440)
+  a <- get a
+  b <- get q
+  d <- get w
+  let boysurface = allQuads 300 a b d
   loadIdentity
   (_, size) <- get viewport
   resize z size
@@ -60,15 +63,17 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-10+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-20+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
     h' = realToFrac h
 
 keyboard :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
-         -> IORef GLdouble -> IORef Bool -> KeyboardCallback
-keyboard rot1 rot2 rot3 angle2 zoom anim c _ =
+         -> IORef GLdouble -> IORef Bool
+         -> IORef GLdouble -> IORef GLdouble -> IORef GLdouble
+         -> IORef GLdouble -> IORef GLdouble -> IORef GLdouble -> KeyboardCallback
+keyboard rot1 rot2 rot3 angle2 zoom anim a z q s w x c _ =
   case c of
     'o' -> angle2 $~! subtract 1
     'p' -> angle2 $~! (+ 1)
@@ -80,8 +85,14 @@ keyboard rot1 rot2 rot3 angle2 zoom anim c _ =
     'b' -> rot3 $~! (+1)
     'm' -> zoom $~! (+1)
     'l' -> zoom $~! subtract 1
-    'a' -> writeIORef anim True
-    'q' -> leaveMainLoop
+    'n' -> writeIORef anim True
+    'a' -> a $~! (+0.5)
+    'z' -> a $~! subtract 0.5
+    'q' -> q $~! (+0.5)
+    's' -> q $~! subtract 0.5
+    'w' -> w $~! (+0.5)
+    'x' -> w $~! subtract 0.5
+    'e' -> leaveMainLoop
     _   -> return ()
 
 idle :: IORef Bool -> IORef GLdouble -> IdleCallback
@@ -90,7 +101,7 @@ idle anim angle2 = do
   r <- get angle2
   when a $ do
     when (r < 1440) $ do
-      let ppm = printf "boyroman%04d.ppm" (round r :: Int)
+      let ppm = printf "dupin%04d.ppm" (round r :: Int)
       (>>=) capturePPM (B.writeFile ppm)
     angle2 $~! (+ 4)
   postRedisplay Nothing
@@ -98,10 +109,10 @@ idle anim angle2 = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Boy-Roman Surface"
+  _ <- createWindow "Dupin Cyclide"
   windowSize $= Size 400 400
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
-  clearColor $= black
+  clearColor $= white
   materialAmbient FrontAndBack $= black
   materialShininess FrontAndBack $= 95
   materialSpecular Front $= white
@@ -124,9 +135,15 @@ main = do
   rot3 <- newIORef 0.0
   zoom <- newIORef 0.0
   anim <- newIORef False
-  displayCallback $= display rot1 rot2 rot3 angle angle2 zoom
+  a <- newIORef 4.0
+  z <- newIORef 4.0
+  q <- newIORef 1.0
+  s <- newIORef 1.0
+  w <- newIORef 1.0
+  x <- newIORef 1.0
+  displayCallback $= display rot1 rot2 rot3 angle angle2 zoom a q w
   reshapeCallback $= Just (resize 0)
-  keyboardCallback $= Just (keyboard rot1 rot2 rot3 angle2 zoom anim)
+  keyboardCallback $= Just (keyboard rot1 rot2 rot3 angle2 zoom anim a z q s w x)
   idleCallback $= Just (idle anim angle2)
   mainLoop
 

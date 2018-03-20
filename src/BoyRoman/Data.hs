@@ -34,7 +34,7 @@ quad f alpha u_ v_ i j = ((a, b, c, d), norm)
 allQuads :: Int -> Double
          -> [((Vertex3 Double, Vertex3 Double, Vertex3 Double, Vertex3 Double),
                Normal3 Double)]
-allQuads n alpha = map (\(i,j) -> quad boyRoman' alpha sequ seqv i j)
+allQuads n alpha = map (uncurry (quad boyRoman' alpha sequ seqv))
                    [(i,j) | i <- [0 .. length sequ - 2], j <- [0 .. length seqv - 2]]
         where
             sequ,seqv :: [Double]

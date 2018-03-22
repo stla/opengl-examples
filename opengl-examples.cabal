@@ -187,6 +187,7 @@ library
                      , Dupin.Dupin
                      , KleinBottle.Data
                      , KleinBottle.KleinBottle
+                     , KleinBottle4D.Data
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

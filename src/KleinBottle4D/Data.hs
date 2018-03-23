@@ -33,10 +33,15 @@ klein4rotatedAndProjected a b alpha =
 -- alors faire rotate et stereo aux quads
 fklein4 :: Double -> Double -> Double -> Double -> [Double]
 fklein4 a b u v =
-    [ (a + b * cos v) * cos u
-    , (a + b * cos v) * sin u
-    , b * sin v * cos (u/2)
-    , b * sin v * sin (u/2) ]
+    [ a * (cos (u/2) * cos v - sin (u/2) * sin (2*v))
+    , a * (sin (u/2) * cos v + cos (u/2) * sin (2*v))
+    , b * cos u * (1 + 0.5 * sin v)
+    , b * sin u * (1 + 0.5 * sin v) ]
+--    [ (a + b * cos v) * cos u
+--    , (a + b * cos v) * sin u
+--    , b * sin v * cos (u/2)
+--    , b * sin v * sin (u/2) ]
+
 
 fklein4' :: Double -> Double -> Double -> Double -> Vertex3 Double
 fklein4' a b u v = toVx3 $ fklein4 a b u v
@@ -58,8 +63,9 @@ quad3D :: [Double] -> [Double] -> Int -> Int -> Double -> Double -> Double
 quad3D u_ v_ i j a b alpha = [x'', y'', z'', t'']
   where
     [x,y,z,t] = quad4D fklein4 u_ v_ i j a b
-    [x',y',z',t'] = map (rotate4D (pi/4) (pi/4) alpha) [x,y,z,t]
-    [x'',y'',z'',t''] = map stereoproj [x',y',z',t']
+    [x',y',z',t'] = map (rotation4Dplane [1,0,0,0] [0,0,0,1] alpha) [x,y,z,t]
+--    [x'',y'',z'',t''] = map stereoproj [x',y',z',t']
+    [x'',y'',z'',t''] = map init [x',y',z',t']
 
 quad :: [Double] -> [Double] -> Int -> Int -> Double -> Double -> Double
      -> ((Vertex3 Double, Vertex3 Double, Vertex3 Double, Vertex3 Double),

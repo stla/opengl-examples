@@ -85,6 +85,16 @@ simpleRotation theta x =
     x2 = x!!2
     x3 = x!!3
 
+rotation4Dplane :: [Double] -> [Double] -> Double -> [Double] -> [Double]
+rotation4Dplane axis1 axis2 theta vector =
+  -- axis1 and axis2 must be normalized
+  zipWith (+) (zipWith (+) (map (* coef1) axis1) (map (* coef2) axis2))
+               (zipWith subtract vector pvector)
+  where vx = sum $ zipWith (*) vector axis1
+        vy = sum $ zipWith (*) vector axis2
+        coef1 = vx * cos theta - vy * sin theta
+        coef2 = vy * cos theta + vx * sin theta
+        pvector = zipWith (+) (map (* vx) axis1) (map (* vy) axis2)
 
 type Quaternion = (Double, Double, Double, Double)
 

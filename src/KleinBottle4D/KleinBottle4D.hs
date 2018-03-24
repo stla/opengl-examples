@@ -91,21 +91,14 @@ keyboard rot1 rot2 rot3 angle2 zoom anim plane c _ =
     'q' -> leaveMainLoop
     _   -> return ()
 
+menuZoomPlus :: IORef GLdouble -> MenuCallback
+menuZoomPlus zoom = zoom $~! (+1)
 
-dial :: IORef GLdouble -> DialAndButtonBoxCallback
-dial zoom index =
-  case index of
-    DialAndButtonBoxButton 1 Down -> zoom $~! (+1)
-    DialAndButtonBoxDial 1 1      -> zoom $~! (+1)
-    _                             -> return ()
+menuZoomMinus :: IORef GLdouble -> MenuCallback
+menuZoomMinus zoom = zoom $~! subtract 1
 
-tablet :: TabletCallback
-tablet input pos = do
-  case pos of
-    TabletPosition x y  -> print (x,y)
-  case input of
-    TabletButton 1 Down -> putStrLn "hello"
-    TabletMotion        -> putStrLn "motion"
+menuRotationPlane :: IORef String -> String -> MenuCallback
+menuRotationPlane ioplane plane = writeIORef ioplane plane
 
 idle :: IORef Bool -> IORef GLdouble -> IdleCallback
 idle anim angle2 = do
@@ -164,5 +157,19 @@ main = do
         \    Zoom: l, m\n\
         \    Animation: a\n\
         \"
+  attachMenu LeftButton
+             (Menu [ SubMenu "Zoom" (Menu [ MenuEntry "Zoom+" (menuZoomPlus zoom)
+                                          , MenuEntry "Zoom-" (menuZoomMinus zoom)
+                                          ])
+                   , SubMenu "Rotation plane"
+                             (Menu [ MenuEntry "XY" (menuRotationPlane plane "XY")
+                                   , MenuEntry "XZ" (menuRotationPlane plane "XZ")
+                                   , MenuEntry "XU" (menuRotationPlane plane "XU")
+                                   , MenuEntry "YZ" (menuRotationPlane plane "YZ")
+                                   , MenuEntry "YU" (menuRotationPlane plane "YU")
+                                   , MenuEntry "ZU" (menuRotationPlane plane "ZU")
+                                   ])
+                   ])
   mainLoop
+
 

@@ -23,8 +23,8 @@ whitesmoke = Color4 0.96 0.96 0.96    1
 red        = Color4    1    0    0    1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
-        -> IORef GLdouble -> IORef GLdouble -> DisplayCallback
-display rot1 rot2 rot3 angle angle2 zoom = do
+        -> IORef GLdouble -> IORef GLdouble -> IORef String -> DisplayCallback
+display rot1 rot2 rot3 angle angle2 zoom plane = do
   clear [ColorBuffer, DepthBuffer]
   alpha <- get angle2
   r1 <- get rot1
@@ -32,7 +32,8 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   r3 <- get rot3
   z <- get zoom
   a <- get angle
-  let klein = allQuads 3 3 (alpha*pi/180)
+  p <- get plane
+  let klein = allQuads 4 4 (alpha*pi/180) p
   loadIdentity
   (_, size) <- get viewport
   resize z size
@@ -46,7 +47,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   swapBuffers
   where
     drawQuad ((v1,v2,v3,v4),n) = do
-      materialDiffuse Front $= quadColor (v1,v2,v3,v4) (Just 1)
+      materialDiffuse FrontAndBack $= quadColor (v1,v2,v3,v4) Nothing
       normal n
       vertex v1
       vertex v2
@@ -67,22 +68,44 @@ resize zoom s@(Size w h) = do
     h' = realToFrac h
 
 keyboard :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
-         -> IORef GLdouble -> IORef Bool -> KeyboardCallback
-keyboard rot1 rot2 rot3 angle2 zoom anim c _ =
+         -> IORef GLdouble -> IORef Bool -> IORef String -> KeyboardCallback
+keyboard rot1 rot2 rot3 angle2 zoom anim plane c _ =
   case c of
     'o' -> angle2 $~! subtract 1
     'p' -> angle2 $~! (+ 1)
-    'r' -> rot1 $~! subtract 1
-    't' -> rot1 $~! (+1)
-    'f' -> rot2 $~! subtract 1
-    'g' -> rot2 $~! (+1)
-    'v' -> rot3 $~! subtract 1
-    'b' -> rot3 $~! (+1)
+    'e' -> rot1 $~! subtract 1
+    'r' -> rot1 $~! (+1)
+    't' -> rot2 $~! subtract 1
+    'y' -> rot2 $~! (+1)
+    'u' -> rot3 $~! subtract 1
+    'i' -> rot3 $~! (+1)
     'm' -> zoom $~! (+1)
     'l' -> zoom $~! subtract 1
     'a' -> writeIORef anim True
+    'd' -> writeIORef plane "XY"
+    'f' -> writeIORef plane "XZ"
+    'g' -> writeIORef plane "XU"
+    'h' -> writeIORef plane "YZ"
+    'j' -> writeIORef plane "YU"
+    'k' -> writeIORef plane "ZU"
     'q' -> leaveMainLoop
     _   -> return ()
+
+
+dial :: IORef GLdouble -> DialAndButtonBoxCallback
+dial zoom index =
+  case index of
+    DialAndButtonBoxButton 1 Down -> zoom $~! (+1)
+    DialAndButtonBoxDial 1 1      -> zoom $~! (+1)
+    _                             -> return ()
+
+tablet :: TabletCallback
+tablet input pos = do
+  case pos of
+    TabletPosition x y  -> print (x,y)
+  case input of
+    TabletButton 1 Down -> putStrLn "hello"
+    TabletMotion        -> putStrLn "motion"
 
 idle :: IORef Bool -> IORef GLdouble -> IdleCallback
 idle anim angle2 = do
@@ -124,9 +147,22 @@ main = do
   rot3 <- newIORef 0.0
   zoom <- newIORef 0.0
   anim <- newIORef False
-  displayCallback $= display rot1 rot2 rot3 angle angle2 zoom
+  plane <- newIORef "XY"
+  displayCallback $= display rot1 rot2 rot3 angle angle2 zoom plane
   reshapeCallback $= Just (resize 0)
-  keyboardCallback $= Just (keyboard rot1 rot2 rot3 angle2 zoom anim)
+  keyboardCallback $= Just (keyboard rot1 rot2 rot3 angle2 zoom anim plane)
   idleCallback $= Just (idle anim angle2)
+  tabletCallback $= Just tablet
+  dialAndButtonBoxCallback $= Just (dial zoom)
+  putStrLn "*** Haskell OpenGL 4D Klein Bottle ***\n\
+        \    To quit, press q.\n\
+        \    Scene rotation:\n\
+        \        e, r, t, y, u, i\n\
+        \    Rotate in 4 dimensions: o, p\n\
+        \    Plane of rotation:\n\
+        \        d, f, g, h, j, k\n\
+        \    Zoom: l, m\n\
+        \    Animation: a\n\
+        \"
   mainLoop
 

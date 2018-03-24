@@ -665,6 +665,18 @@ executable triangulatedsphere
                      , opengl-examples
   default-language:    Haskell2010
 
+executable kleinbottle4d
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
+  hs-source-dirs:      src-exe
+  main-is:             ExeKleinBottle4D.hs
+  ghc-options:         -fllvm -main-is ExeKleinBottle4D
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
 source-repository head
   type:     git
   location: https://github.com/stla/opengl-examples

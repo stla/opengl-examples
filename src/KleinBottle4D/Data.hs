@@ -59,13 +59,12 @@ quad4D f u_ v_ i j a b = [x, y, z, t]
                     , f a b (u_!!(i+1)) (v_!!j) )
 
 quad3D :: [Double] -> [Double] -> Int -> Int -> Double -> Double -> Double
-       -> String -> [[Double]]
-quad3D u_ v_ i j a b alpha plane = [x'', y'', z'', t'']
+       -> String -> ([Double] -> [Double]) -> [[Double]]
+quad3D u_ v_ i j a b alpha plane proj = [x'', y'', z'', t'']
   where
     [x,y,z,t] = quad4D fklein4 u_ v_ i j a b
     [x',y',z',t'] = map (rotation4Dplane axis1 axis2 alpha) [x,y,z,t]
---    [x'',y'',z'',t''] = map stereoproj [x',y',z',t']
-    [x'',y'',z'',t''] = map init [x',y',z',t']
+    [x'',y'',z'',t''] = map proj [x',y',z',t']
     axes :: String -> ([Double], [Double])
     axes "XY" = ([1,0,0,0], [0,1,0,0])
     axes "XZ" = ([1,0,0,0], [0,0,1,0])
@@ -76,11 +75,12 @@ quad3D u_ v_ i j a b alpha plane = [x'', y'', z'', t'']
     (axis1, axis2) = axes plane
 
 quad :: [Double] -> [Double] -> Int -> Int -> Double -> Double -> Double -> String
+     -> ([Double] -> [Double])
      -> ((Vertex3 Double, Vertex3 Double, Vertex3 Double, Vertex3 Double),
           Normal3 Double)
-quad u_ v_ i j a b alpha plane = ((x', y', z', t'), norm)
+quad u_ v_ i j a b alpha plane proj = ((x', y', z', t'), norm)
   where
-  [x,y,z,t] = quad3D u_ v_ i j a b alpha plane
+  [x,y,z,t] = quad3D u_ v_ i j a b alpha plane proj
   x' = toVx3 x
   y' = toVx3 y
   z' = toVx3 z
@@ -88,11 +88,11 @@ quad u_ v_ i j a b alpha plane = ((x', y', z', t'), norm)
   toVx3 v = Vertex3 (v!!0) (v!!1) (v!!2)
   norm = triangleNormal (x', y', z')
 
-allQuads :: Double -> Double -> Double -> String
+allQuads :: Double -> Double -> Double -> String -> ([Double] -> [Double])
          -> [((Vertex3 Double, Vertex3 Double, Vertex3 Double, Vertex3 Double),
                Normal3 Double)]
-allQuads a b alpha plane =
-    map (\(i,j) -> quad sequ seqv i j a b alpha plane)
+allQuads a b alpha plane proj =
+    map (\(i,j) -> quad sequ seqv i j a b alpha plane proj)
     [(i,j) | i <- [0 .. length sequ - 2], j <- [0 .. length seqv - 2]]
         where
             n = 70

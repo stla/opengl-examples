@@ -1,0 +1,3 @@
+## https://github.com/ndmitchell/hlint/blob/master/.hlint.yaml#L59
+- ignore: {name: Use head}
+- ignore: {name: Reduce duplication}

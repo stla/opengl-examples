@@ -2,17 +2,18 @@ module KleinBottle4D.KleinBottle4D where
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
-import           Data.List
-import           Data.List.Index                   (imap, imapM_)
-import           Data.Tuple.Extra                  (both)
+-- import           Data.List
+-- import           Data.List.Index                   (imap, imapM_)
+-- import           Data.Tuple.Extra                  (both)
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           KleinBottle4D.Data
 import           Text.Printf
 -- import           Utils.Colour
-import           Utils.OpenGL                      (negateNormal,
-                                                    triangleNormal)
+import           Tesseract.Transformations4D       (stereoprojectn')
+-- import           Utils.OpenGL                      (negateNormal,
+--                                                     triangleNormal)
 import           Utils.Quads.Color
 
 white,black,grey,whitesmoke,red :: Color4 GLfloat
@@ -23,8 +24,9 @@ whitesmoke = Color4 0.96 0.96 0.96    1
 red        = Color4    1    0    0    1
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
-        -> IORef GLdouble -> IORef GLdouble -> IORef String -> DisplayCallback
-display rot1 rot2 rot3 angle angle2 zoom plane = do
+        -> IORef GLdouble -> IORef GLdouble -> IORef String
+        -> IORef Bool -> DisplayCallback
+display rot1 rot2 rot3 angle angle2 zoom plane proj = do
   clear [ColorBuffer, DepthBuffer]
   alpha <- get angle2
   r1 <- get rot1
@@ -33,7 +35,9 @@ display rot1 rot2 rot3 angle angle2 zoom plane = do
   z <- get zoom
   a <- get angle
   p <- get plane
+  projFun <- get proj
   let klein = allQuads 4 4 (alpha*pi/180) p
+                       (if projFun then init else stereoprojectn')
   loadIdentity
   (_, size) <- get viewport
   resize z size
@@ -61,7 +65,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-40+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-25+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -100,15 +104,20 @@ menuZoomMinus zoom = zoom $~! subtract 1
 menuRotationPlane :: IORef String -> String -> MenuCallback
 menuRotationPlane ioplane plane = writeIORef ioplane plane
 
-idle :: IORef Bool -> IORef GLdouble -> IdleCallback
-idle anim angle2 = do
+menuProjection :: IORef Bool -> Bool -> MenuCallback
+menuProjection = writeIORef
+
+idle :: IORef Bool -> IORef GLdouble -> IORef Int -> IdleCallback
+idle anim angle2 snapshots = do
   a <- get anim
   r <- get angle2
+  n <- get snapshots
   when a $ do
-    when (r < 360) $ do
-      let ppm = printf "ppm/kleinbottle4D%04d.ppm" (round r :: Int)
+    when (n < 360) $ do
+      let ppm = printf "ppm/kleinbottle4D%04d.ppm" n
       (>>=) capturePPM (B.writeFile ppm)
     angle2 $~! (+ 1)
+    snapshots $~! (+1)
   postRedisplay Nothing
 
 main :: IO ()
@@ -140,13 +149,13 @@ main = do
   rot3 <- newIORef 0.0
   zoom <- newIORef 0.0
   anim <- newIORef False
+  snapshots <- newIORef 0
   plane <- newIORef "XY"
-  displayCallback $= display rot1 rot2 rot3 angle angle2 zoom plane
+  proj <- newIORef True
+  displayCallback $= display rot1 rot2 rot3 angle angle2 zoom plane proj
   reshapeCallback $= Just (resize 0)
   keyboardCallback $= Just (keyboard rot1 rot2 rot3 angle2 zoom anim plane)
-  idleCallback $= Just (idle anim angle2)
-  tabletCallback $= Just tablet
-  dialAndButtonBoxCallback $= Just (dial zoom)
+  idleCallback $= Just (idle anim angle2 snapshots)
   putStrLn "*** Haskell OpenGL 4D Klein Bottle ***\n\
         \    To quit, press q.\n\
         \    Scene rotation:\n\
@@ -169,6 +178,10 @@ main = do
                                    , MenuEntry "YU" (menuRotationPlane plane "YU")
                                    , MenuEntry "ZU" (menuRotationPlane plane "ZU")
                                    ])
+                    , SubMenu "Projection"
+                              (Menu [ MenuEntry "XYZ" (menuProjection proj True)
+                                    , MenuEntry "Stereographic" (menuProjection proj False)
+                                    ])
                    ])
   mainLoop
 

@@ -1,18 +1,18 @@
 module Octaplex
   where
-import           Control.Monad                      (when)
+import           Control.Monad                     (when)
+import qualified Data.ByteString                   as B
 import           Data.IORef
 import           Data.Tuple.Extra                  (both)
+import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Octaplex.Data
 import           Tesseract.Transformations4D
-import           Utils.OpenGL                      (triangleNormal)
-import           Utils.Prism
-import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Text.Printf
 import           Utils.ConvertPPM
-import qualified Data.ByteString                   as B
+import           Utils.OpenGL                      (triangleNormal)
+import           Utils.Prism
 
 white,black,grey,whitesmoke,red :: Color4 GLfloat
 white      = Color4    1    1    1    1
@@ -82,7 +82,7 @@ resize s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 (-8) 6 (-12)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 (-10) 8 (-14)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -97,7 +97,7 @@ keyboard anim angle c _ =
     'c' -> do
       r <- get angle
       let i = round r :: Int
-      let ppm = printf "octaplex%04d.ppm" i
+      let ppm = printf "ppm/octaplex%04d.ppm" i
           -- png = printf "pic%04d.png" i
       (>>=) capturePPM (B.writeFile ppm)
       -- convert ppm png True
@@ -120,7 +120,7 @@ idle anim angle = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Truncated tesseract"
+  _ <- createWindow "Octaplex"
   windowSize $= Size 600 600
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= black
@@ -144,4 +144,9 @@ main = do
   reshapeCallback $= Just resize
   keyboardCallback $= Just (keyboard anim angle)
   idleCallback $= Just (idle anim angle)
+  putStrLn "***              ***\n\
+        \    To quit, press q.\n\
+        \    Rotate in 4D: o, p\n\
+        \    Animation: a\n\
+        \"
   mainLoop

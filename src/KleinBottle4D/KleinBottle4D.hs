@@ -10,7 +10,7 @@ import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           KleinBottle4D.Data
 import           Text.Printf
-import           Utils.Colour
+-- import           Utils.Colour
 import           Utils.OpenGL                      (negateNormal,
                                                     triangleNormal)
 import           Utils.Quads.Color
@@ -61,7 +61,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-45+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-40+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -113,7 +113,7 @@ idle anim angle2 = do
   r <- get angle2
   when a $ do
     when (r < 360) $ do
-      let ppm = printf "kleinbottle4D%04d.ppm" (round r :: Int)
+      let ppm = printf "ppm/kleinbottle4D%04d.ppm" (round r :: Int)
       (>>=) capturePPM (B.writeFile ppm)
     angle2 $~! (+ 1)
   postRedisplay Nothing

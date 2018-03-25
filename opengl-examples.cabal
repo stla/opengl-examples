@@ -189,6 +189,8 @@ library
                      , KleinBottle.KleinBottle
                      , KleinBottle4D.Data
                      , KleinBottle4D.KleinBottle4D
+                     , Omnitruncated120Cell.Data
+                     , Omnitruncated120Cell.Omnitruncated120Cell
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

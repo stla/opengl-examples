@@ -1,4 +1,4 @@
-module Pentaract.Pentaract2 where
+module Pentaract.Pentaract3 where
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
@@ -23,15 +23,14 @@ grey       = Color4  0.8  0.8  0.8  0.7
 whitesmoke = Color4 0.96 0.96 0.96    1
 red        = Color4    1    0    0    1
 
-cube4 :: [[Double]]
-cube4 = map stereoprojectn' cube5
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -> IORef GLdouble
         -> IORef GLdouble -> IORef GLdouble -> DisplayCallback
 display rot1 rot2 rot3 angle angle2 zoom = do
   clear [ColorBuffer, DepthBuffer]
   a <- get angle2
-  let points  = map (rotation4Dplane [0,0,1,0] [0,0,0,1] (a * pi / 180)) cube4
+  let points  = map (rotation4Dplane [sqrt 3 / sqrt 4,1/2,0,0,0] [0,0,0,0,1] (a * pi / 180)) cube5
+      points' = map stereoprojectn' points
       ppoints = map project4D points
       vectors = map toVector3 ppoints
       edges   = map (both (toVertex3 . (!!) ppoints)) edgesIdxs
@@ -52,7 +51,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
 --                  translate (toVector3 vec)
 --                  renderObject Solid $ Sphere' 0.05 30 30)
 --       allVertices
-  mapM_ (drawCylinder 0.05) edges
+  mapM_ (drawCylinder 0.075) edges
   swapBuffers
   where
     toVector3 x = Vector3 (x!!0) (x!!1) (x!!2)
@@ -78,7 +77,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 (-6) 6 (-12+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-12+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -108,7 +107,7 @@ idle anim angle2 = do
   r <- get angle2
   when a $ do
     when (r < 360) $ do
-      let ppm = printf "chamfereddodecahedron%04d.ppm" (round r :: Int)
+      let ppm = printf "ppm/pentaract%04d.ppm" (round r :: Int)
       (>>=) capturePPM (B.writeFile ppm)
     angle2 $~! (+ 1)
   postRedisplay Nothing

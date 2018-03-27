@@ -3,9 +3,8 @@ import           Data.Maybe
 import           Graphics.Rendering.OpenGL.GL (Color4 (..), GLfloat,
                                                Vertex3 (..))
 
-type Quad = (Vertex3 Double, Vertex3 Double, Vertex3 Double, Vertex3 Double)
-
-colMeans :: Quad -> (Double, Double, Double)
+colMeans :: Floating a => (Vertex3 a, Vertex3 a, Vertex3 a, Vertex3 a)
+         -> (a, a, a)
 colMeans quad = (x/m , y/m, z/m)
   where
     (a, b, c, d) = quad
@@ -18,7 +17,8 @@ colMeans quad = (x/m , y/m, z/m)
     z = abs (a3 + b3 + c3 + d3)
     m = x + y + z
 
-quadColor :: Quad -> Maybe GLfloat -> Color4 GLfloat
+quadColor :: (Real a, Floating a) => (Vertex3 a, Vertex3 a, Vertex3 a, Vertex3 a)
+          -> Maybe GLfloat -> Color4 GLfloat
 quadColor quad alpha =
   Color4 (realToFrac x) (realToFrac y) (realToFrac z) (fromMaybe 1 alpha)
   where

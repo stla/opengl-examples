@@ -1,7 +1,6 @@
 module ConicalSpiral.Data where
-import           Data.List
-import           Graphics.Rendering.OpenGL.GL (GLdouble, Normal3 (..),
-                                               Vertex3 (..))
+-- import           Data.List
+import           Graphics.Rendering.OpenGL.GL (Normal3 (..), Vertex3 (..))
 import           Utils.OpenGL                 (triangleNormal)
 
 sconical :: Double -> Double -> Double -> Double -> Double -> Double -> [Double]

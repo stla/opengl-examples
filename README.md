@@ -99,3 +99,7 @@ Klein bottle:
 Conical Spiral:
 
 ![Imgur](https://i.imgur.com/iFmsTB9.png)
+
+Doubly conical spiral:
+
+![Imgur](https://i.imgur.com/9sFAZtw.png)

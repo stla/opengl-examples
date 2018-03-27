@@ -2,8 +2,8 @@ module Pentaract.Pentaract2 where
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
-import           Data.List
-import           Data.List.Index                   (imap, imapM_)
+-- import           Data.List
+-- import           Data.List.Index                   (imap, imapM_)
 import           Data.Tuple.Extra                  (both)
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
@@ -11,9 +11,9 @@ import           Graphics.UI.GLUT
 import           Pentaract.Data
 import           Tesseract.Transformations4D
 import           Text.Printf
-import           Utils.Colour
-import           Utils.OpenGL                      (negateNormal,
-                                                    triangleNormal)
+-- import           Utils.Colour
+-- import           Utils.OpenGL                      (negateNormal,
+--                                                    triangleNormal)
 import           Utils.Prism
 
 white,black,grey,whitesmoke,red :: Color4 GLfloat
@@ -33,7 +33,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   a <- get angle2
   let points  = map (rotation4Dplane [0,0,1,0] [0,0,0,1] (a * pi / 180)) cube4
       ppoints = map project4D points
-      vectors = map toVector3 ppoints
+      -- vectors = map toVector3 ppoints
       edges   = map (both (toVertex3 . (!!) ppoints)) edgesIdxs
   alpha <- get angle
   r1 <- get rot1
@@ -55,7 +55,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   mapM_ (drawCylinder 0.05) edges
   swapBuffers
   where
-    toVector3 x = Vector3 (x!!0) (x!!1) (x!!2)
+    -- toVector3 x = Vector3 (x!!0) (x!!1) (x!!2)
     toVertex3 x = Vertex3 (x!!0) (x!!1) (x!!2)
     drawCylinder :: GLdouble -> (Vertex3 GLdouble, Vertex3 GLdouble) -> IO ()
     drawCylinder radius (v1,v2) = do

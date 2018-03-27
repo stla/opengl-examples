@@ -102,7 +102,7 @@ menuZoomMinus :: IORef GLdouble -> MenuCallback
 menuZoomMinus zoom = zoom $~! subtract 1
 
 menuRotationPlane :: IORef String -> String -> MenuCallback
-menuRotationPlane ioplane plane = writeIORef ioplane plane
+menuRotationPlane = writeIORef
 
 menuProjection :: IORef Bool -> Bool -> MenuCallback
 menuProjection = writeIORef
@@ -110,7 +110,7 @@ menuProjection = writeIORef
 idle :: IORef Bool -> IORef GLdouble -> IORef Int -> IdleCallback
 idle anim angle2 snapshots = do
   a <- get anim
-  r <- get angle2
+--  r <- get angle2
   n <- get snapshots
   when a $ do
     when (n < 360) $ do

@@ -171,6 +171,8 @@ library
                      , Chamfered4dodecahedron.Chamfered4dodecahedron
                      , Pentaract.Data
                      , Pentaract.Pentaract
+                     , Pentaract.Pentaract2
+                     , Pentaract.Pentaract3
                      , BianchiPinkall.Helpers
                      , BianchiPinkall.BianchiPinkall
                      , BianchiPinkall.BianchiPinkallAnim
@@ -191,6 +193,8 @@ library
                      , KleinBottle4D.KleinBottle4D
                      , Omnitruncated120Cell.Data
                      , Omnitruncated120Cell.Omnitruncated120Cell
+                     , ConicalSpiral.Data
+                     , ConicalSpiral.ConicalSpiral
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -675,6 +679,18 @@ executable kleinbottle4d
   hs-source-dirs:      src-exe
   main-is:             ExeKleinBottle4D.hs
   ghc-options:         -fllvm -main-is ExeKleinBottle4D
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable conicalspiral
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
+  hs-source-dirs:      src-exe
+  main-is:             ExeConicalSpiral.hs
+  ghc-options:         -fllvm -main-is ExeConicalSpiral
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010

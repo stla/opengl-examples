@@ -8,3 +8,4 @@ extra-deps:
 - permutation-0.5.0.5
 - combinat-0.2.8.2
 - HaskellForMaths-0.4.8
+- numeric-tools-0.2.0.1

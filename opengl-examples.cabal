@@ -202,7 +202,9 @@ library
                      , ConicalSpiral.DoublyConicalSpiral
                      , ConicalSpiral.Data4
                      , ConicalSpiral.ConicalSpiral4
+                     , ConicalSpiral.ConicalSpiral5
                      , WavyCylinder.Data
+                     , Utils.Palettes
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

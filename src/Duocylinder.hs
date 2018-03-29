@@ -12,7 +12,7 @@ import           Graphics.UI.GLUT
 import           Tesseract.Transformations4D
 import           Text.Printf
 import           Utils.Prism
-import           Utils.Colour                      (pickColor)
+--import           Utils.Colour                      (pickColor)
 import           Utils.OpenGL                      (triangleNormal)
 
 white,black,red,grey,whitesmoke :: Color4 GLfloat

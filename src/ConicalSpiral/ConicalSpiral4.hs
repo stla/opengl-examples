@@ -5,10 +5,9 @@ import qualified Data.Map.Strict              as M
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 
-white,black,red :: Color4 GLfloat
+white,black :: Color4 GLfloat
 white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
-red        = Color4    1    0    0    1
 
 colors :: [Color4 GLfloat]
 colors =
@@ -235,7 +234,7 @@ display rot1 rot2 rot3 n zoom = do
   renderPrimitive Quads $ mapM_ drawQuad (M.toList surface)
   swapBuffers
   where
-    drawQuad ((i,j), quad) = do
+    drawQuad ((_,j), quad) = do
       materialDiffuse FrontAndBack $= colors !! j
       drawQuad' quad
         where
@@ -283,7 +282,7 @@ idle = postRedisplay Nothing
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Conical Surface"
+  _ <- createWindow "Conical Spiral"
   windowSize $= Size 500 500
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= white

@@ -1,7 +1,7 @@
 module Utils.CartesianPolar where
-import           Data.List
-import           Data.Tuple.Extra             (both)
-import           Graphics.Rendering.OpenGL.GL (GLfloat, Vertex3 (..))
+-- import           Data.List
+-- import           Data.Tuple.Extra             (both)
+-- import           Graphics.Rendering.OpenGL.GL (GLfloat, Vertex3 (..))
 
 cartesianToPolar :: (Floating a, RealFloat a, RealFrac a) => (a, a, a) -> (a, a, a)
 cartesianToPolar (x,y,z) =

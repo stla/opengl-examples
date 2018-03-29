@@ -17,6 +17,7 @@ vertices (coords, allperms) =
   nub $ zipWith permuteList perms (replicate 24 coords)
   where perms = filter (if allperms then const True else isEvenPermutation) (P.permutations 4)
 
+vs120trunc :: [[Double]]
 vs120trunc = concatMap vertices [([1, 3+4*phi, 3+4*phi, 3+4*phi], True)
          , ([phi*phi*phi, phi*phi*phi, phi*phi*phi, 5+6*phi], True)
          , ([2*phi*phi, 2*phi*phi, 2*phi*phi, 2*phi*phi*phi*phi], True)

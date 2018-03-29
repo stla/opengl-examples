@@ -1,5 +1,5 @@
 module Hopf.Hopf where
-import           Graphics.Rendering.OpenGL.GL (GLdouble, Vertex3 (..))
+import           Graphics.Rendering.OpenGL.GL (Vertex3 (..))
 
 hopf :: [Double] -> [Double]
 hopf p = [ p!!0*p!!0 + p!!1*p!!1 - p!!2*p!!2 - p!!3*p!!3

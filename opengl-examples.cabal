@@ -220,6 +220,8 @@ library
                      , permutation
                      , combinat
                      , HaskellForMaths
+                     , numeric-tools
+                     , vector
   default-language:    Haskell2010
   ghc-options:        -Wall
 

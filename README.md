@@ -103,3 +103,7 @@ Conical Spiral:
 Doubly conical spiral:
 
 ![Imgur](https://i.imgur.com/9sFAZtw.png)
+
+Wavy torus with rotating colors:
+
+![gfycat](https://thumbs.gfycat.com/NaughtyFavoriteAchillestang-size_restricted.gif)

@@ -200,6 +200,8 @@ library
                      , ConicalSpiral.ConicalSpiral3
                      , ConicalSpiral.DataDoubly
                      , ConicalSpiral.DoublyConicalSpiral
+                     , ConicalSpiral.Data4
+                     , ConicalSpiral.ConicalSpiral4
                      , WavyCylinder.Data
   build-depends:       base >= 4.7 && < 5
                      , OpenGL

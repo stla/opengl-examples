@@ -1,5 +1,5 @@
 module Utils.Palettes
-  (palettes, colorRamp, colorRamp')
+  (palettes, colorRamp, colorRamp', colorRampSymmetric, colorRampSymmetric')
   where
 import           Data.Map.Strict              (Map, fromList, (!))
 import qualified Data.Vector.Unboxed          as V
@@ -1347,3 +1347,17 @@ rgbToColor4 x =
 
 colorRamp' :: String -> Int -> [Color4 GLfloat]
 colorRamp' paletteName n = map rgbToColor4 (colorRamp paletteName n)
+
+colorRampSymmetric :: String -> Int -> Int -> Palette
+colorRampSymmetric paletteName n shift =
+  shiftList shift
+    [(palette ++ reverse palette) !! i | i <- [0 .. 2*n-1], even i]
+  where
+    palette = colorRamp paletteName n
+
+colorRampSymmetric' :: String -> Int -> Int -> [Color4 GLfloat]
+colorRampSymmetric' paletteName n shift =
+  map rgbToColor4 (colorRampSymmetric paletteName n shift)
+
+shiftList :: Int -> [a] -> [a]
+shiftList k list = [list !! i | i <- [k .. length list -1] ++ [0 .. k-1]]

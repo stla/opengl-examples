@@ -1,9 +1,8 @@
 module CompoundFiveTetrahedra.DataPolar
   where
-import           Data.List
-import           Data.Tuple.Extra             (both)
-import           Graphics.Rendering.OpenGL.GL (GLdouble, Normal3 (..),
-                                               Vertex3 (..))
+-- import           Data.List
+-- import           Data.Tuple.Extra             (both)
+import           Graphics.Rendering.OpenGL.GL (GLdouble, Vertex3 (..))
 import           Utils.CartesianPolar
 -- import           Utils.OpenGL                 (triangleNormal)
 -- import Utils.SphericalTriangle

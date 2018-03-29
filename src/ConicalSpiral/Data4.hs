@@ -1,4 +1,6 @@
-module ConicalSpiral.Data4 where
+module ConicalSpiral.Data4
+  (allQuads)
+  where
 import           Data.Map.Strict              (Map)
 import qualified Data.Map.Strict              as M
 import           Graphics.Rendering.OpenGL.GL (Normal3 (..), Vertex3 (..))

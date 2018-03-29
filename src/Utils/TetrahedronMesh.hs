@@ -5,7 +5,7 @@ import           Data.Permute                 (elems, rank)
 --import           Data.Tuple.Extra             (first, (&&&), (***), fst3, snd3, thd3)
 import           Graphics.Rendering.OpenGL.GL (GLdouble)
 -- import           Utils.TetrahedronFaces
-import           Utils.CartesianPolar
+-- import           Utils.CartesianPolar
 --import           Utils.SphericalTriangle
 
 allVertices :: [[GLdouble]]

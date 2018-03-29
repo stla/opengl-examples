@@ -5,8 +5,8 @@ import           Data.Tuple.Extra             (both)
 import           Graphics.Rendering.OpenGL.GL (GLdouble, Normal3 (..),
                                                Vertex3 (..))
 import           Utils.CartesianPolar
-import           Utils.OpenGL                 (triangleNormal)
-import Utils.SphericalTriangle
+-- import           Utils.OpenGL                 (triangleNormal)
+-- import Utils.SphericalTriangle
 
 type TriDouble = (GLdouble, GLdouble, GLdouble)
 type TriDoubleVx3 = (Vertex3 GLdouble, Vertex3 GLdouble, Vertex3 GLdouble)

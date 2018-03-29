@@ -14,14 +14,13 @@ n_u,n_v :: Int
 n_u = 200
 n_v = 200
 
-colors :: [Color4 GLfloat]
-colors = colorRamp' "viridis" n_v
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -- rotations
+        -> IORef String    -- color palette
         -> IORef GLdouble  -- parameter n
         -> IORef GLdouble  -- zoom
         -> DisplayCallback
-display rot1 rot2 rot3 n zoom = do
+display rot1 rot2 rot3 palette n zoom = do
   clear [ColorBuffer, DepthBuffer]
   n' <- get n
   r1 <- get rot1
@@ -29,17 +28,19 @@ display rot1 rot2 rot3 n zoom = do
   r3 <- get rot3
   z <- get zoom
   (_, size) <- get viewport
-  let surface = allQuads n_u n_v n'
+  palette' <- get palette
+  let colors = colorRamp' palette' n_v
+      surface = allQuads n_u n_v n'
   loadIdentity
   resize z size
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  renderPrimitive Quads $ mapM_ drawQuad (M.toList surface)
+  renderPrimitive Quads $ mapM_ (drawQuad colors) (M.toList surface)
   swapBuffers
   where
-    drawQuad ((i,j), quad) = do
-      materialDiffuse FrontAndBack $= colors !! j
+    drawQuad thecolors ((_,j), quad) = do
+      materialDiffuse FrontAndBack $= thecolors !! j
       drawQuad' quad
         where
           drawQuad' ((v1,v2,v3,v4),norm) = do
@@ -83,6 +84,9 @@ keyboard rot1 rot2 rot3 n zoom c _ =
 idle :: IdleCallback
 idle = postRedisplay Nothing
 
+menuPalette :: IORef String -> String -> MenuCallback
+menuPalette = writeIORef
+
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
@@ -107,7 +111,8 @@ main = do
   rot2 <- newIORef 0.0
   rot3 <- newIORef 0.0
   zoom <- newIORef 0.0
-  displayCallback $= display rot1 rot2 rot3 n zoom
+  palette <- newIORef "viridis"
+  displayCallback $= display rot1 rot2 rot3 palette n zoom
   reshapeCallback $= Just (resize 0)
   keyboardCallback $= Just (keyboard rot1 rot2 rot3 n zoom)
   idleCallback $= Just idle
@@ -118,6 +123,16 @@ main = do
         \    Zoom: l, m\n\
         \    Increase/decrease parameter: n, b \n\
         \"
+  attachMenu LeftButton
+    (Menu [ SubMenu "Color palette"
+                    (Menu [ MenuEntry "magma"    (menuPalette palette "magma")
+                          , MenuEntry "inferno"  (menuPalette palette "inferno")
+                          , MenuEntry "plasma"   (menuPalette palette "plasma")
+                          , MenuEntry "viridis"  (menuPalette palette "viridis")
+                          , MenuEntry "cviridis" (menuPalette palette "cviridis")
+                          ])
+          ]
+      )
   mainLoop
 
 

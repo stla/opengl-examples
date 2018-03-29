@@ -33,7 +33,7 @@ display rot1 rot2 rot3 angle angle2 zoom plane proj = do
   r2 <- get rot2
   r3 <- get rot3
   z <- get zoom
-  a <- get angle
+--  a <- get angle
   p <- get plane
   projFun <- get proj
   let klein = allQuads 4 4 (alpha*pi/180) p
@@ -182,7 +182,8 @@ main = do
                               (Menu [ MenuEntry "XYZ" (menuProjection proj True)
                                     , MenuEntry "Stereographic" (menuProjection proj False)
                                     ])
-                   ])
+                   ]
+              )
   mainLoop
 
 

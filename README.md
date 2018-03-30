@@ -111,3 +111,8 @@ Wavy torus with rotating colors:
 Gears:
 
 ![gfycat](https://thumbs.gfycat.com/FamousUnfoldedDaddylonglegs-size_restricted.gif)
+
+Elliptic Torus:
+
+![gfycat](https://thumbs.gfycat.com/LittleRareDachshund-size_restricted.gif)
+

@@ -107,3 +107,7 @@ Doubly conical spiral:
 Wavy torus with rotating colors:
 
 ![gfycat](https://thumbs.gfycat.com/NaughtyFavoriteAchillestang-size_restricted.gif)
+
+Gears:
+
+![gfycat](https://thumbs.gfycat.com/FamousUnfoldedDaddylonglegs-size_restricted.gif)

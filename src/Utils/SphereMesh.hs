@@ -104,7 +104,6 @@ icosahedron =
        , [ 1.0 , phi , 0.0 ]
        ]
      ]
-
   where
     phi = (1 + sqrt 5) / 2
     toTriangle x = (toV3 (x!!0), toV3 (x!!1), toV3 (x!!2))

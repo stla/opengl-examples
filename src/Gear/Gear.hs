@@ -1,23 +1,22 @@
-module WavyTorus.WavyTorus where
+module Gear.Gear where
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
 import qualified Data.Map.Strict                   as M
+import           Gear.Data
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
-import           Graphics.UI.GLUT                  hiding (shift)
+import           Graphics.UI.GLUT
 import           Text.Printf
 import           Utils.Palettes                    (colorRampSymmetric')
-import           WavyTorus.Data
 
 white,black :: Color4 GLfloat
 white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
 
-half_n_u,n_u,n_v :: Int
-half_n_u = 125
-n_u = 2*half_n_u
-n_v = 50
+n_u,n_v :: Int
+n_u = 250
+n_v = 2
 
 
 display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -- rotations
@@ -25,25 +24,34 @@ display :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -- rotations
         -> IORef Int       -- shift palette
         -> IORef GLdouble  -- parameter n
         -> IORef GLdouble  -- zoom
+        -> IORef GLfloat   -- gears rotation
         -> DisplayCallback
-display rot1 rot2 rot3 palette shift n zoom = do
+display rot1 rot2 rot3 palette shift n zoom angle = do
   clear [ColorBuffer, DepthBuffer]
   n' <- get n
   r1 <- get rot1
   r2 <- get rot2
   r3 <- get rot3
   z <- get zoom
+  angle' <- get angle
   (_, size) <- get viewport
   palette' <- get palette
   shift' <- get shift
   let colors = colorRampSymmetric' palette' n_u (shift' `mod` n_u)
-      surface = allQuads n_u n_v n'
+      surface = M.toList $ allQuads n_u n_v n'
   loadIdentity
   resize z size
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  renderPrimitive Quads $ mapM_ (drawQuad colors) (M.toList surface)
+--  rotate (pi/4 :: GLfloat) $ Vector3 0 1 0
+  preservingMatrix $ do
+    rotate angle' $ Vector3 0 0 1
+    renderPrimitive Quads $ mapM_ (drawQuad colors) surface
+  preservingMatrix $ do
+    translate (Vector3 2.1 0 (0 :: GLfloat))
+    rotate (-angle') $ Vector3 0 0 1
+    renderPrimitive Quads $ mapM_ (drawQuad colors) surface
   swapBuffers
   where
     drawQuad thecolors ((i,_), quad) = do
@@ -63,7 +71,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-15+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 6 0 (-3+zoom)) (Vertex3 1 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -92,15 +100,15 @@ keyboard rot1 rot2 rot3 shift n zoom anim c _ =
     'q' -> leaveMainLoop
     _   -> return ()
 
-idle :: IORef Bool -> IORef Int -> IORef Int -> IdleCallback
-idle anim shift snapshots = do
+idle :: IORef Bool -> IORef GLfloat -> IORef Int -> IdleCallback
+idle anim angle snapshots = do
     a <- get anim
     s <- get snapshots
     when a $ do
-      when (s < half_n_u) $ do
-        let ppm = printf "ppm/wavytorus%04d.ppm" s
+      when (s < 360) $ do
+        let ppm = printf "ppm/gears%04d.ppm" s
         (>>=) capturePPM (B.writeFile ppm)
-      shift $~! (+ 2)
+      angle $~! (+ 1)
       snapshots $~! (+ 1)
     postRedisplay Nothing
 
@@ -110,7 +118,7 @@ menuPalette = writeIORef
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Wavy Torus"
+  _ <- createWindow "Gears"
   windowSize $= Size 500 500
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= white
@@ -120,26 +128,27 @@ main = do
   lighting $= Enabled
   lightModelTwoSide $= Enabled
   light (Light 0) $= Enabled
-  position (Light 0) $= Vertex4 0 0 (-100) 1
+  position (Light 0) $= Vertex4 200 0 (-100) 1
   ambient (Light 0) $= black
   diffuse (Light 0) $= white
   specular (Light 0) $= white
   depthFunc $= Just Less
   shadeModel $= Smooth
-  n <- newIORef 5.0
+  n <- newIORef 12.0
   rot1 <- newIORef 0.0
   rot2 <- newIORef 0.0
   rot3 <- newIORef 0.0
   zoom <- newIORef 0.0
+  angle <- newIORef 0.0
   palette <- newIORef "viridis"
   shift <- newIORef 0
   anim <- newIORef False
   snapshots <- newIORef 0
-  displayCallback $= display rot1 rot2 rot3 palette shift n zoom
+  displayCallback $= display rot1 rot2 rot3 palette shift n zoom angle
   reshapeCallback $= Just (resize 0)
   keyboardCallback $= Just (keyboard rot1 rot2 rot3 shift n zoom anim)
-  idleCallback $= Just (idle anim shift snapshots)
-  putStrLn "*** Haskell OpenGL Wavy Torus ***\n\
+  idleCallback $= Just (idle anim angle snapshots)
+  putStrLn "*** Haskell OpenGL Gears ***\n\
         \    To quit, press q.\n\
         \    Scene rotation:\n\
         \        e, r, t, y, u, i\n\

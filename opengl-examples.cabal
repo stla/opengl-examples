@@ -211,6 +211,9 @@ library
                      , Gear.Gear
                      , EllipticTorus.Data
                      , EllipticTorus.EllipticTorus
+                     , Heart.Data
+                     , Heart.Heart
+                     , Heart.Utils
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

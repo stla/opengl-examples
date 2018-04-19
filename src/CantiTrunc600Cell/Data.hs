@@ -1,10 +1,10 @@
-module CantiTrunc600Cell.Data where
+module CantiTrunc600Cell.Data
+  where
 import Math.Combinat.Permutations as P
 import Data.List
-import Graphics.Rendering.OpenGL.GL (GLdouble, Vertex3 (..))
+import           Graphics.Rendering.OpenGL.GL (GLdouble, Vertex3 (..))
 import Data.Tuple.Extra (both)
 -- http://eusebeia.dyndns.org/4d/cantitrunc600cell
-
 
 signs :: (Eq a, Num a) => [a] -> [[a]]
 signs = mapM (\x -> nub [x,-x])
@@ -14,7 +14,7 @@ signsAll = concatMap signs
 
 vertices :: ([Double], Bool) -> [[Double]]
 vertices (coords, allperms) =
-  map (map (/ sqrt 128.9619)) $ signsAll $
+  map (map (/ sqrt 270.1640786)) $ signsAll $
   nub $ zipWith permuteList perms (replicate 24 coords)
   where perms = filter (if allperms then const True else isEvenPermutation) (P.permutations 4)
 
@@ -73,8 +73,9 @@ allVertices' = map toVx3 allVertices
   where
   toVx3 x = Vertex3 (x!!0) (x!!1) (x!!2)
 
+
 facetsIdxs :: [[Int]]
-facetsIdxs = 
+facetsIdxs =
   [ [ 956
     , 1052
     , 2968
@@ -44240,7 +44241,6 @@ edgesIdxs = [ ( 0 , 4 )
       , ( 7007 , 7103 )
       , ( 7007 , 7151 )
       ]
-
 
 
 faces :: [[Vertex3 GLdouble]]

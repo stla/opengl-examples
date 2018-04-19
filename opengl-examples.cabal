@@ -214,6 +214,8 @@ library
                      , Heart.Data
                      , Heart.Heart
                      , Heart.Utils
+                     , KleinBottleGray.Data
+                     , KleinBottleGray.KleinBottleGray
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT
@@ -784,6 +786,18 @@ executable heart
   hs-source-dirs:      src-exe
   main-is:             ExeHeart.hs
   ghc-options:         -fllvm -main-is ExeHeart
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
+executable kleinbottlegray
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
+  hs-source-dirs:      src-exe
+  main-is:             ExeKleinBottleGray.hs
+  ghc-options:         -fllvm -main-is ExeKleinBottleGray
   build-depends:       base >= 4.7 && < 5
                      , opengl-examples
   default-language:    Haskell2010

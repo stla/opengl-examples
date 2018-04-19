@@ -1,6 +1,6 @@
 module Dodecaplex.Data where
+import           Data.Tuple.Extra             (both)
 import           Graphics.Rendering.OpenGL.GL (GLdouble, Vertex3 (..))
-import Data.Tuple.Extra (both)
 
 
 edgesIdxs :: [(Int,Int)]

@@ -119,3 +119,7 @@ Elliptic Torus:
 Heart:
 
 ![gfycat](https://thumbs.gfycat.com/DeficientCleanBoaconstrictor-size_restricted.gif)
+
+Gray's Klein bottle:
+
+![gfycat](https://thumbs.gfycat.com/TatteredSoulfulArcticfox-size_restricted.gif)

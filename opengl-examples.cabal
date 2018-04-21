@@ -216,6 +216,8 @@ library
                      , Heart.Utils
                      , KleinBottleGray.Data
                      , KleinBottleGray.KleinBottleGray
+                     , Apple.Data
+                     , Apple.Apple
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

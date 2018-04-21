@@ -804,6 +804,18 @@ executable kleinbottlegray
                      , opengl-examples
   default-language:    Haskell2010
 
+executable apple
+  if flag(exe)
+    buildable: True
+  else
+    buildable: False
+  hs-source-dirs:      src-exe
+  main-is:             ExeApple.hs
+  ghc-options:         -fllvm -main-is ExeApple
+  build-depends:       base >= 4.7 && < 5
+                     , opengl-examples
+  default-language:    Haskell2010
+
 source-repository head
   type:     git
   location: https://github.com/stla/opengl-examples

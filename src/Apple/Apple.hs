@@ -45,7 +45,7 @@ display context = do
 --      surf = surface a' n' m'
   loadIdentity
   resize z size
-  rotate (r1-100) $ Vector3 1 0 0
+  rotate (r1-120) $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
   renderPrimitive Quads $ mapM_ (drawQuad colors) surf
@@ -68,7 +68,7 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-20+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 0 0 (-25+zoom)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w

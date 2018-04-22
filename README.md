@@ -127,3 +127,7 @@ Gray's Klein bottle:
 Apple:
 
 ![Imgur](https://i.imgur.com/Pis2EPR.png)
+
+Euphonium:
+
+![Imgur](https://i.imgur.com/s2Q0uBP.png)

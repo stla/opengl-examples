@@ -2,13 +2,11 @@ module TudorRose.TudorRose where
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
-import qualified Data.Map.Strict                   as M
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           TudorRose.Data
 import           Text.Printf
-import           Utils.Palettes                    (colorRamp')
 
 data Context = Context
     {

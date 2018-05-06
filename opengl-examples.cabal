@@ -226,6 +226,11 @@ library
                      , TudorRose.TudorRose
                      , Hopf.HopfCircle
                      , Hopf.HopfTorus
+                     , Pinecone.Data
+                     , Pinecone.Pinecone
+                     , Utils.ReadOBJ
+                     , Sphere72Edges.Data
+                     , Sphere72Edges.Sphere72Edges
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

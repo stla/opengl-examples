@@ -1,9 +1,11 @@
 module Sphere72Edges.Sphere72Edges
   where
-import Sphere72Edges.Data
+import           Data.IORef
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
-import Data.IORef
+import           Sphere72Edges.Data
+import           Utils.Prism
+import           Utils.OpenGL                      (negateNormal)
 
 
 data Context = Context
@@ -31,14 +33,21 @@ display context zoom = do
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  renderPrimitive Lines $
-    mapM_ drawLine edges
+  mapM_ drawLine edges
   swapBuffers
   where
-    drawLine (e1,e2) = do
-      materialDiffuse FrontAndBack $= red
-      vertex e1
-      vertex e2
+    drawLine (v1,v2) = do
+      let cylinder = prism v1 v2 30 0.1
+      renderPrimitive Quads $ do
+        materialDiffuse Front $= red
+        mapM_ drawQuad cylinder
+      where
+        drawQuad ((w1,w2,w3,w4),n) = do
+          normal n
+          vertex w1
+          vertex w2
+          vertex w3
+          vertex w4
 
 resize :: Double -> Size -> IO ()
 resize zoom s@(Size w h) = do

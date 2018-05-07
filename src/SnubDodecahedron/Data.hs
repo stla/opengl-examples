@@ -167,7 +167,7 @@ facesIdxsGreen =
     [45,53,58,59,54] ]
 
 edgesIdxs :: [(Int,Int)]
-edgesIdxs = 
+edgesIdxs =
   [(0,2),
   (0,3),
   (0,4),

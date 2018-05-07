@@ -76,8 +76,8 @@ drawVertex col v =
 
 drawEdge :: Color4 GLfloat -> (Vertex3 GLfloat, Vertex3 GLfloat) -> IO ()
 drawEdge col (v1,v2) = do
+  let cylinder = prism v1 v2 30 0.01
   renderPrimitive Quads $ do
-    let cylinder = prism v1 v2 30 0.01
     materialDiffuse Front $= col
     mapM_ drawQuad cylinder
   where

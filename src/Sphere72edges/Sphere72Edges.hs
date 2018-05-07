@@ -5,7 +5,7 @@ import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Sphere72Edges.Data
 import           Utils.Prism
-import           Utils.OpenGL                      (negateNormal)
+import           Utils.OpenGL                      (negateNormal, triangleNormal)
 
 
 data Context = Context
@@ -34,8 +34,14 @@ display context zoom = do
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
   mapM_ drawLine edges
+  renderPrimitive Polygon $ do
+    materialDiffuse Front $= red
+    mapM_ drawFace faces
   swapBuffers
   where
+    drawFace face = do
+      normal $ triangleNormal (face!!0, face!!1, face!!2)
+      mapM_ vertex face
     drawLine (v1,v2) = do
       let cylinder = prism v1 v2 30 0.1
       renderPrimitive Quads $ do

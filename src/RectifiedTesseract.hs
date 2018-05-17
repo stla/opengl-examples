@@ -1,19 +1,19 @@
 module RectifiedTesseract
   where
+import qualified Data.ByteString                   as B
 import           Data.IORef
+import           Data.List.Index                   (imapM_)
 import           Data.Tuple.Extra                  (both)
+import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           RectifiedTesseract.Data
 import           Tesseract.Transformations4D
+import           Text.Printf
+import           Utils.Colour
+import           Utils.ConvertPPM
 import           Utils.OpenGL                      (triangleNormal)
 import           Utils.Prism
-import           Graphics.Rendering.OpenGL.Capture (capturePPM)
-import           Text.Printf
-import           Utils.ConvertPPM
-import qualified Data.ByteString                   as B
-import           Utils.Colour
-import           Data.List.Index                   (imapM_)
 
 white,black,grey,whitesmoke,red :: Color4 GLfloat
 white      = Color4    1    1    1    1
@@ -98,7 +98,7 @@ keyboard angle c _ =
     'm' -> do
       a <- get angle
       let i = round a :: Int
-      let ppm = printf "pic%04d.ppm" i
+      let ppm = printf "ppm/pic%04d.ppm" i
           -- png = printf "pic%04d.png" i
       (>>=) capturePPM (B.writeFile ppm)
       -- convert ppm png True

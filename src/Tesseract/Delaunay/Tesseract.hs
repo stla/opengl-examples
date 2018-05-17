@@ -1,24 +1,17 @@
-module Duocylinder
+module Tesseract.Delaunay.Tesseract
   where
-import           Control.Monad                     (when)
-import qualified Data.ByteString                   as B
 import           Data.IORef
-import           Data.List.Index                   (imapM_)
-import           Data.Tuple.Extra                  (both)
-import           Duocylinder.Data
-import           Graphics.Rendering.OpenGL.Capture (capturePPM)
+import           Data.Tuple.Extra             (both)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
+import           Tesseract.Delaunay.Data
 import           Tesseract.Transformations4D
-import           Text.Printf
+import           Utils.OpenGL                 (triangleNormal)
 import           Utils.Prism
---import           Utils.Colour                      (pickColor)
-import           Utils.OpenGL                      (triangleNormal)
 
-white,black,red,grey,whitesmoke :: Color4 GLfloat
+white,black,grey,whitesmoke :: Color4 GLfloat
 white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
-red        = Color4    1    0    0    1
 grey       = Color4  0.8  0.8  0.8  0.7
 whitesmoke = Color4 0.96 0.96 0.96    1
 
@@ -26,36 +19,27 @@ display :: IORef GLdouble -> DisplayCallback
 display angle = do
   clear [ColorBuffer, DepthBuffer]
   alpha <- get angle
-  let points  = map (simpleRotation (alpha * pi / 180)) dcVertices
+  let points  = map (rotate4D 0.0 0.0 (alpha * pi / 180)) tesseractVertices
       ppoints = map project4D points
       vectors = map toVector3 ppoints
-      edges   = map (both (toVertex3 . (!!) ppoints)) dcEdges
-      facets  = take 5 $ map (map (map (toVertex3 . (!!) ppoints))) dcFacets
+      edges   = map (both (toVertex3 . (!!) ppoints)) dtesseractEdges
   loadIdentity
   mapM_ (\vec -> preservingMatrix $ do
                   translate vec
                   materialDiffuse Front $= whitesmoke
-                  renderObject Solid $ Sphere' 0.1 15 15)
+                  renderObject Solid $ Sphere' 0.2 50 50)
         vectors
-  mapM_ (drawCylinder whitesmoke 0.05) edges
-  imapM_ (\i ridges -> mapM_ (renderPrimitive Polygon . drawRidge i) ridges) facets
+  mapM_ (drawCylinder 0.1) edges
   swapBuffers
   where
     toVector3 x = Vector3 (x!!0) (x!!1) (x!!2)
     toVertex3 x = Vertex3 (x!!0) (x!!1) (x!!2)
 
-drawRidge :: Int -> [Vertex3 GLdouble] -> IO ()
-drawRidge i vs = do
-  materialDiffuse FrontAndBack $= grey
-  normal (triangleNormal (vs!!0, vs!!1, vs!!2))
-  mapM_ vertex vs
-
-drawCylinder :: Color4 GLfloat -> GLdouble
-             -> (Vertex3 GLdouble, Vertex3 GLdouble) -> IO ()
-drawCylinder col radius (v1,v2) = do
-  let cylinder = prism v1 v2 15 radius
+drawCylinder :: GLdouble -> (Vertex3 GLdouble, Vertex3 GLdouble) -> IO ()
+drawCylinder radius (v1,v2) = do
+  let cylinder = prism v1 v2 50 radius
   renderPrimitive Quads $ do
-    materialDiffuse Back $= col
+    materialDiffuse Back $= whitesmoke
     mapM_ f cylinder
   where
     f ((w1,w2,w3,w4),n) = do
@@ -71,37 +55,27 @@ resize s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 (-11) 11 (-22)) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 (-6) 6 (-12)) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
     h' = realToFrac h
 
-keyboard :: IORef GLdouble -> IORef Bool -> KeyboardCallback
-keyboard angle anim c _ =
+keyboard :: IORef GLdouble -> KeyboardCallback
+keyboard angle c _ =
   case c of
-    'a' -> writeIORef anim True
-    's' -> writeIORef anim False
     'o' -> angle $~! subtract 1
     'p' -> angle $~! (+ 1)
     'q' -> leaveMainLoop
     _   -> return ()
 
-idle :: IORef Bool -> IORef GLdouble -> IdleCallback
-idle anim angle = do
-  a <- get anim
-  r <- get angle
-  when a $ do
-    when (r < 360) $ do
-      let ppm = printf "ppm/pic%04d.ppm" (round r :: Int)
-      (>>=) capturePPM (B.writeFile ppm)
-    angle $~! (+ 1)
-  postRedisplay Nothing
+idle :: IdleCallback
+idle = postRedisplay Nothing
 
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Delaunay Duocylinder"
+  _ <- createWindow "Delaunay Tesseract"
   windowSize $= Size 600 600
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= Color4 0 0 0 0
@@ -120,9 +94,8 @@ main = do
   blend $= Enabled    -- allow transparency
   blendFunc $= (SrcAlpha, OneMinusSrcAlpha)
   angle <- newIORef 0.0
-  anim <- newIORef False
   displayCallback $= display angle
   reshapeCallback $= Just resize
-  keyboardCallback $= Just (keyboard angle anim)
-  idleCallback $= Just (idle anim angle)
+  keyboardCallback $= Just (keyboard angle)
+  idleCallback $= Just idle
   mainLoop

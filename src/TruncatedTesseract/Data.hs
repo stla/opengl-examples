@@ -458,7 +458,7 @@ ttesseractEdges = [ ( 0 , 8 )
                   , ( 62 , 63 )
                   ]
 
-ttesseractFacet :: [[Int]]
+ttesseractFacet :: [[Int]] -- pas utilisé
 ttesseractFacet = [ [ 27 , 43 , 59 ]
                   , [ 28 , 44 , 60 ]
                   , [ 24 , 40 , 56 ]

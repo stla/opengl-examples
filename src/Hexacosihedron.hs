@@ -1,17 +1,17 @@
 module Hexacosihedron
   where
+import           Control.Monad                     (when)
+import qualified Data.ByteString                   as B
 import           Data.IORef
 import           Data.Tuple.Extra                  (both)
+import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Hexacosihedron.Data
 import           Tesseract.Transformations4D
+import           Text.Printf
 import           Utils.OpenGL                      (triangleNormal)
 import           Utils.Prism
-import qualified Data.ByteString                   as B
-import           Graphics.Rendering.OpenGL.Capture (capturePPM)
-import           Control.Monad                     (when)
-import Text.Printf
 
 white,black,grey,whitesmoke :: Color4 GLfloat
 white      = Color4    1    1    1    1
@@ -97,7 +97,7 @@ keyboard rot1 rot2 rot3 angle2 zoom anim c _ =
     'v' -> rot3 $~! subtract 1
     'b' -> rot3 $~! (+1)
     'm' -> zoom $~! (+1)
-    'l' -> zoom $~! (subtract 1)
+    'l' -> zoom $~! subtract 1
     'a' -> writeIORef anim True
     'q' -> leaveMainLoop
     _   -> return ()
@@ -108,7 +108,7 @@ idle anim angle2 = do
   r <- get angle2
   when a $ do
     when (r < 360) $ do
-      let ppm = printf "Hexacosihedron%04d.ppm" (round r :: Int)
+      let ppm = printf "ppm/Hexacosihedron%04d.ppm" (round r :: Int)
       (>>=) capturePPM (B.writeFile ppm)
     angle2 $~! (+ 1)
   postRedisplay Nothing

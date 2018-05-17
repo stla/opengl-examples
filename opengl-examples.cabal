@@ -231,6 +231,10 @@ library
                      , Utils.ReadOBJ
                      , Sphere72Edges.Data
                      , Sphere72Edges.Sphere72Edges
+                     , Duocylinder.Delaunay.Data
+                     , Duocylinder.Delaunay.Duocylinder
+                     , Tesseract.Delaunay.Data
+                     , Tesseract.Delaunay.Tesseract
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

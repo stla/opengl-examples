@@ -1,19 +1,16 @@
-module Duocylinder
+module Duocylinder.Delaunay.Duocylinder
   where
 import           Control.Monad                     (when)
 import qualified Data.ByteString                   as B
 import           Data.IORef
-import           Data.List.Index                   (imapM_)
 import           Data.Tuple.Extra                  (both)
-import           Duocylinder.Data
+import           Duocylinder.Delaunay.Data
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Tesseract.Transformations4D
 import           Text.Printf
 import           Utils.Prism
---import           Utils.Colour                      (pickColor)
-import           Utils.OpenGL                      (triangleNormal)
 
 white,black,red,grey,whitesmoke :: Color4 GLfloat
 white      = Color4    1    1    1    1
@@ -26,29 +23,15 @@ display :: IORef GLdouble -> DisplayCallback
 display angle = do
   clear [ColorBuffer, DepthBuffer]
   alpha <- get angle
-  let points  = map (simpleRotation (alpha * pi / 180)) dcVertices
+  let points  = map (simpleRotation (alpha * pi / 180)) dcdVertices
       ppoints = map project4D points
-      vectors = map toVector3 ppoints
-      edges   = map (both (toVertex3 . (!!) ppoints)) dcEdges
-      facets  = take 5 $ map (map (map (toVertex3 . (!!) ppoints))) dcFacets
+      edges   = map (both (toVertex3 . (!!) ppoints)) dcdEdges
   loadIdentity
-  mapM_ (\vec -> preservingMatrix $ do
-                  translate vec
-                  materialDiffuse Front $= whitesmoke
-                  renderObject Solid $ Sphere' 0.1 15 15)
-        vectors
-  mapM_ (drawCylinder whitesmoke 0.05) edges
-  imapM_ (\i ridges -> mapM_ (renderPrimitive Polygon . drawRidge i) ridges) facets
+  mapM_ (drawCylinder whitesmoke 0.005) edges
   swapBuffers
   where
     toVector3 x = Vector3 (x!!0) (x!!1) (x!!2)
     toVertex3 x = Vertex3 (x!!0) (x!!1) (x!!2)
-
-drawRidge :: Int -> [Vertex3 GLdouble] -> IO ()
-drawRidge i vs = do
-  materialDiffuse FrontAndBack $= grey
-  normal (triangleNormal (vs!!0, vs!!1, vs!!2))
-  mapM_ vertex vs
 
 drawCylinder :: Color4 GLfloat -> GLdouble
              -> (Vertex3 GLdouble, Vertex3 GLdouble) -> IO ()
@@ -101,7 +84,7 @@ idle anim angle = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Delaunay Duocylinder"
+  _ <- createWindow "Tesseract"
   windowSize $= Size 600 600
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= Color4 0 0 0 0

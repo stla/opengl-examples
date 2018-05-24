@@ -41,9 +41,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   rotate r1 $ Vector3 1 0 0
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
-  renderPrimitive Quads $ do
---    materialDiffuse FrontAndBack $= red
-    mapM_ drawQuad torus
+  renderPrimitive Quads $ mapM_ drawQuad torus
   swapBuffers
   where
     drawQuad ((v1,v2,v3,v4),n) = do
@@ -91,7 +89,7 @@ idle anim angle2 = do
   r <- get angle2
   when a $ do
     when (r < 360) $ do
-      let ppm = printf "bianchipinakll%04d.ppm" (round r :: Int)
+      let ppm = printf "ppm/bianchipinakll%04d.ppm" (round r :: Int)
       (>>=) capturePPM (B.writeFile ppm)
     angle2 $~! (+ 1)
   postRedisplay Nothing

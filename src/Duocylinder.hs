@@ -101,7 +101,7 @@ idle anim angle = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Delaunay Duocylinder"
+  _ <- createWindow "Duocylinder"
   windowSize $= Size 600 600
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= Color4 0 0 0 0

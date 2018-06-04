@@ -1,7 +1,7 @@
 module Utils.CircleTransfo
   where
 import           Data.Foldable                           (toList)
-import           Graphics.Rendering.OpenGL.GL            (GLdouble, GLfloat)
+import           Graphics.Rendering.OpenGL.GL            (GLdouble)
 import           Graphics.Rendering.OpenGL.GL.CoordTrans
 import           Linear
 
@@ -61,6 +61,6 @@ transformationMatrix p1 p2 p3 =
     u = V3 0 (-c'') b''
 
     v = cross n u
-    m = V3 u n v
+    m = transpose (V3 u n v)
 
 

@@ -50,7 +50,7 @@ polygonsIdxs =  [ [0,1,2],
                 ]
 
 edgesIdxs :: [(Int,Int)]
-edgesIdxs = [  (0,1),
+edgesIdxs = [ (0,1),
               (0,2),
               (0,3),
               (0,4),

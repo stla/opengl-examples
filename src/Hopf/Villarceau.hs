@@ -28,7 +28,7 @@ green      = Color4    0    1    0    0.5
 blue       = Color4    0    0    1    0.5
 
 myPoints :: [(GLfloat,GLfloat,GLfloat)]
-myPoints = [(0,5,0),(0,5,12),(3,5,11)]
+myPoints = [(1,-1,0),(3,0,1),(5,1,0)]
 
 myPointsV3 :: [V3 GLfloat]
 myPointsV3 = map toV3 myPoints

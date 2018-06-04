@@ -139,3 +139,7 @@ Flowers:
 Hopf torus:
 
 ![Imgur](https://i.imgur.com/8S1H6Iq.png)
+
+Cyclide:
+
+![gfycat](https://thumbs.gfycat.com/WhiteLastAssassinbug-size_restricted.gif)

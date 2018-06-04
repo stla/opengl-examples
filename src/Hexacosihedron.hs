@@ -50,7 +50,7 @@ display rot1 rot2 rot3 angle angle2 zoom = do
   swapBuffers
   where
     toVector3 x = Vector3 (x!!0) (x!!1) (x!!2)
-    toVertex3 x = Vertex3 (x!!0) (x!!1) (x!!2)
+--    toVertex3 x = Vertex3 (x!!0) (x!!1) (x!!2)
     drawCylinder :: GLdouble -> (Vertex3 GLdouble, Vertex3 GLdouble) -> IO ()
     drawCylinder radius (v1,v2) = do
       let cylinder = prism v1 v2 50 radius

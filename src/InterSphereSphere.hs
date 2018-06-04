@@ -8,9 +8,7 @@ import           Graphics.UI.GLUT
 import           Intersections.SphereSphere
 import           Text.Printf
 import           Utils.ConvertPPM
-import           Utils.OpenGL                      (negateNormal,
-                                                    triangleNormal)
-import           Utils.Prism
+import           Utils.OpenGL                      (triangleNormal)
 
 grey1,grey9,purple,white,black,gold :: Color4 GLfloat
 grey1  = Color4 0.1 0.1 0.1 1

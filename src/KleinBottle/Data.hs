@@ -1,5 +1,5 @@
 module KleinBottle.Data where
-import           Graphics.Rendering.OpenGL.GL (GLdouble, Normal3 (..),
+import           Graphics.Rendering.OpenGL.GL (Normal3 (..),
                                                Vertex3 (..))
 import           Utils.OpenGL                 (triangleNormal)
 

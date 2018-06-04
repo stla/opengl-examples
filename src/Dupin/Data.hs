@@ -9,7 +9,7 @@ dupin :: Double -> Double -> Double -> Double -> Double -> [Double]
 dupin a b d u v = [x, y, z]
   where
     c = sqrt(a*a-b*b)
-    x = (d*(c-a*cos(u)*cos(v)) + b^2*cos(u))/(a-c*cos(u)*cos(v))
+    x = (d*(c-a*cos(u)*cos(v)) + b*b*cos(u))/(a-c*cos(u)*cos(v))
     y = (b*sin(u)*(a-d*cos(v)))/(a-c*cos(u)*cos(v))
     z = (b*sin(v)*(c*cos(u)-d))/(a-c*cos(u)*cos(v))
 

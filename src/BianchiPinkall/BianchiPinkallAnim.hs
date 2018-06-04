@@ -11,8 +11,6 @@ import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Text.Printf
 import           Utils.Colour
-import           Utils.OpenGL                      (negateNormal,
-                                                    triangleNormal)
 
 white,black,grey,whitesmoke,red :: Color4 GLfloat
 white      = Color4    1    1    1    1

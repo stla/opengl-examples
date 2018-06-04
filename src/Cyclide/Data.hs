@@ -10,10 +10,10 @@ fun :: Double -> Double -> Double -> Double -> Double -> [Double]
 fun a b d u v = [x, y, z]
   where
     c = sqrt(a*a-b*b)
-    den = a-c*cos(u)*cos(v)
-    x = (d*(c-a*cos(u)*cos(v))+b*b*cos(u)) / den
-    y = (b*sin(u)*(a-d*cos(v))) / den
-    z = (b*sin(v)*(c*cos(u)-d)) / den
+    den = a - c * cos u * cos v
+    x = (d * (c - a * cos u * cos v) + b * b * cos u) / den
+    y = (b * sin u * (a - d * cos v)) / den
+    z = (b * sin v * (c * cos u - d)) / den
 
 fun' :: Double -> Double -> Double -> Double -> Double -> Vertex3 Double
 fun' a b d u v = toVx3 $ fun a b d u v

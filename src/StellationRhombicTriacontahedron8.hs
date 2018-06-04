@@ -104,8 +104,8 @@ keyboard rot1 rot2 rot3 capture c _ =
     'b' -> rot3 $~! (+1)
     'c' -> do
       i <- get capture
-      let ppm = printf "pic%04d.ppm" i
-          png = printf "pic%04d.png" i
+      let ppm = printf "ppm/pic%04d.ppm" i
+          png = printf "ppm/pic%04d.png" i
       (>>=) capturePPM (B.writeFile ppm)
       convert ppm png True
       capture $~! (+1)

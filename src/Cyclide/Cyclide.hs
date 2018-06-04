@@ -1,8 +1,8 @@
 module Cyclide.Cyclide where
 import           Control.Monad                     (when)
+import           Cyclide.Data
 import qualified Data.ByteString                   as B
 import           Data.IORef
-import           Cyclide.Data
 import           Graphics.Rendering.OpenGL.Capture (capturePPM)
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
@@ -10,10 +10,10 @@ import           Text.Printf
 
 data Context = Context
     {
-      contextRot1 :: IORef GLfloat
-    , contextRot2 :: IORef GLfloat
-    , contextRot3 :: IORef GLfloat
-    , contextTriangles :: [NTriangle]
+      contextRot1      :: IORef GLfloat
+    , contextRot2      :: IORef GLfloat
+    , contextRot3      :: IORef GLfloat
+    , contextTriangles :: IORef [NTriangle]
     }
 
 white,black,red :: Color4 GLfloat
@@ -21,8 +21,8 @@ white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
 red        = Color4    1    0    0    1
 
-cyclide :: [NTriangle]
-cyclide = allTriangles 400 3.1 3.0 1.3
+cyclide :: Double -> [NTriangle]
+cyclide = allTriangles 400 3.1 3.0
 
 display :: Context -> IORef GLdouble -> IORef GLfloat -> DisplayCallback
 display context zoom alpha = do
@@ -30,6 +30,7 @@ display context zoom alpha = do
   r1 <- get (contextRot1 context)
   r2 <- get (contextRot2 context)
   r3 <- get (contextRot3 context)
+  triangles <- get (contextTriangles context)
   z <- get zoom
   alpha' <- get alpha
   loadIdentity
@@ -40,7 +41,7 @@ display context zoom alpha = do
   rotate r2 $ Vector3 0 1 0
   rotate r3 $ Vector3 0 0 1
   renderPrimitive Triangles $
-    mapM_ drawTriangle (contextTriangles context)
+    mapM_ drawTriangle triangles
   swapBuffers
   where
     drawTriangle ((v1,v2,v3),norm) = do
@@ -56,16 +57,20 @@ resize zoom s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 0 0 (-11+zoom)) (Vertex3 0 1 0) (Vector3 0 (-1) 0)
+  lookAt (Vertex3 0 0 (-6+zoom)) (Vertex3 0 1 0) (Vector3 0 (-1) 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
     h' = realToFrac h
 
 
-keyboard :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat
-         -> IORef GLdouble -> IORef Bool -> KeyboardCallback
-keyboard rot1 rot2 rot3 zoom anim c _ = do
+keyboard :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat -- rotations
+         -> IORef GLdouble -- zoom
+         -> IORef Bool -- animation
+         -> IORef Double -- d
+         -> IORef [NTriangle]
+         -> KeyboardCallback
+keyboard rot1 rot2 rot3 zoom anim d triangles c _ = do
   case c of
     'e' -> rot1 $~! subtract 2
     'r' -> rot1 $~! (+2)
@@ -76,6 +81,14 @@ keyboard rot1 rot2 rot3 zoom anim c _ = do
     'm' -> zoom $~! (+1)
     'l' -> zoom $~! subtract 1
     'a' -> writeIORef anim True
+    'h' -> do
+      d $~! (+0.1)
+      d' <- get d
+      writeIORef triangles (cyclide d')
+    'n' -> do
+      d $~! (\x -> if x >= 0.1 then x-0.1 else x)
+      d' <- get d
+      writeIORef triangles (cyclide d')
     'q' -> leaveMainLoop
     _   -> return ()
   postRedisplay Nothing
@@ -97,7 +110,7 @@ idle anim snapshots alpha = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Cyclide"
+  _ <- createWindow "Dupin cyclide"
   windowSize $= Size 500 500
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= white
@@ -120,19 +133,23 @@ main = do
   anim <- newIORef False
   alpha <- newIORef 0.0
   snapshots <- newIORef 0
+  let d = 1.3
+  d' <- newIORef d
+  cyclide' <- newIORef (cyclide d)
   displayCallback $= display Context {contextRot1 = rot1,
                                       contextRot2 = rot2,
                                       contextRot3 = rot3,
-                                      contextTriangles = cyclide}
+                                      contextTriangles = cyclide'}
                              zoom alpha
   reshapeCallback $= Just (resize 0)
-  keyboardCallback $= Just (keyboard rot1 rot2 rot3 zoom anim)
+  keyboardCallback $= Just (keyboard rot1 rot2 rot3 zoom anim d' cyclide')
   idleCallback $= Just (idle anim snapshots alpha)
-  putStrLn "*** Cyclide ***\n\
+  putStrLn "*** Dupin cyclide ***\n\
         \    To quit, press q.\n\
         \    Scene rotation:\n\
         \        e, r, t, y, u, i\n\
         \    Zoom: l, m\n\
+        \    Increase/decrease parameter: h,n\n\
         \    Animation: a\n\
         \"
   mainLoop

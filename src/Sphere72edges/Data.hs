@@ -1,7 +1,7 @@
 module Sphere72Edges.Data
   where
 import           Data.Tuple.Extra             (both)
-import           Graphics.Rendering.OpenGL.GL (GLfloat, Vertex3 (..))
+import           Graphics.Rendering.OpenGL.GL (Vertex3 (..))
 
 allVertices :: [Vertex3 Double]
 allVertices = map toVx3

@@ -9,10 +9,10 @@ hopfproject p =
    [p!!0^2+p!!1^2-(p!!2^2-p!!3^2), 2*p!!1*p!!2+2*p!!0*p!!3, 2*p!!1*p!!3-2*p!!0*p!!2]
 
 stereoprojectn :: [Double] -> Double -> [Double]
-stereoprojectn x r = map (/(r - last x)) (map (*(2*r)) (init x))
+stereoprojectn x r = map (*(2*r/(r - last x))) (init x)
 
 stereoprojectn' :: [Double] -> [Double]
-stereoprojectn' x = map (/(r - last x)) (map (*(2*r)) (init x))
+stereoprojectn' x = map (*(2*r/(r - last x))) (init x)
   where
   r = sum (zipWith (*) x x)
 
@@ -99,10 +99,10 @@ rotation4Dplane axis1 axis2 theta vector =
 type Quaternion = (Double, Double, Double, Double)
 
 interpolateQuaternion :: Quaternion -> Quaternion -> Int -> [Quaternion]
-interpolateQuaternion from to length =
+interpolateQuaternion from to l =
   map (\h -> plus (scalar (1-h) from) (scalar h to)) subds
   where
-  subds = [frac i length | i <- [0 .. length]]
+  subds = [frac i l | i <- [0 .. l]]
   frac i n = realToFrac i / realToFrac n
   plus (a,b,c,d) (a',b',c',d') = (a+a',b+b',c+c',d+d')
   scalar k (a,b,c,d) = (k*a, k*b, k*c, k*d)

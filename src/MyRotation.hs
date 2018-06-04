@@ -34,10 +34,10 @@ display rot1 rot2 zoom = do
   swapBuffers
   where
     myRotation theta = do
-      m <- (newMatrix RowMajor [  cos theta, sin theta , 0, 0
+      m <- newMatrix RowMajor [  cos theta, sin theta , 0, 0
                               , -sin theta, cos theta , 0, 0
                               , 0,          0,          1, 0
-                              , 0,          0,          0, 1]) :: IO (GLmatrix GLfloat)
+                              , 0,          0,          0, 1] :: IO (GLmatrix GLfloat)
       multMatrix m
 
 resize :: Double -> Size -> IO ()

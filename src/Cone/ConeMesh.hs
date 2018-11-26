@@ -2,6 +2,10 @@ module Cone.ConeMesh
   where
 import qualified Data.Vector as V
 import           Data.Vector     (Vector, fromList)
+import           Data.Foldable (toList)
+import           Linear hiding (cross)
+import qualified Linear as L
+import           Control.Lens
 
 cross :: Floating a => (a,a,a) -> (a,a,a) -> (a,a,a)
 cross (v1,v2,v3) (w1,w2,w3) =
@@ -52,3 +56,27 @@ cmesh0 h rr r nstacks nslices = (vertices_normals, quads)
     quads = map (\(i,j) -> let jp1 = if j<nslices-1 then j+1 else 0 in
                            (i*nslices+j, (i-1)*nslices+j, (i-1)*nslices+jp1, i*nslices+jp1))
                 gridij
+
+transfoMatrixCone :: (Real a, Floating a) => V3 a -> V3 a -> ([a], a)
+transfoMatrixCone cr1 cr2 = 
+  (concatMap toList (toList (mkTransformationMat m trans)), height)
+  where
+    normal' = cr2 ^-^ cr1
+    height = norm normal'
+    trans = cr1 -- ^-^ cr2 
+    normal = normal' ^/ height
+    nx = normal ^. _x
+    ny = normal ^. _y
+    s = sqrt(nx*nx + ny*ny) 
+    u = V3 (ny/s) (-nx/s) 0
+    v = L.cross normal u 
+    m = if s == 0 
+          then V3 (V3 1 0 0) (V3 0 1 0) (V3 0 0 1)
+          else transpose $ V3 u v normal
+
+coneMesh :: (Real a, Floating a) => V3 a -> V3 a -> a -> a -> Int -> Int 
+         -> ((Vector ((a,a,a),(a,a,a)), [(Int,Int,Int,Int)]), [a]) -- retourne le cmesh0 et la matrice
+coneMesh cr1 cr2 r1 r2 nstacks nslices = (conemesh0, matrix)
+  where
+    (matrix, h) = transfoMatrixCone cr1 cr2 
+    conemesh0 = cmesh0 h r1 r2 nstacks nslices

@@ -1,21 +1,18 @@
-module Cone.TestConeMesh0
+module Cone.TwentyCones
   where
 import           Data.Vector     (Vector, (!))
 import           Cone.ConeMesh
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Control.Monad                (forM_)
+import           Linear                       (V3 (..))
+
+type Mesh = (Vector ((Float,Float,Float),(Float,Float,Float)), [(Int,Int,Int,Int)])
 
 white,black,blue :: Color4 GLfloat
 white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
 blue       = Color4    0    0    1    1
-
-mesh :: (Vector ((Float,Float,Float),(Float,Float,Float)), [(Int,Int,Int,Int)])
-mesh = cmesh0 5 3 1 3 16
-
-verticesAndNormals :: Vector ((Float,Float,Float),(Float,Float,Float))
-verticesAndNormals = fst mesh
 
 toVx3 :: (Float,Float,Float) -> Vertex3 Float
 toVx3 (x,y,z) = Vertex3 x y z
@@ -23,20 +20,67 @@ toVx3 (x,y,z) = Vertex3 x y z
 toN3 :: (Float,Float,Float) -> Normal3 Float
 toN3 (x,y,z) = Normal3 x y z
 
-quadIndices :: [(Int,Int,Int,Int)]
-quadIndices = snd mesh
+phi,a,b,c :: GLfloat
+phi = (1 + sqrt 5) / 2
+a = 1 / sqrt 3
+b = a / phi
+c = a * phi
+
+points :: [V3 GLfloat]
+points = 
+   [V3 a a a,
+    V3 a a (-a),
+    V3 a (-a) a,
+    V3 (-a) (-a) a,
+    V3 (-a) a (-a),
+    V3 (-a) a a,
+    V3 0 b (-c),
+    V3 0 (-b) (-c),
+    V3 0 (-b) c,
+    V3 c 0 (-b),
+    V3 (-c) 0 (-b),
+    V3 (-c) 0 b,
+    V3 b c 0,
+    V3 b (-c) 0,
+    V3 (-b) (-c) 0,
+    V3 (-b) c 0,
+    V3 0 b c,
+    V3 a (-a) (-a),
+    V3 c 0 b,
+    V3 (-a) (-a) (-a)]
+
+
+meshesAndMatrices :: [(Mesh, [Float])]
+meshesAndMatrices = 
+    map (\pt -> coneMesh (V3 0 0 0) pt 0.5 1 3 16) points
+
+-- mesh :: Mesh
+-- mesh = fst meshAndMatrix
+
+-- verticesAndNormals :: Vector ((Float,Float,Float),(Float,Float,Float))
+-- verticesAndNormals = fst mesh
+
+-- quadIndices :: [(Int,Int,Int,Int)]
+-- quadIndices = snd mesh
+
+-- transfoMatrix :: [Float]
+-- transfoMatrix = snd meshAndMatix
 
 display :: DisplayCallback
 display = do
   clear [ColorBuffer, DepthBuffer]
   loadIdentity
-  forM_ quadIndices $ \(i,j,k,l) ->
-    renderPrimitive Quads $ do
-      materialDiffuse Front $= blue
-      drawQuad i j k l
+  forM_ meshesAndMatrices $ \meshAndMatrix -> 
+    preservingMatrix $ do
+      m <- newMatrix RowMajor (snd meshAndMatrix) :: IO (GLmatrix GLfloat)
+      multMatrix m
+      forM_ (snd . fst meshAndMatrix) $ \(i,j,k,l) ->
+        renderPrimitive Quads $ do
+          materialDiffuse Front $= blue
+          drawQuad i j k l (fst . fst meshAndMatrix)
   swapBuffers
   where
-    drawQuad i j k l = do 
+    drawQuad i j k l verticesAndNormals = do 
       normal ni
       vertex vi
       normal nj

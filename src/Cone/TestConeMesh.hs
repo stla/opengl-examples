@@ -1,18 +1,25 @@
-module Cone.TestConeMesh0
+module Cone.TestConeMesh
   where
 import           Data.Vector     (Vector, (!))
 import           Cone.ConeMesh
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
 import           Control.Monad                (forM_)
+import           Linear                       (V3 (..))
+
+type Mesh = (Vector ((Float,Float,Float),(Float,Float,Float)), [(Int,Int,Int,Int)])
 
 white,black,blue :: Color4 GLfloat
 white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
 blue       = Color4    0    0    1    1
 
-mesh :: (Vector ((Float,Float,Float),(Float,Float,Float)), [(Int,Int,Int,Int)])
-mesh = cmesh0 5 3 1 3 16
+meshAndMatrix :: (Mesh, [Float])
+meshAndMatrix = 
+    coneMesh (V3 0 0 0) (V3 2 2 2) 0.5 1 3 16
+
+mesh :: Mesh
+mesh = fst meshAndMatrix
 
 verticesAndNormals :: Vector ((Float,Float,Float),(Float,Float,Float))
 verticesAndNormals = fst mesh
@@ -26,14 +33,20 @@ toN3 (x,y,z) = Normal3 x y z
 quadIndices :: [(Int,Int,Int,Int)]
 quadIndices = snd mesh
 
+transfoMatrix :: [Float]
+transfoMatrix = snd meshAndMatrix
+
 display :: DisplayCallback
 display = do
   clear [ColorBuffer, DepthBuffer]
   loadIdentity
-  forM_ quadIndices $ \(i,j,k,l) ->
-    renderPrimitive Quads $ do
-      materialDiffuse Front $= blue
-      drawQuad i j k l
+  preservingMatrix $ do
+    m <- newMatrix RowMajor transfoMatrix :: IO (GLmatrix GLfloat)
+    multMatrix m
+    forM_ quadIndices $ \(i,j,k,l) ->
+      renderPrimitive Quads $ do
+        materialDiffuse Front $= blue
+        drawQuad i j k l
   swapBuffers
   where
     drawQuad i j k l = do 

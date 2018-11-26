@@ -52,7 +52,7 @@ points =
 
 meshesAndMatrices :: [(Mesh, [Float])]
 meshesAndMatrices = 
-    map (\pt -> coneMesh (V3 0 0 0) pt 0.05 0.1 3 16) points
+    map (\pt -> coneMesh pt (V3 0 0 0) 0.1 0.03 3 32) points
 
 -- mesh :: Mesh
 -- mesh = fst meshAndMatrix

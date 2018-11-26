@@ -74,9 +74,17 @@ transfoMatrixCone cr1 cr2 =
           then V3 (V3 1 0 0) (V3 0 1 0) (V3 0 0 1)
           else transpose $ V3 u v normal
 
-coneMesh :: (Real a, Floating a) => V3 a -> V3 a -> a -> a -> Int -> Int 
-         -> ((Vector ((a,a,a),(a,a,a)), [(Int,Int,Int,Int)]), [a]) -- retourne le cmesh0 et la matrice
-coneMesh cr1 cr2 r1 r2 nstacks nslices = (conemesh0, matrix)
+-- returns the mesh and the transformation matrix
+coneMesh' :: (Real a, Floating a) => V3 a -> V3 a -> a -> a -> Int -> Int 
+         -> ((Vector ((a,a,a),(a,a,a)), [(Int,Int,Int,Int)]), [a]) 
+coneMesh' cr1 cr2 r1 r2 nstacks nslices = (conemesh0, matrix)
   where
     (matrix, h) = transfoMatrixCone cr1 cr2 
     conemesh0 = cmesh0 h r1 r2 nstacks nslices
+
+coneMesh :: (Real a, Floating a) => V3 a -> V3 a -> a -> a -> Int -> Int 
+         -> ((Vector ((a,a,a),(a,a,a)), [(Int,Int,Int,Int)]), [a]) 
+coneMesh cr1 cr2 r1 r2 nstacks nslices = 
+  if r2<r1 
+    then coneMesh' cr1 cr2 r1 r2 nstacks nslices
+    else coneMesh' cr2 cr1 r2 r1 nstacks nslices

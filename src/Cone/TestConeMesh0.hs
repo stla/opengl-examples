@@ -12,7 +12,7 @@ black      = Color4    0    0    0    1
 blue       = Color4    0    0    1    1
 
 mesh :: (Vector ((Float,Float,Float),(Float,Float,Float)), [(Int,Int,Int,Int)])
-mesh = cmesh0 5 3 1 3 16
+mesh = cmesh0 5 3 1 3 64
 
 verticesAndNormals :: Vector ((Float,Float,Float),(Float,Float,Float))
 verticesAndNormals = fst mesh

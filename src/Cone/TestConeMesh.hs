@@ -9,14 +9,15 @@ import           Linear                       (V3 (..))
 
 type Mesh = (Vector ((Float,Float,Float),(Float,Float,Float)), [(Int,Int,Int,Int)])
 
-white,black,blue :: Color4 GLfloat
+white,black,blue,green :: Color4 GLfloat
 white      = Color4    1    1    1    1
 black      = Color4    0    0    0    1
 blue       = Color4    0    0    1    1
+green      = Color4    0    1    0    1
 
 meshAndMatrix :: (Mesh, [Float])
 meshAndMatrix = 
-    coneMesh (V3 0 0 0) (V3 2 2 2) 0.5 1 3 16
+    coneMesh (V3 (-1) (-1) (-1)) (V3 2 2 2) 0.5 1 3 60
 
 mesh :: Mesh
 mesh = fst meshAndMatrix
@@ -46,6 +47,7 @@ display = do
     forM_ quadIndices $ \(i,j,k,l) ->
       renderPrimitive Quads $ do
         materialDiffuse Front $= blue
+        materialDiffuse Back $= green
         drawQuad i j k l
   swapBuffers
   where
@@ -78,7 +80,7 @@ resize s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 2 2 13) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 2 6 13) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -91,8 +93,9 @@ main = do
   windowSize $= Size 500 500
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= white
-  materialAmbient Front $= black
+  materialAmbient FrontAndBack $= black
   lighting $= Enabled
+  lightModelTwoSide $= Enabled
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 200 200 1300 1
   ambient (Light 0) $= black

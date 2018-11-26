@@ -143,3 +143,9 @@ Hopf torus:
 Cyclide:
 
 ![gfycat](https://thumbs.gfycat.com/WhiteLastAssassinbug-size_restricted.gif)
+
+Bitruncated cone:
+
+![Imgur](https://i.imgur.com/CJKZIlF.png)
+
+![Imgur](https://i.imgur.com/ZBKMZZZ.png)

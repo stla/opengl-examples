@@ -64,8 +64,9 @@ transfoMatrixCone cr1 cr2 =
     s = sqrt(nx*nx + ny*ny)
     u = V3 (ny/s) (-nx/s) 0
     v = L.cross normal u
+    coefCase0 = if normal ^. _z >0 then 1 else -1
     m = if s == 0
-          then V3 (V3 1 0 0) (V3 0 1 0) (V3 0 0 1)
+          then V3 (V3 1 0 0) (V3 0 coefCase0 0) (V3 0 0 coefCase0)
           else transpose $ V3 u v normal
 
 -- returns the mesh and the transformation matrix

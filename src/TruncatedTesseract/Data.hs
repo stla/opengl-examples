@@ -5,36 +5,12 @@ ttesseractVertices :: [[Double]]
 ttesseractVertices =
   let x = 1 + sqrt 2 in
   map (map (/ sqrt(1 + 3*x*x)))
-    [ [ -1.0
-      , -x
-      , -x
-      , -x
-      ]
-    , [ -1.0
-      , -x
-      , -x
-      , x
-      ]
-    , [ -1.0
-      , -x
-      , x
-      , -x
-      ]
-    , [ -1.0
-      , -x
-      , x
-      , x
-      ]
-    , [ -1.0
-      , x
-      , -x
-      , -x
-      ]
-    , [ -1.0
-      , x
-      , -x
-      , x
-      ]
+    [ [ -1.0, -x, -x, -x ]
+    , [ -1.0, -x, -x, x ]
+    , [ -1.0, -x, x, -x ]
+    , [ -1.0, -x, x, x ]
+    , [ -1.0, x, -x, -x ]
+    , [ -1.0, x, -x, x ]
     , [ -1.0
       , x
       , x
@@ -310,21 +286,9 @@ ttesseractVertices =
       , -x
       , -1.0
       ]
-    , [ x
-      , x
-      , -x
-      , 1.0
-      ]
-    , [ x
-      , x
-      , x
-      , -1.0
-      ]
-    , [ x
-      , x
-      , x
-      , 1.0
-      ]
+    , [ x, x, -x, 1.0 ]
+    , [ x, x, x, -1.0 ]
+    , [ x, x, x, 1.0 ]
     ]
 
 ttesseractEdges :: [(Int, Int)]

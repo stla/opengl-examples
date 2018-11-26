@@ -1,11 +1,11 @@
 module Cone.ConeMesh
   where
 import qualified Data.Vector as V
-import           Data.Vector      (Vector, fromList)
-import           Data.Foldable    (toList)
-import           Linear hiding    (cross)
+import           Data.Vector     (Vector, fromList)
+import           Data.Foldable (toList)
+import           Linear hiding (cross)
 import qualified Linear as L
-import           Control.Lens     ((^.))
+import           Control.Lens
 
 cross :: Floating a => (a,a,a) -> (a,a,a) -> (a,a,a)
 cross (v1,v2,v3) (w1,w2,w3) =
@@ -25,25 +25,31 @@ cmesh0 :: (Ord a, Floating a) => a -> a -> a -> Int -> Int
 cmesh0 h rr r nstacks nslices = (vertices_normals, quads)
   where
     h' = if r < rr then h else -h
-    ratio = if r < rr then r / rr else rr / r
-    k = (ratio - 1) / h'
+    d = if r < rr then h' * r / rr else h' * rr / r
+    hdivhmd = h' / (h' - d)
+    -- grid --------------------------------------------------------------------
+    -- nstacks' = nstacks + 1;
+    -- i_ = V.enumFromN 0 nstacks
+    -- u_ = V.map (\i -> ((h'-d)/realToFrac nstacks) * i) i_
+    -- j_ = V.enumFromN 0 (nslices-1)
+    -- v_ = V.map (\j -> (2*i/realToFrac nslices) * j) j_
+    -- grid = [(u_ ! i, v ! j) |... vecteur...]
     i_ = [0 .. nstacks]
     j_ = [0 .. nslices-1]
-    u_ = [fromIntegral i * h'/fromIntegral nstacks | i <- i_]
+    u_ = [fromIntegral i * (h'-d)/fromIntegral nstacks | i <- i_]
     v_ = [fromIntegral j * 2 * pi / fromIntegral nslices | j <- j_]
     grid = [(u,v) | u <- u_, v <- v_]
     grid' = fromList grid
     gridij = [(i,j) | i <- tail i_, j <- j_]
-    -- higher radius
-    rbig = if r<rr then rr else r
     -- vertices ----------------------------------------------------------------
     vertices_normals =
-      V.map (\(u,v) -> let g = 1 + k*u in
-                       let cosv = rbig * cos v in
-                       let sinv = rbig * sin v in
-                       let t1 = (k*cosv, k*sinv, 1) in
-                       let t2 = (-g*sinv, g*cosv, 0) in
-                       ((g*cosv, g*sinv, u), nnormalize $ cross t1 t2)
+      V.map (\(u,v) -> let g = h' - u in
+                       let f = if r<rr then u * hdivhmd else u * hdivhmd - h' in
+                       let cosv = rr/h' * cos v in
+                       let sinv = rr/h' * sin v in
+                       let t1 = (-cosv, -sinv, hdivhmd) in
+                       let t2 = (-g * sinv, g*cosv, 0) in
+                       ((g*cosv, g*sinv, f), nnormalize $ cross t1 t2)
             )
             grid'
     -- quads -----------------------------------------------------------------

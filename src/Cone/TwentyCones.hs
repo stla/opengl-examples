@@ -52,7 +52,7 @@ points =
 
 meshesAndMatrices :: [(Mesh, [Float])]
 meshesAndMatrices = 
-    map (\pt -> coneMesh (V3 0 0 0) pt 0.5 1 3 16) points
+    map (\pt -> coneMesh (V3 0 0 0) pt 0.05 0.1 3 16) points
 
 -- mesh :: Mesh
 -- mesh = fst meshAndMatrix
@@ -74,10 +74,10 @@ display = do
     preservingMatrix $ do
       m <- newMatrix RowMajor (snd meshAndMatrix) :: IO (GLmatrix GLfloat)
       multMatrix m
-      forM_ (snd . fst meshAndMatrix) $ \(i,j,k,l) ->
+      forM_ ((snd . fst) meshAndMatrix) $ \(i,j,k,l) ->
         renderPrimitive Quads $ do
           materialDiffuse Front $= blue
-          drawQuad i j k l (fst . fst meshAndMatrix)
+          drawQuad i j k l ((fst . fst) meshAndMatrix)
   swapBuffers
   where
     drawQuad i j k l verticesAndNormals = do 
@@ -109,7 +109,7 @@ resize s@(Size w h) = do
   matrixMode $= Projection
   loadIdentity
   perspective 45.0 (w'/h') 1.0 100.0
-  lookAt (Vertex3 2 2 13) (Vertex3 0 0 0) (Vector3 0 1 0)
+  lookAt (Vertex3 2 2 3) (Vertex3 0 0 0) (Vector3 0 1 0)
   matrixMode $= Modelview 0
   where
     w' = realToFrac w
@@ -118,14 +118,14 @@ resize s@(Size w h) = do
 main :: IO ()
 main = do
   _ <- getArgsAndInitialize
-  _ <- createWindow "Cone"
+  _ <- createWindow "Twenty cones"
   windowSize $= Size 500 500
   initialDisplayMode $= [RGBAMode, DoubleBuffered, WithDepthBuffer]
   clearColor $= white
   materialAmbient Front $= black
   lighting $= Enabled
   light (Light 0) $= Enabled
-  position (Light 0) $= Vertex4 200 200 1300 1
+  position (Light 0) $= Vertex4 200 200 300 1
   ambient (Light 0) $= black
   diffuse (Light 0) $= white
   specular (Light 0) $= black

@@ -229,8 +229,8 @@ library
                      , Pinecone.Data
                      , Pinecone.Pinecone
                      , Utils.ReadOBJ
-                     , Sphere72Edges.Data
-                     , Sphere72Edges.Sphere72Edges
+                     --, Sphere72Edges.Data
+                     --, Sphere72Edges.Sphere72Edges
                      , Duocylinder.Delaunay.Data
                      , Duocylinder.Delaunay.Duocylinder
                      , Tesseract.Delaunay.Data
@@ -241,6 +241,7 @@ library
                      , Cyclide.Data
                      , Cyclide.Cyclide
                      , Cone.ConeMesh
+                     , Cone.TestConeMesh0
   build-depends:       base >= 4.7 && < 5
                      , OpenGL
                      , GLUT

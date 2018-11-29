@@ -27,14 +27,14 @@ cross (v1,v2,v3) (w1,w2,w3) =
   v1*w2 - v2*w1
   )
 
-nnormalize :: Floating a => (a,a,a) -> (a,a,a)
-nnormalize (x,y,z) = (x/n,y/n,z/n)
+normalize :: Floating a => (a,a,a) -> (a,a,a)
+normalize (x,y,z) = (x/n,y/n,z/n)
   where
     n = sqrt(x*x+y*y+z*z)
 
 gradient :: Double -> Double -> Double -> Double -> Bool -> Double -> Double
          -> Vector
-gradient alpha beta gamma n swap u v = nnormalize (cross df_du df_dv)
+gradient alpha beta gamma n swap u v = normalize (cross df_du df_dv)
   where
     dfx_du = alpha*(1-0.5*v/pi) * sin(n*v+0.5*pi) * sin u
     dfy_du = alpha*(1-0.5*v/pi) * cos u

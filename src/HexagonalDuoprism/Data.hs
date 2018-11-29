@@ -163,5 +163,8 @@ hdFacetEdges =  [ ( 0 , 5 )
 hdFacetVertices :: [Int]
 hdFacetVertices = [0,5,6,30,11,35,12,17,18,23,24,29]
 
+hdOtherVertices :: [Int]
+hdOtherVertices = [0 .. length hdVertices - 1] \\ hdFacetVertices 
+
 hdOtherEdges :: [(Int,Int)]
 hdOtherEdges = hdEdges \\ hdFacetEdges

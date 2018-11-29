@@ -1,4 +1,4 @@
-module Sphere72Edges.Data
+module Sphere72edges.Data
   where
 import           Data.Tuple.Extra             (both)
 import           Graphics.Rendering.OpenGL.GL (Vertex3 (..))

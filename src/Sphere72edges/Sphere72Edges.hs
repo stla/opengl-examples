@@ -1,9 +1,9 @@
-module Sphere72Edges.Sphere72Edges
+module Sphere72edges.Sphere72Edges
   where
 import           Data.IORef
 import           Graphics.Rendering.OpenGL.GL
 import           Graphics.UI.GLUT
-import           Sphere72Edges.Data
+import           Sphere72edges.Data
 import           Utils.Prism
 import           Utils.OpenGL                      (negateNormal, triangleNormal)
 

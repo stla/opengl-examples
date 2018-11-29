@@ -13,8 +13,8 @@ import           Text.Printf
 --import           Utils.Quads.Color
 
 nu,nv :: Int
-nu = 50
-nv = 50
+nu = 100
+nv = 100
 
 white,black,grey,whitesmoke,red :: Color4 GLfloat
 white      = Color4    1    1    1    1
@@ -76,7 +76,7 @@ keyboard :: IORef GLfloat -> IORef GLfloat -> IORef GLfloat
          -> IORef GLdouble -> IORef GLdouble
          -> IORef GLdouble -> IORef [(NTriangle,NTriangle)]
          -> IORef Bool -> IORef Int -> IORef Bool -> KeyboardCallback
-keyboard rot1 rot2 rot3 alpha beta gamma n zoom triangles anim delay save c _ =
+keyboard rot1 rot2 rot3 alpha beta gamma n zoom triangles anim delay save c _ = do
   case c of
     'c' -> do 
       alpha $~! subtract 0.1
@@ -84,56 +84,56 @@ keyboard rot1 rot2 rot3 alpha beta gamma n zoom triangles anim delay save c _ =
       beta' <- get beta
       gamma' <- get gamma
       n' <- get n 
-      writeIORef triangles (allTriangles alpha' beta' gamma' n' False (nu,nv))
+      writeIORef triangles (allTriangles' alpha' beta' gamma' n' (nu,nv))
     'd' -> do
       alpha $~! (+ 0.1)
       alpha' <- get alpha
       beta' <- get beta
       gamma' <- get gamma
       n' <- get n 
-      writeIORef triangles (allTriangles alpha' beta' gamma' n' False (nu,nv))
+      writeIORef triangles (allTriangles' alpha' beta' gamma' n' (nu,nv))
     'v' -> do
       beta $~! subtract 0.1
       alpha' <- get alpha
       beta' <- get beta
       gamma' <- get gamma
       n' <- get n 
-      writeIORef triangles (allTriangles alpha' beta' gamma' n' False (nu,nv))
+      writeIORef triangles (allTriangles' alpha' beta' gamma' n' (nu,nv))
     'f' -> do
       beta $~! (+ 0.1)
       alpha' <- get alpha
       beta' <- get beta
       gamma' <- get gamma
       n' <- get n 
-      writeIORef triangles (allTriangles alpha' beta' gamma' n' False (nu,nv))
+      writeIORef triangles (allTriangles' alpha' beta' gamma' n' (nu,nv))
     'b' -> do
       gamma $~! subtract 0.1
       alpha' <- get alpha
       beta' <- get beta
       gamma' <- get gamma
       n' <- get n 
-      writeIORef triangles (allTriangles alpha' beta' gamma' n' False (nu,nv))
+      writeIORef triangles (allTriangles' alpha' beta' gamma' n' (nu,nv))
     'g' -> do
       gamma $~! (+ 0.1)
       alpha' <- get alpha
       beta' <- get beta
       gamma' <- get gamma
       n' <- get n 
-      writeIORef triangles (allTriangles alpha' beta' gamma' n' False (nu,nv))
+      writeIORef triangles (allTriangles' alpha' beta' gamma' n' (nu,nv))
     'n' -> do
       n $~! subtract 0.1
       alpha' <- get alpha
       beta' <- get beta
       gamma' <- get gamma
       n' <- get n 
-      writeIORef triangles (allTriangles alpha' beta' gamma' n' False (nu,nv))
+      writeIORef triangles (allTriangles' alpha' beta' gamma' n' (nu,nv))
     'h' -> do
       n $~! (+ 0.1)
       alpha' <- get alpha
       beta' <- get beta
       gamma' <- get gamma
       n' <- get n 
-      writeIORef triangles (allTriangles alpha' beta' gamma' n' False (nu,nv))
+      writeIORef triangles (allTriangles' alpha' beta' gamma' n' (nu,nv))
     'e' -> rot1 $~! subtract 1
     'r' -> rot1 $~! (+1)
     't' -> rot2 $~! subtract 1
@@ -148,6 +148,7 @@ keyboard rot1 rot2 rot3 alpha beta gamma n zoom triangles anim delay save c _ =
     's' -> save $~! not
     'q' -> leaveMainLoop
     _   -> return ()
+  postRedisplay Nothing
 
 ppmExists :: Bool
 {-# NOINLINE ppmExists #-}
@@ -156,7 +157,7 @@ ppmExists = unsafePerformIO $ doesDirectoryExist "./ppm"
 
 idle :: IORef Bool -> IORef Int -> IORef Bool -> IORef Int -> IORef GLfloat
      -> IdleCallback
-idle anim delay save snapshots rot1 = do
+idle anim delay save snapshots rot2 = do
     a <- get anim
     snapshot <- get snapshots
     s <- get save
@@ -167,7 +168,7 @@ idle anim delay save snapshots rot1 = do
         (>>=) capturePPM (B.writeFile ppm)
         print snapshot
         snapshots $~! (+1)
-      rot1 $~! (+1)
+      rot2 $~! (+1)
       _ <- threadDelay d
       postRedisplay Nothing
     return ()
@@ -196,7 +197,7 @@ main = do
       beta = 8.0
       gamma = 0.2
       n = 5.0
-      spiral = allTriangles alpha beta gamma n False (nu,nv)
+      spiral = allTriangles' alpha beta gamma n (nu,nv)
   alpha' <- newIORef alpha
   beta' <- newIORef beta
   gamma' <- newIORef gamma
@@ -219,8 +220,8 @@ main = do
   reshapeCallback $= Just (resize 0)
   keyboardCallback $= 
     Just (keyboard rot1 rot2 rot3 alpha' beta' gamma' n' zoom spiral' anim delay save)
-  idleCallback $= Just (idle anim delay save snapshots rot1)
-  putStrLn "*** Haskell OpenGL Conical Spiral ***\n\
+  idleCallback $= Just (idle anim delay save snapshots rot2)
+  putStrLn "*** Conical Spiral ***\n\
         \    To quit, press q.\n\
         \    Scene rotation:\n\
         \        e, r, t, y, u, i\n\

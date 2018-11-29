@@ -104,6 +104,8 @@ Doubly conical spiral:
 
 ![Imgur](https://i.imgur.com/9sFAZtw.png)
 
+![gfycat](https://thumbs.gfycat.com/GregariousGlumHochstettersfrog-size_restricted.gif)
+
 Wavy torus with rotating colors:
 
 ![gfycat](https://thumbs.gfycat.com/NaughtyFavoriteAchillestang-size_restricted.gif)

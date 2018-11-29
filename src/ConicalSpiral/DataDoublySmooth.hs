@@ -1,6 +1,5 @@
 module ConicalSpiral.DataDoublySmooth where
 import           Data.Array      (Array, (!), array)
-import qualified Data.Array as A
 import           Graphics.Rendering.OpenGL.GL (Normal3 (..), Vertex3 (..))
 
 type Point = (Double, Double, Double)
@@ -29,7 +28,7 @@ cross (v1,v2,v3) (w1,w2,w3) =
   )
 
 nnormalize :: Floating a => (a,a,a) -> (a,a,a)
-nnormalize (x,y,z) = (-x/n,-y/n,-z/n)
+nnormalize (x,y,z) = (x/n,y/n,z/n)
   where
     n = sqrt(x*x+y*y+z*z)
 
@@ -87,13 +86,13 @@ vectorToNormal3 :: Vector -> Normal3 Double
 vectorToNormal3 (x,y,z) = Normal3 x y z
 
 triangles_ij :: Array (Int,Int) Point -> Array (Int,Int) Vector
-            -> (Int, Int) -> (Int, Int)
+            -> Int -> (Int, Int)
             -> (NTriangle, NTriangle)
-triangles_ij vertices normals (n_u,n_v) (i,j) =
+triangles_ij vertices normals n_u (i,j) =
   (((a,na), (b,nb), (c,nc)), ((c,nc), (b,nb), (d,nd)))
   where
   ip1 = if i==n_u-1 then 0 else i+1
-  jp1 = if j==n_v-1 then 0 else j+1
+  jp1 = j+1 
   a = pointToVertex3 $ vertices ! (i,j)
   na = vectorToNormal3 $ normals ! (i,j)
   c = pointToVertex3 $ vertices ! (i,jp1)
@@ -106,10 +105,16 @@ triangles_ij vertices normals (n_u,n_v) (i,j) =
 allTriangles :: Double -> Double -> Double -> Double -> Bool -> (Int,Int)
              -> [(NTriangle,NTriangle)]
 allTriangles alpha beta gamma n swap (n_u,n_v) =
-  map (triangles_ij vertices normals (n_u,n_v)) indices
+  map (triangles_ij vertices normals n_u) indices
   where
   u_ = [2*pi * frac i n_u | i <- [0 .. n_u-1]]
-  v_ = [2*pi * frac i n_v | i <- [0 .. n_v-1]]
+  v_ = [2*pi * frac i n_v | i <- [0 .. n_v]]
   vertices = allVertices (sconical alpha beta gamma n swap) u_ v_
   normals = allNormals alpha beta gamma n swap u_ v_
   indices = [(i,j) | i <- [0 .. n_u-1], j <- [0 .. n_v-1]]
+
+allTriangles' :: Double -> Double -> Double -> Double -> (Int,Int)
+             -> [(NTriangle,NTriangle)]
+allTriangles' alpha beta gamma n (n_u,n_v) = 
+  (allTriangles alpha beta gamma n False (n_u,n_v)) ++
+    (allTriangles alpha beta gamma n True (n_u,n_v))
